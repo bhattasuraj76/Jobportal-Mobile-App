@@ -16,6 +16,7 @@ function Container({ children }) {
         ...(isThemeDark && { borderTopColor: "#ffffff", borderTopWidth: 0.26 }),
       }}
     >
+      
       {children}
     </View>
   );
