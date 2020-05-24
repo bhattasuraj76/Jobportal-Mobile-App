@@ -8,7 +8,7 @@ import RootContaienr from "./containers/rootContainer";
 const getFonts = () =>
   Font.loadAsync({
     "open-sans-regular": require("./assets/fonts/OpenSans-Regular.ttf"),
-    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+    "open-sans-bold":  require("./assets/fonts/OpenSans-Bold.ttf"),
   });
 
 export default function App() {
