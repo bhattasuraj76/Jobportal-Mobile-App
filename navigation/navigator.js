@@ -12,7 +12,7 @@ import ChangePassword from "../screens/profileStacks/changePassword";
 import Home from "../screens/homeStacks/home";
 import Profile from "../screens/profileStacks/profile";
 /** utils */
-import { DefaultThemeColors, DarkThemeColors } from "../utils/constants/Colors";
+import { DefaultThemeColors,  DarkThemeColors } from "../utils/constants/Colors";
 /** shared components */
 import TabBarIcon from "../shared/tabBarIcon";
 import Header from "../shared/header";

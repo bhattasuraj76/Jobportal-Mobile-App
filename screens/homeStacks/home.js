@@ -26,7 +26,7 @@ function Home ({navigation}) {
           <Text style={{alignContent:'center', alignItems:'center', fontSize:16}}>ABC Company</Text>
           <Text style={{marginLeft:20,}}><FontAwesome5 name="hand-point-right" color="black"  /><Text style={{fontSize:14,}}>Kathmandu</Text></Text>
           <Text style={{marginLeft:20,}}><FontAwesome5 name="hand-point-right" color="black"  /><Text style={{fontSize:14,}}>RS.XXXX</Text></Text>
-          <Text style={{  paddingTop: 5,fontSize:16,marginTop:1 }}>Position: mid-level</Text>
+          <Text style={{  paddingTop: 5,fontSize:16,marginTop:1 }}>mid-level</Text>
           <View style={{ marginLeft:140,padding:5, width: 155,}}>
         <Text style={{ marginLeft:5,position:'relative',marginBottom:1}}>Deadline:2016/05/01</Text>
         </View>
