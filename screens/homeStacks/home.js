@@ -9,7 +9,7 @@ import { globalStyles } from "../../styles/globalStyles";
 function Home ({navigation}) {
     return (
       <Container>
-        <TitleText title="Home" />
+        <TitleText title="Myhome" />
       </Container>
     );
 }
