@@ -21,7 +21,7 @@ function Home ({navigation}) {
             marginTop: 3
           }}/>
 
-          <View style={{ padding: 10, width: 155,}}>
+          <View style={{ padding: 9, width: 155,}}>
           <Text style={{alignContent:'center', alignItems:'center', fontSize:20,fontWeight:'bold'}}>Web Developer</Text>
           <Text style={{alignContent:'center', alignItems:'center', fontSize:16}}>ABC Company</Text>
           <Text style={{marginLeft:20,}}><FontAwesome5 name="hand-point-right" color="black"  /><Text style={{fontSize:14,}}>Kathmandu</Text></Text>
