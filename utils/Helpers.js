@@ -18,14 +18,14 @@ export const getStoredAuthUser = async () => {
 
 /** Return theme from local storage */
 export const getStoredTheme = async () => {
-  try {
-    let theme = await AsyncStorage.getItem("theme");
-    if (theme) {
-      return theme;
-    }
-  } catch (e) {
-    console.log(e);
-  }
+  // try {
+  //   let theme = await AsyncStorage.getItem("theme");
+  //   if (theme) {
+  //     return theme;
+  //   }
+  // } catch (e) {
+  //   console.log(e);
+  // }
 
   return DEFAULT_THEME;
 };

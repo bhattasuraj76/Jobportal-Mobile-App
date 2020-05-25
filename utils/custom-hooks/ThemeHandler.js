@@ -7,7 +7,7 @@ const themeHandler = (initialState) => {
   const toggleTheme = async () => {
       try {
          let newTheme = theme === 'default' ? 'dark' : 'default';
-         await AsyncStorage.setItem("theme", newTheme);
+        //  await AsyncStorage.setItem("theme", newTheme);
          setTheme(newTheme);
       } catch(e) {
           console.log(e);
