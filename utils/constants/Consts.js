@@ -4,7 +4,6 @@ export const DEFAULT_AUTH_USER = {
 };
 
 export const DEFAULT_THEME = "default";
-export const DEFAULT_IS_THEME_DARK = false;
 
 export const DEFAULT_JOB_CATEGORIES = [
   {
