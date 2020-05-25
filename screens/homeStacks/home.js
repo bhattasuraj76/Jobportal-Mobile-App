@@ -98,7 +98,7 @@ function Home({ navigation }) {
     navigation.navigate("HomeTab", {
       screen: "JobDetail",
       params: {
-        job,
+        job
       },
     });
   };
