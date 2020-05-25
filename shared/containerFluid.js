@@ -13,7 +13,7 @@ function ContainerFluid({ children }) {
     <View
       style={{
         ...styles.containerFluid,
-        backgroundColor: Colors.secondaryBg,
+        backgroundColor: Colors.primaryBg,
         ...(isThemeDark && { borderTopColor: "#ffffff", borderTopWidth: 0.26 }),
       }}
     >

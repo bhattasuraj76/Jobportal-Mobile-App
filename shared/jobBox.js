@@ -5,10 +5,12 @@ import { globalStyles } from "../styles/globalStyles";
 import Icon from "./icon";
 import { ThemeContext } from "../contexts/ThemeContext";
 import AppText from "./appText";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-function JobBox({job}) {
-  const {isThemeDark} = useContext(ThemeContext);
+function JobBox({ job , onPress}) {
+  const { isThemeDark } = useContext(ThemeContext);
   const Colors = isThemeDark ? DarkThemeColors : DefaultThemeColors;
+  
   return (
     <View style={{ ...styles.jobBox, backgroundColor: Colors.primaryBg }}>
       <Image
@@ -16,43 +18,44 @@ function JobBox({job}) {
         style={styles.logo}
       />
       <View style={styles.jobInfo}>
-        <AppText title={job.title} size={18} family="bold" />
+        <TouchableOpacity onPress={() => onPress(job)}>
+          <AppText title={job.title} size={18} family="bold" color="info"/>
+        </TouchableOpacity>
         <AppText
-          title={job.company_name}
-          weight="bold"
+          title={job.company.name}
           color="secondary"
-          size={14}
+          family="bold"
+          size={15}
         />
 
         <View style={styles.jobInfoBody}>
           <View style={globalStyles.rowAlignCenter}>
-            <Icon name="location-on" size={14} color="#666666" />
+            <Icon name="location-on" size={18} color="#666666" />
             <AppText
-              title={job.address}
+              title={job.company.address}
               color="secondary"
-              size={13}
+              size={14}
               css={{ marginLeft: 5 }}
             />
           </View>
           <View style={globalStyles.rowAlignCenter}>
-            <Icon name="attach-money" size={14} color="#666666" />
+            <Icon name="attach-money" size={18} color="#666666" />
             <AppText
               title={job.salary}
               color="secondary"
-              size={13}
+              size={14}
               css={{ marginLeft: 5 }}
             />
           </View>
         </View>
         <View style={styles.jobInfoFooter}>
-          <AppText title={job.level} color="secondary" size={11} />
-          <AppText title={`Deadline: ${job.deadline}`} color="info" size={11} />
+          <AppText title={job.level} color="secondary" size={12} />
+          <AppText title={`Deadline: ${job.deadline}`} color="info" size={12} />
         </View>
       </View>
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   jobBox: {
@@ -67,10 +70,10 @@ const styles = StyleSheet.create({
     width: 100,
     alignSelf: "center",
     borderWidth: 1,
-    borderColor: DefaultThemeColors.secondaryBorder,
+    borderColor: "#ccc",
   },
-  jobInfo: { marginLeft:30, flexGrow: 1, justifyContent: "center" },
- 
+  jobInfo: { marginLeft: 30, flexGrow: 1, justifyContent: "center" },
+
   companyName: {
     fontSize: 14,
     color: "#666666",

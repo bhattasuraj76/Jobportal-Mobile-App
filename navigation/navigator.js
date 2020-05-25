@@ -72,7 +72,10 @@ function Navigator() {
             headerTitle: () => <Header />,
           }}
         />
-        <Stack.Screen name="JobDetail" component={JobDetail} />
+        <Stack.Screen
+          name="JobDetail"
+          component={JobDetail}
+        />
       </Stack.Navigator>
     );
   };
