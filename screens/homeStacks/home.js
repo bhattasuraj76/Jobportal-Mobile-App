@@ -95,6 +95,7 @@ function Home({ navigation, route }) {
     },
   ]);
 
+  //navigate to job detail 
   const gotoJobDetail = (job) => {
     navigation.navigate("HomeTab", {
       screen: "JobDetail",
@@ -104,6 +105,7 @@ function Home({ navigation, route }) {
     });
   };
 
+  //search jobs on getting params back from search screen
    React.useEffect(() => {
       if (
         (route.params?.title || route.params?.category ||
@@ -168,6 +170,5 @@ function Home({ navigation, route }) {
   );
 }
 
-const styles = StyleSheet.create({});
 
 export default Home;

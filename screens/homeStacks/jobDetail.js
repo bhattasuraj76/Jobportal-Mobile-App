@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, ImageBackground } from "react-native";
 import ContainerFluid from "../../shared/containerFluid";
 import { images, globalStyles } from "../../styles/globalStyles";
 import AppText from "../../shared/appText";
-import JobApplyBtn from "../../shared/appBtn";
+import AppBtn from "../../shared/appBtn";
 import Icon from "../../shared/icon";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import {
@@ -71,7 +71,8 @@ function JobDetail({ navigation, route }) {
 
           {/* accordian wrapper start */}
           <View style={{ marginTop: 20 }}>
-            {/* job info */}
+
+            {/* job info start */}
             <Accordian>
               <TouchableOpacity
                 activeOpacity={1}
@@ -113,10 +114,9 @@ function JobDetail({ navigation, route }) {
                 </AccordianContent>
               )}
             </Accordian>
+            {/* job info  end*/}
 
-            {/* job info */}
-
-            {/* job description */}
+            {/* job description start*/}
             <Accordian>
               <TouchableOpacity
                 activeOpacity={1}
@@ -140,9 +140,9 @@ function JobDetail({ navigation, route }) {
                 </AccordianContent>
               )}
             </Accordian>
-            {/* job description */}
+            {/* job description  end*/}
 
-            {/* about company */}
+            {/* about company start */}
             <Accordian>
               <TouchableOpacity
                 activeOpacity={1}
@@ -183,17 +183,20 @@ function JobDetail({ navigation, route }) {
                 </AccordianContent>
               )}
             </Accordian>
-            {/* about company */}
+            {/* about company end*/}
+
           </View>
           {/* accordian wrapper start */}
+
         </View>
         {/* content end */}
 
         {/* job apply btn */}
         <View style={{ marginTop: 30 }}>
-          <JobApplyBtn title="Appy for Job" onPress={applyForJob} />
+          <AppBtn title="Appy for Job" onPress={applyForJob} />
         </View>
         {/* job apply btn */}
+
       </ScrollView>
     </ContainerFluid>
   );

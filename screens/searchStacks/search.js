@@ -3,28 +3,24 @@ import { useFocusEffect } from "@react-navigation/native";
 import { View, Text, StyleSheet, Keyboard } from "react-native";
 import { Picker } from "@react-native-community/picker";
 import { ThemeContext } from "../../contexts/ThemeContext";
-import Container from "../../shared/container";
-import { globalStyles } from "../../styles/globalStyles";
-import AppText from "../../shared/appText";
 import ContainerFluid from "../../shared/containerFluid";
-import { TextInput, TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { DEFAULT_JOB_CATEGORIES, DEFAULT_JOB_TYPES, DEFAULT_JOB_LEVELS } from "../../utils/constants/Consts";
 import AppBtn from "../../shared/appBtn";
+import InputLevel from "../../shared/inputLevel";
+import FormGroup from "../../shared/formGroup";
+import Input from "../../shared/input";
 
 function Search({navigation}) {
+  //theme value
   const { isThemeDark} = useContext(ThemeContext);
 
+  //state 
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [type, setType] = useState("");
   const [level, setLevel] = useState("");
 
-  
-  useFocusEffect(
-    React.useCallback(() => {
-      console.log("focused");
-    })
-  );
 
   const searchJobs = () => {
     navigation.navigate("HomeTab", {
@@ -42,23 +38,20 @@ function Search({navigation}) {
     <ContainerFluid>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={{ marginTop: 30, paddingHorizontal: 30 }}>
-          {/* search by title  */}
 
-          <View style={styles.formGroup}>
-            <InputLevel title="Job Title" />
-            <TextInput
-              style={{ ...styles.input, ...(isThemeDark && { color: "#fff" }) }}
+          {/* search by title  start*/}
+          <FormGroup>
+            <InputLevel>Job Title</InputLevel>
+            <Input
               placeholder="Search by job title"
               onChangeText={(value) => setTitle(value)}
             />
-          </View>
-
-          {/* search by title  */}
+          </FormGroup>
+          {/* search by title  end*/}
 
           {/* search by job category start*/}
-          <View style={styles.formGroup}>
-            <InputLevel title="Category" />
-
+          <FormGroup>
+            <InputLevel>Category</InputLevel>
             <View style={styles.pickerWrapper}>
               <Picker
                 selectedValue={category}
@@ -82,12 +75,12 @@ function Search({navigation}) {
                 })}
               </Picker>
             </View>
-          </View>
+          </FormGroup>
           {/* search by job category end */}
 
           {/* search by job type start*/}
-          <View style={styles.formGroup}>
-            <InputLevel title="Type" />
+          <FormGroup>
+            <InputLevel>Type</InputLevel>
             <View style={styles.pickerWrapper}>
               <Picker
                 selectedValue={type}
@@ -111,12 +104,12 @@ function Search({navigation}) {
                 })}
               </Picker>
             </View>
-          </View>
+          </FormGroup>
           {/* search by job type end */}
 
           {/* search by job position start*/}
-          <View style={styles.formGroup}>
-            <InputLevel title="Level" />
+          <FormGroup>
+            <InputLevel>Level</InputLevel>
             <View style={styles.pickerWrapper}>
               <Picker
                 selectedValue={level}
@@ -140,59 +133,22 @@ function Search({navigation}) {
                 })}
               </Picker>
             </View>
-          </View>
+          </FormGroup>
           {/* search by job category end */}
 
           <View style={{ marginTop: 10, paddingHorizontal: 10 }}>
             <AppBtn title="Search Jobs" onPress={searchJobs} />
           </View>
 
-          {/* <View style={formGroupStyle}>
-          {label}
-          <View style={specialPickerWrapperStyle}>
-            {" "}
-            <Picker
-              accessibilityLabel={locals.label}
-              ref="input"
-              style={selectStyle}
-              selectedValue={locals.value}
-              onValueChange={locals.onChange}
-              help={locals.help}
-              enabled={locals.enabled}
-              mode={locals.mode}
-              prompt={locals.prompt}
-              itemStyle={locals.itemStyle}
-            >
-              {options}
-            </Picker>
-          </View>
-        </View> */}
         </View>
       </TouchableWithoutFeedback>
     </ContainerFluid>
   );
 }
 
-function InputLevel({title}){
-  const {isThemeDark} = useContext(ThemeContext);
-  return <Text style={{...styles.level, ...(isThemeDark && {color: '#fff'}) }}>{title}</Text>
-}
+
 
 const styles = StyleSheet.create({
-  level: {
-    fontSize: 18,
-    fontFamily: "open-sans-regular",
-    marginBottom: 10,
-    color: "#333",
-  },
-  input: {
-    borderColor: "#ccc",
-    borderWidth: 1,
-    padding: 8,
-    borderRadius: 4,
-    fontSize: 18,
-    color: "#333",
-  },
   pickerWrapper: {
     borderColor: "#ccc",
     borderWidth: 1,
@@ -200,11 +156,7 @@ const styles = StyleSheet.create({
   },
   picker: {
     height: 45,
-    color: '#333'
-  },
-  formGroup: {
-    paddingHorizontal: 10,
-    marginBottom: 20,
+    color: "#333",
   },
 });
 export default Search;
