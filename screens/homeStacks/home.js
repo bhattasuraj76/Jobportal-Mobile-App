@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Button } from "react-native";
+import { View, StyleSheet, Button, RefreshControl } from "react-native";
 import ContainerFluid from "../../shared/containerFluid";
 import JobBox from "../../shared/jobBox";
 import AppText from "../../shared/appText";
 import { ScrollView } from "react-native-gesture-handler";
+import { useFocusEffect } from "@react-navigation/native";
 
-function Home({ navigation }) {
+function Home({ navigation, route }) {
   const [jobs, setJobs] = useState([
     {
       title: "Web Developer",
@@ -103,9 +104,45 @@ function Home({ navigation }) {
     });
   };
 
+   React.useEffect(() => {
+      if (
+        (route.params?.title || route.params?.category ||
+        route.params?.type ||
+        route.params?.level )
+      ) {
+         setJobs((prevJobs) => {
+           prevJobs.shift();
+           return prevJobs;
+         });
+      }
+   }, [route.params?.title, route.params?.category, route.params?.type, route.params?.level]);
+
+
+  //handle refresh functionality
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  function fetchJobs(timeout) {
+    return new Promise((resolve) => {
+      setJobs((prevJobs) => {
+         prevJobs.shift();
+        return prevJobs;
+      });
+       return resolve('dsfas');
+    });
+  }
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+
+    fetchJobs().then(() => setRefreshing(false));
+  }, [refreshing]);
+
+
   return (
     <ContainerFluid>
-      <ScrollView>
+      <ScrollView refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['red', 'blue']} /> }>
+
         {/* jobs count */}
         <View
           style={{
@@ -115,7 +152,7 @@ function Home({ navigation }) {
             borderBottomWidth: 1,
           }}
         >
-          <AppText title="10 jobs available" size={16} />
+          <AppText title={`${jobs.length} jobs available`} size={16} />
         </View>
         {/* jobs count */}
         

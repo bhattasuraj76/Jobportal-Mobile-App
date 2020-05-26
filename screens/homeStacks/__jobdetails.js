@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, ImageBackground } from "react-native";
 import ContainerFluid from "../../shared/containerFluid";
 import { images, globalStyles } from "../../styles/globalStyles";
 import AppText from "../../shared/appText";
-import JobApplyBtn from "../../shared/jobApplyBtn";
+import JobApplyBtn from "../../shared/appBtn";
 import Icon from "../../shared/icon";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import {

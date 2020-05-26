@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, ImageBackground } from "react-native";
 import ContainerFluid from "../../shared/containerFluid";
 import { images, globalStyles } from "../../styles/globalStyles";
 import AppText from "../../shared/appText";
-import JobApplyBtn from "../../shared/jobApplyBtn";
+import JobApplyBtn from "../../shared/appBtn";
 import Icon from "../../shared/icon";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import {
@@ -19,7 +19,7 @@ function JobDetail({ navigation, route }) {
   }
 
   const [showJobInfo, setShowJobInfo] = useState(true);
-  const [showJobDescription, setshowDesription] = useState(false);
+  const [showJobDescription, setShowJobDescription] = useState(false);
   const [showAboutCompany, setShowAboutCompany] = useState(false);
 
   const applyForJob = () => {
@@ -74,10 +74,8 @@ function JobDetail({ navigation, route }) {
             {/* job info */}
             <Accordian>
               <TouchableOpacity
-                onPress={(e) => {
-                  console.log(e);
-                  setShowJobInfo(!showJobInfo);
-                }}
+                activeOpacity={1}
+                onPress={(e) => setShowJobInfo(!showJobInfo)}
               >
                 <AccordianHeader>
                   <AccordianTitle>Job Info</AccordianTitle>
@@ -121,10 +119,8 @@ function JobDetail({ navigation, route }) {
             {/* job description */}
             <Accordian>
               <TouchableOpacity
-                onPress={(e) => {
-                  console.log(e);
-                  setshowDesription(!showJobDescription);
-                }}
+                activeOpacity={1}
+                onPress={(e) => setShowJobDescription(!showJobDescription)}
               >
                 <AccordianHeader>
                   <AccordianTitle>Job Descripton</AccordianTitle>
@@ -149,12 +145,16 @@ function JobDetail({ navigation, route }) {
             {/* about company */}
             <Accordian>
               <TouchableOpacity
-                onPress={(e) => {
-                  console.log(e);
-                  setShowAboutCompany(!showAboutCompany);
-                }}
+                activeOpacity={1}
+                onPress={(e) => setShowAboutCompany(!showAboutCompany)}
               >
-                <View style={{ borderColor: "#ccc", border: 0, borderBottomWidth: 1,  }}>
+                <View
+                  style={{
+                    borderColor: "#ccc",
+                    border: 0,
+                    borderBottomWidth: 1,
+                  }}
+                >
                   <AccordianHeader>
                     <AccordianTitle>About Company</AccordianTitle>
                     <Icon
@@ -175,15 +175,15 @@ function JobDetail({ navigation, route }) {
                     Address : <InfoText>{job.company.address}</InfoText>
                   </TitleText>
                   <TitleText>
-                    Email : <InfoText>{ job.company.email }</InfoText>
+                    Email : <InfoText>{job.company.email}</InfoText>
                   </TitleText>
                   <TitleText>
-                    Phone : <InfoText>{ job.company.phone }</InfoText>
+                    Phone : <InfoText>{job.company.phone}</InfoText>
                   </TitleText>
                 </AccordianContent>
               )}
             </Accordian>
-            {/* about about */}
+            {/* about company */}
           </View>
           {/* accordian wrapper start */}
         </View>
@@ -339,6 +339,5 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
 });
-
 
 export default JobDetail;

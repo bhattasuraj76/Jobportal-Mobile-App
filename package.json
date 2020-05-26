@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@react-native-community/masked-view": "0.1.6",
+    "@react-native-community/picker": "^1.6.0",
     "@react-navigation/bottom-tabs": "^5.4.7",
     "@react-navigation/drawer": "^5.7.7",
     "@react-navigation/native": "^5.4.2",

@@ -4,7 +4,6 @@ import { View, Text } from "react-native";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import Container from "../../shared/container";
 import { globalStyles } from "../../styles/globalStyles";
-import AppTitle from "../../shared/appTitleText";
 import AppText from "../../shared/appText";
 
 function Profile() {
