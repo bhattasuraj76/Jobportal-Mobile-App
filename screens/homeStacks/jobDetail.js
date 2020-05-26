@@ -175,10 +175,10 @@ function JobDetail({ navigation, route }) {
                     Address : <InfoText>{job.company.address}</InfoText>
                   </TitleText>
                   <TitleText>
-                    Email : <InfoText>{job.company.email}</InfoText>
+                    Email : <InfoText>{ job.company.email }</InfoText>
                   </TitleText>
                   <TitleText>
-                    Phone : <InfoText>{job.company.phone}</InfoText>
+                    Phone : <InfoText>{ job.company.phone }</InfoText>
                   </TitleText>
                 </AccordianContent>
               )}
