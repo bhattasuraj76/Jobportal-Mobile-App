@@ -14,7 +14,7 @@ export default function Input(props) {
         padding: 8,
         borderRadius: 4,
         fontSize: 18,
-        color: "#333",
+        color
       }}
       {...props}
     />

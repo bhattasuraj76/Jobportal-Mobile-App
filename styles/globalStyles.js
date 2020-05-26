@@ -1,9 +1,6 @@
 import { StyleSheet } from "react-native";
 
 export const globalStyles = StyleSheet.create({
-  fontFamily: {
-    fontFamily: "open-sans-regular"
-  },
   container: {
     flex: 1,
     paddingHorizontal: 10,
