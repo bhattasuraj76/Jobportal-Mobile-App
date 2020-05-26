@@ -78,7 +78,7 @@ function JobDetail({ navigation, route }) {
                 activeOpacity={1}
                 onPress={(e) => setShowJobInfo(!showJobInfo)}
               >
-                <AccordianHeader>
+                <View style={styles.accordianTitle}>
                   <AccordianTitle>Job Info</AccordianTitle>
                   <Icon
                     name={
@@ -87,12 +87,13 @@ function JobDetail({ navigation, route }) {
                         : "keyboard-arrow-right"
                     }
                     size={24}
+                    color="#000"
                   />
-                </AccordianHeader>
+                </View>
               </TouchableOpacity>
 
               {showJobInfo && (
-                <AccordianContent>
+                <View style={styles.accordianContent}>
                   <TitleText>
                     Categoy : <InfoText>{job.category}</InfoText>
                   </TitleText>
@@ -111,7 +112,7 @@ function JobDetail({ navigation, route }) {
                   <TitleText>
                     Deadline : <InfoText>{job.deadline}</InfoText>
                   </TitleText>
-                </AccordianContent>
+                </View>
               )}
             </Accordian>
             {/* job info  end*/}
@@ -122,7 +123,7 @@ function JobDetail({ navigation, route }) {
                 activeOpacity={1}
                 onPress={(e) => setShowJobDescription(!showJobDescription)}
               >
-                <AccordianHeader>
+                <View style={styles.accordianTitle}>
                   <AccordianTitle>Job Descripton</AccordianTitle>
                   <Icon
                     name={
@@ -131,13 +132,14 @@ function JobDetail({ navigation, route }) {
                         : "keyboard-arrow-right"
                     }
                     size={24}
+                    color="#000"
                   />
-                </AccordianHeader>
+                </View>
               </TouchableOpacity>
               {showJobDescription && (
-                <AccordianContent>
+                <View style={styles.accordianContent}>
                   <InfoText>{job.description}</InfoText>
-                </AccordianContent>
+                </View>
               )}
             </Accordian>
             {/* job description  end*/}
@@ -170,7 +172,7 @@ function JobDetail({ navigation, route }) {
               </TouchableOpacity>
 
               {showAboutCompany && (
-                <AccordianContent>
+                <View style={styles.accordianContent}>
                   <TitleText>
                     Address : <InfoText>{job.company.address}</InfoText>
                   </TitleText>
@@ -180,7 +182,7 @@ function JobDetail({ navigation, route }) {
                   <TitleText>
                     Phone : <InfoText>{job.company.phone}</InfoText>
                   </TitleText>
-                </AccordianContent>
+                </View>
               )}
             </Accordian>
             {/* about company end*/}
@@ -189,7 +191,7 @@ function JobDetail({ navigation, route }) {
           {/* accordian wrapper start */}
 
         </View>
-        {/* content end */}
+        {/* content start */}
 
         {/* job apply btn */}
         <View style={{ marginTop: 30 }}>
@@ -199,41 +201,6 @@ function JobDetail({ navigation, route }) {
 
       </ScrollView>
     </ContainerFluid>
-  );
-}
-
-function Accordian({ children }) {
-  const { isThemeDark } = useContext(ThemeContext);
-  const backgroundColor = isThemeDark
-    ? DarkThemeColors.primaryBg
-    : DefaultThemeColors.primaryBg;
-  return (
-    <View
-      style={{
-        backgroundColor,
-        borderColor: "#ccc",
-        borderWidth: 1,
-        borderBottomWidth: 0,
-      }}
-    >
-      {children}
-    </View>
-  );
-}
-
-function AccordianHeader({ children }) {
-  return (
-    <View
-      style={{
-        paddingHorizontal: 20,
-        paddingVertical: 5,
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexDirection: "row",
-      }}
-    >
-      {children}
-    </View>
   );
 }
 
@@ -252,23 +219,6 @@ function AccordianTitle({ children }) {
     >
       {children}
     </Text>
-  );
-}
-
-function AccordianContent({ children }) {
-  return (
-    <View
-      style={{
-        paddingHorizontal: 20,
-        paddingVertical: 20,
-        borderColor: "#ccc",
-        borderWidth: 0,
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
-      }}
-    >
-      {children}
-    </View>
   );
 }
 
@@ -342,5 +292,4 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
 });
-
 export default JobDetail;
