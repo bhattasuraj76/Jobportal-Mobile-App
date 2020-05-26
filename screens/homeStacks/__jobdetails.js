@@ -19,8 +19,8 @@ function JobDetail({ navigation, route }) {
   }
 
   const [showJobInfo, setShowJobInfo] = useState(true);
-  const [showJobDescription, setshowDesription] = useState(false);
-  const [showAboutCompany, setShowAboutCompany] = useState(false);
+  const [showJobDescription, setshowDesription ] = useState(false);
+  const [showAboutCompany, setShowAboutCompany ] = useState(false);
 
   const applyForJob = () => {
     console.log("applied for job");
