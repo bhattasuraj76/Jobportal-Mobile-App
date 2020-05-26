@@ -4,6 +4,7 @@ import { DefaultThemeColors, DarkThemeColors } from "../utils/constants/Colors";
 import { ThemeContext } from "../contexts/ThemeContext";
 
 export default function JobApplyBtn({ title, onPress }) {
+<<<<<<< Updated upstream
   const { isThemeDark } = useContext(ThemeContext);
   const Colors = isThemeDark ? DarkThemeColors : DefaultThemeColors;
   return (
@@ -27,4 +28,19 @@ export default function JobApplyBtn({ title, onPress }) {
       </Text>
     </TouchableOpacity>
   );
+=======
+  // return (
+  //   <TouchableOpacity style={{
+  //   padding: 10,
+  //   backgroundColor: DefaultThemeColors.infoBg,
+  //   width: "100%",
+  // }} onPress={onPress}>
+  //     <Text style={
+  //   color: "#ffffff",
+  //   fontSize: 20,
+  //   textAlign: "center",
+  // }>{title}</Text>
+  //   </TouchableOpacity>
+  // );
+>>>>>>> Stashed changes
 }
