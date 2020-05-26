@@ -1,9 +1,10 @@
 import React, { useContext } from "react";
 import { StyleSheet, View } from "react-native";
-import { DefaultThemeColors, DarkThemeColors } from "../utils/constants/Colors";
 import { ThemeContext } from "../contexts/ThemeContext";
+import { DarkThemeColors, DefaultThemeColors } from "../utils/constants/Colors";
 
-function Container({ children }) {
+
+function ContainerFluid({ children }) {
   const { isThemeDark } = useContext(ThemeContext);
   //colors object
   const Colors = isThemeDark ? DarkThemeColors : DefaultThemeColors;
@@ -11,23 +12,20 @@ function Container({ children }) {
   return (
     <View
       style={{
-        ...styles.container,
-        backgroundColor: Colors.secondaryBg,
+        ...styles.containerFluid,
+        backgroundColor: Colors.primaryBg,
         ...(isThemeDark && { borderTopColor: "#ffffff", borderTopWidth: 0.26 }),
       }}
     >
-      
       {children}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+  containerFluid: {
+    flex: 1
   },
 });
 
-export default Container;
+export default ContainerFluid;

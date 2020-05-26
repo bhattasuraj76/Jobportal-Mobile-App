@@ -5,10 +5,34 @@ export const globalStyles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
   },
+  row: {
+    flexDirection: "row",
+  },
+  rowJustifyCenter: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  rowJustifyAround: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  rowJustifyBetween: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  rowAlignCenter: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  rowCenterCenter: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   titleText: {
     fontFamily: "open-sans-bold",
     fontSize: 18,
-    color: "#333",
+    color: "#333111",
   },
   paragraph: {
     fontFamily: "open-sans-regular",

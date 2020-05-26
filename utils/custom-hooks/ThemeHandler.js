@@ -4,18 +4,18 @@ import { AsyncStorage } from "react-native";
 const themeHandler = (initialState) => {
   const [theme, setTheme] = React.useState(initialState);
 
-  const toggleTheme = async () => {
+  const toggleTheme =  () => {
       try {
-         let newTheme = theme === 'default' ? 'dark' : 'default';
-         await AsyncStorage.setItem("theme", newTheme);
+         let newTheme = theme === "dark" ? "default" : "dark";
+        //  await AsyncStorage.setItem("theme", newTheme);
          setTheme(newTheme);
       } catch(e) {
           console.log(e);
       }
   };
 
-  const isThemeDark = theme == "dark" ? true : false;
-
+  const isThemeDark = theme === "dark" ? true : false;
+  
   return {
     theme,
     toggleTheme,

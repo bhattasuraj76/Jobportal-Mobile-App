@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, ImageBackground } from "react-native";
 import ContainerFluid from "../../shared/containerFluid";
 import { images, globalStyles } from "../../styles/globalStyles";
 import AppText from "../../shared/appText";
-import JobApplyBtn from "../../shared/appBtn";
+import AppBtn from "../../shared/appBtn";
 import Icon from "../../shared/icon";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import {
@@ -19,8 +19,8 @@ function JobDetail({ navigation, route }) {
   }
 
   const [showJobInfo, setShowJobInfo] = useState(true);
-  const [showJobDescription, setshowDesription ] = useState(false);
-  const [showAboutCompany, setShowAboutCompany ] = useState(false);
+  const [showJobDescription, setShowJobDescription] = useState(false);
+  const [showAboutCompany, setShowAboutCompany] = useState(false);
 
   const applyForJob = () => {
     console.log("applied for job");
@@ -71,15 +71,14 @@ function JobDetail({ navigation, route }) {
 
           {/* accordian wrapper start */}
           <View style={{ marginTop: 20 }}>
-            {/* job info */}
+
+            {/* job info start */}
             <Accordian>
               <TouchableOpacity
-                onPress={(e) => {
-                  console.log(e);
-                  setShowJobInfo(!showJobInfo);
-                }}
+                activeOpacity={1}
+                onPress={(e) => setShowJobInfo(!showJobInfo)}
               >
-                <AccordianHeader>
+                <View style={styles.accordianTitle}>
                   <AccordianTitle>Job Info</AccordianTitle>
                   <Icon
                     name={
@@ -88,12 +87,13 @@ function JobDetail({ navigation, route }) {
                         : "keyboard-arrow-right"
                     }
                     size={24}
+                    color="#000"
                   />
-                </AccordianHeader>
+                </View>
               </TouchableOpacity>
 
               {showJobInfo && (
-                <AccordianContent>
+                <View style={styles.accordianContent}>
                   <TitleText>
                     Categoy : <InfoText>{job.category}</InfoText>
                   </TitleText>
@@ -112,21 +112,18 @@ function JobDetail({ navigation, route }) {
                   <TitleText>
                     Deadline : <InfoText>{job.deadline}</InfoText>
                   </TitleText>
-                </AccordianContent>
+                </View>
               )}
             </Accordian>
+            {/* job info  end*/}
 
-            {/* job info */}
-
-            {/* job description */}
+            {/* job description start*/}
             <Accordian>
               <TouchableOpacity
-                onPress={(e) => {
-                  console.log(e);
-                  setshowDesription(!showJobDescription);
-                }}
+                activeOpacity={1}
+                onPress={(e) => setShowJobDescription(!showJobDescription)}
               >
-                <AccordianHeader>
+                <View style={styles.accordianTitle}>
                   <AccordianTitle>Job Descripton</AccordianTitle>
                   <Icon
                     name={
@@ -135,26 +132,31 @@ function JobDetail({ navigation, route }) {
                         : "keyboard-arrow-right"
                     }
                     size={24}
+                    color="#000"
                   />
-                </AccordianHeader>
+                </View>
               </TouchableOpacity>
               {showJobDescription && (
-                <AccordianContent>
+                <View style={styles.accordianContent}>
                   <InfoText>{job.description}</InfoText>
-                </AccordianContent>
+                </View>
               )}
             </Accordian>
-            {/* job description */}
+            {/* job description  end*/}
 
-            {/* about company */}
+            {/* about company start */}
             <Accordian>
               <TouchableOpacity
-                onPress={(e) => {
-                  console.log(e);
-                  setShowAboutCompany(!showAboutCompany);
-                }}
+                activeOpacity={1}
+                onPress={(e) => setShowAboutCompany(!showAboutCompany)}
               >
-                <View style={{ borderColor: "#ccc", border: 0, borderBottomWidth: 1,  }}>
+                <View
+                  style={{
+                    borderColor: "#ccc",
+                    border: 0,
+                    borderBottomWidth: 1,
+                  }}
+                >
                   <AccordianHeader>
                     <AccordianTitle>About Company</AccordianTitle>
                     <Icon
@@ -170,7 +172,7 @@ function JobDetail({ navigation, route }) {
               </TouchableOpacity>
 
               {showAboutCompany && (
-                <AccordianContent>
+                <View style={styles.accordianContent}>
                   <TitleText>
                     Address : <InfoText>{job.company.address}</InfoText>
                   </TitleText>
@@ -180,20 +182,23 @@ function JobDetail({ navigation, route }) {
                   <TitleText>
                     Phone : <InfoText>{job.company.phone}</InfoText>
                   </TitleText>
-                </AccordianContent>
+                </View>
               )}
             </Accordian>
-            {/* about about */}
+            {/* about company end*/}
+
           </View>
           {/* accordian wrapper start */}
+
         </View>
-        {/* content end */}
+        {/* content start */}
 
         {/* job apply btn */}
         <View style={{ marginTop: 30 }}>
-          <JobApplyBtn title="Appy for Job" onPress={applyForJob} />
+          <AppBtn title="Appy for Job" onPress={applyForJob} />
         </View>
         {/* job apply btn */}
+
       </ScrollView>
     </ContainerFluid>
   );
@@ -339,6 +344,4 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
 });
-
-
 export default JobDetail;

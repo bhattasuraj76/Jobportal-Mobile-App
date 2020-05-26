@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons"; 
+import { MaterialIcons } from "@expo/vector-icons";
+import { ThemeContext } from "../contexts/ThemeContext";
+import { DarkThemeColors, DefaultThemeColors } from "../utils/constants/Colors";
 
-function Icon({name, size, color}) {
-  return (
-    <View style={{ width: 24, height: 24, margin: 5 }}>
-      <MaterialIcons name={name} size={size} color={color} />
-    </View>
-  );
+function Icon({ name, size, color }) {
+  //get theme color
+  const { isThemeDark } = useContext(ThemeContext);
+  color = isThemeDark ? "#fff" : color;
+  return <MaterialIcons name={name} size={size} color={color} />;
 }
 
 export default Icon;
