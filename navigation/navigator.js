@@ -47,7 +47,7 @@ function Navigator() {
 
   //cutomizing bottom tab-bar
   const customTabBarStyle = {
-    activeTintColor: Colors.tabIconSelected,
+    activeTintColor : Colors.tabIconSelected,
     inactiveTintColor: Colors.tabIconDefault,
     allowFontScaling: true,
     labelStyle: { fontSize: 12, paddingTop: 2 },
