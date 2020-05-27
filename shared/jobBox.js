@@ -45,8 +45,8 @@ function JobBox({ job , onPress}) {
           <AppText color="secondary" size={12}>
             {job.level}
           </AppText>
-          <AppText color="info" size={12}>
-            Deadline: ${job.deadline}
+          <AppText color="info" size={10}>
+            Deadline: {job.deadline}
           </AppText>
         </View>
       </View>
@@ -63,8 +63,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   logo: {
-    height: 100,
-    width: 100,
+    height: 80,
+    width: 80,
     alignSelf: "center",
     borderWidth: 1,
     borderColor: "#ccc",
