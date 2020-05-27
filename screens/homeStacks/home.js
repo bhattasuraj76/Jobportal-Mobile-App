@@ -152,6 +152,15 @@ function Home({ navigation, route }) {
            
          }
           />
+          <View style={{color:'red',borderColor:'red',borderWidth:1}}>
+             <Button  title='Register'
+         onPress={()=>
+           
+             navigation.navigate('ProfileTab',{screen:'Register'})
+           
+         }
+          />
+          </View>
         {/* jobs count */}
         <View
           style={{

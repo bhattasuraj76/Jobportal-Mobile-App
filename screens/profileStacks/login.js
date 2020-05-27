@@ -31,10 +31,11 @@ export default class Login extends Component {
           style={styles.input}
         />
         <Text style={{
-         
+          marginTop:5,
           fontSize:20,
           
-        }}>password</Text>
+        }}>
+          Password</Text>
         <TextInput
           value={this.state.password}
           onChangeText={(password) => this.setState({ password })}
@@ -70,8 +71,13 @@ const styles = StyleSheet.create({
     height: 44,
     padding: 12,
     borderWidth: 1,
+    borderTopWidth:0,
+    borderLeftWidth:0,
+    borderRightWidth:0,
     borderColor: 'black',
     marginBottom: 10,
+    marginTop:10,
+    fontSize:18
   },
   btn:{
    width: 100,
