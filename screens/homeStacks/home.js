@@ -142,15 +142,25 @@ function Home({ navigation, route }) {
 
   return (
     <ContainerFluid>
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={["red", "blue"]}
+      <ScrollView refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['red', 'blue']} /> }>
+         {/* login */}
+         <Button title='login'
+         onPress={()=>
+           
+             navigation.navigate('ProfileTab',{screen:'Login'})
+           
+         }
           />
-        }
-      >
+          <View style={{color:'red',borderColor:'red',borderWidth:1}}>
+             <Button  title='Register'
+         onPress={()=>
+           
+             navigation.navigate('ProfileTab',{screen:'Register'})
+           
+         }
+          />
+          </View>
         {/* jobs count */}
         <View
           style={{

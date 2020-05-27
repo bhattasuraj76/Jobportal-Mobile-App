@@ -159,7 +159,7 @@ function Profile({ navigation }) {
             onPress={item.onPress}
             containerStyle={{
               backgroundColor: isThemeDark ? "#000" : "#fff",
-              paddingVertical: 20,
+              paddingVertical: 19,
             }}
             titleStyle={{ color: !isThemeDark ? "#333" : "#fff" }}
             pad={20}
