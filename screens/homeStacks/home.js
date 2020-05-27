@@ -95,30 +95,35 @@ function Home({ navigation, route }) {
     },
   ]);
 
-  //navigate to job detail 
+  //navigate to job detail
   const gotoJobDetail = (job) => {
     navigation.navigate("HomeTab", {
       screen: "JobDetail",
       params: {
-        job
+        job,
       },
     });
   };
 
   //search jobs on getting params back from search screen
-   React.useEffect(() => {
-      if (
-        (route.params?.title || route.params?.category ||
-        route.params?.type ||
-        route.params?.level )
-      ) {
-         setJobs((prevJobs) => {
-           prevJobs.shift();
-           return prevJobs;
-         });
-      }
-   }, [route.params?.title, route.params?.category, route.params?.type, route.params?.level]);
-
+  React.useEffect(() => {
+    if (
+      route.params?.title ||
+      route.params?.category ||
+      route.params?.type ||
+      route.params?.level
+    ) {
+      setJobs((prevJobs) => {
+        prevJobs.shift();
+        return prevJobs;
+      });
+    }
+  }, [
+    route.params?.title,
+    route.params?.category,
+    route.params?.type,
+    route.params?.level,
+  ]);
 
   //handle refresh functionality
   const [refreshing, setRefreshing] = React.useState(false);
@@ -126,10 +131,10 @@ function Home({ navigation, route }) {
   function fetchJobs(timeout) {
     return new Promise((resolve) => {
       setJobs((prevJobs) => {
-         prevJobs.shift();
+        prevJobs.shift();
         return prevJobs;
       });
-       return resolve('dsfas');
+      return resolve("dsfas");
     });
   }
 
@@ -139,28 +144,32 @@ function Home({ navigation, route }) {
     fetchJobs().then(() => setRefreshing(false));
   }, [refreshing]);
 
-
   return (
     <ContainerFluid>
-      <ScrollView refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['red', 'blue']} /> }>
-         {/* login */}
-         <Button title='login'
-         onPress={()=>
-           
-             navigation.navigate('ProfileTab',{screen:'Login'})
-           
-         }
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["red", "blue"]}
           />
-          <View style={{color:'red',borderColor:'red',borderWidth:1}}>
-             <Button  title='Register'
-         onPress={()=>
-           
-             navigation.navigate('ProfileTab',{screen:'Register'})
-           
-         }
+        }
+      >
+
+        {/* login */}
+        <Button
+          title="login"
+          onPress={() => navigation.navigate("ProfileTab", { screen: "Login" })}
+        />
+        <View style={{ color: "red", borderColor: "red", borderWidth: 1 }}>
+          <Button
+            title="Register"
+            onPress={() =>
+              navigation.navigate("ProfileTab", { screen: "Register" })
+            }
           />
-          </View>
+        </View>
+        
         {/* jobs count */}
         <View
           style={{
@@ -170,9 +179,7 @@ function Home({ navigation, route }) {
             borderBottomWidth: 1,
           }}
         >
-          <AppText size={16}>
-            {jobs.length} jobs available
-          </AppText>
+          <AppText size={16}>{jobs.length} jobs available</AppText>
         </View>
         {/* jobs count */}
 
@@ -187,6 +194,5 @@ function Home({ navigation, route }) {
     </ContainerFluid>
   );
 }
-
 
 export default Home;

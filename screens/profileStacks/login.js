@@ -1,78 +1,75 @@
-import React, { Component } from 'react';
-import { Alert, Button, TextInput, View,Text, StyleSheet } from 'react-native';
-import JobApplyBtn from '../../shared/appBtn';
+import React, { useContext } from "react";
+import { TextInput, View, StyleSheet,TouchableWithoutFeedback, Keyboard } from "react-native";
+import JobApplyBtn from "../../shared/appBtn";
+import ContainerFluid from "../../shared/containerFluid";
+import FormGroup from "../../shared/formGroup";
+import { ThemeContext } from "../../contexts/ThemeContext";
 
-export default class Login extends Component {
-  constructor(props) {
-    super(props);
-    
-    this.state = {
-     email: '',
-      password: '',
-    };
-  }
-  
-  onLogin() {
-    const { email, password } = this.state;
+function Login({navigation}) {
+  const {isThemeDark} = useContext(ThemeContext)
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
-    Alert.alert(' No Credentials');
-  }
+  const handleLogin = () => {
+    if (email && password) {
+      navigation.navigate("ProfileTab", {
+        screen: "Profile",
+      });
+    } else {
+      alert("Invalid email or password");
+    }
+  };
 
-  render() {
-    return (
-      <View style={styles.container}>
-        
-        <TextInput
-          value={this.state.email}
-          onChangeText={(email) => this.setState({ email })}
-          placeholder={'Email'}
-          style={styles.input}
-        />
-       
-        <TextInput
-          value={this.state.password}
-          onChangeText={(password) => this.setState({ password })}
-          placeholder={'Password'}
-          secureTextEntry={true}
-          style={styles.input}
-        />
-      
-       <View>
-         <JobApplyBtn title='login'/>
-       </View>
-       
-      </View>
-    );
-  }
+  return (
+    <ContainerFluid>
+      <TouchableWithoutFeedback
+        onPress={() => Keyboard.dismiss()}
+      >
+        <View
+          style={{
+            flex: 1,
+            paddingHorizontal: 30,
+            backgroundColor: isThemeDark ? "#000" : "#36485f",
+            justifyContent: "center",
+          }}
+        >
+          <FormGroup>
+            <TextInput
+              value={email}
+              onChangeText={(value) => setEmail(value)}
+              placeholder={"Email"}
+              style={styles.input}
+            />
+          </FormGroup>
+
+          <FormGroup>
+            <TextInput
+              value={password}
+              onChangeText={(password) => setPassword(password)}
+              placeholder={"Password"}
+              secureTextEntry={true}
+              style={styles.input}
+            />
+          </FormGroup>
+
+          <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
+            <JobApplyBtn title="Login" onPress={handleLogin} />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </ContainerFluid>
+  );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex:1,
-    justifyContent:'center',
-    backgroundColor:'#36485f',
-    paddingLeft:60,
-    paddingRight:60,
-    height:550
-
-  },
   input: {
-    alignSelf:'stretch',
-    height:40,
-    marginBottom:40,
-    color:'#fff',
-    borderBottomWidth:1,
-    borderBottomColor:'#f8f8f8',
-    fontSize:18,
-
-
-  },
- 
- 
- 
-  
-
-
-    
-  
+    height: 40,
+    marginBottom: 20,
+    color: "#fff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#fff",
+    fontSize: 18
+  }
 });
+
+export default Login;

@@ -1,100 +1,96 @@
-import React from "react";
-import { View, Text, StyleSheet,TextInput,TouchableOpacity,ScrollView } from "react-native";
+import React, { useContext } from "react";
+import {
+  Alert,
+  TextInput,
+  View,
+  StyleSheet,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
 import JobApplyBtn from "../../shared/appBtn";
+import ContainerFluid from "../../shared/containerFluid";
+import FormGroup from "../../shared/formGroup";
+import { ThemeContext } from "../../contexts/ThemeContext";
 
+function Login({ navigation }) {
+  const { isThemeDark } = useContext(ThemeContext);
+  const [firstName, setFirstName] = React.useState("");
+  const [lastName, setLastName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
-function Register() {
-     return (
-       <ScrollView>
-       <View style={styles.container}>
-         <View style={styles.regform}>
+  const handleRegister = () => {
+     navigation.navigate("ProfileTab", {
+       screen: "Profile",
+     });
+  };
 
-         <Text style={styles.header}>Registration</Text>
+  return (
+    <ContainerFluid>
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <View
+          style={{
+            flex: 1,
+            paddingHorizontal: 30,
+            backgroundColor: isThemeDark ? "#000" : "#36485f",
+            justifyContent: "center",
+          }}
+        >
+          <FormGroup>
+            <TextInput
+              value={firstName}
+              onChangeText={(value) => setFirstName(value)}
+              placeholder={"First Name"}
+              style={styles.input}
+            />
+          </FormGroup>
 
-         <TextInput
-         style={styles.textinput}
-         placeholder="First Name"
-        
-         />
-         <TextInput
-         style={styles.textinput}
-         placeholder="Last Name"
-         
-         />
-         <TextInput
-         style={styles.textinput}
-         placeholder="Email"
-         
-         />
-         <TextInput
-         style={styles.textinput}
-         placeholder="Password"
-         secureTextEntry={true}
-         
-         />
-         {/* <TouchableOpacity style={styles.button}>
-           <Text style={styles.btnText}>Register</Text>
-         </TouchableOpacity> */}
-         <View>
-           <JobApplyBtn
-           title="Register"
-           />
+          <FormGroup>
+            <TextInput
+              value={lastName}
+              onChangeText={(value) => setLastName(value)}
+              placeholder={"Last Name"}
+              style={styles.input}
+            />
+          </FormGroup>
 
-         </View>
-         </View>
-       </View>
-       </ScrollView>
-     );
+          <FormGroup>
+            <TextInput
+              value={email}
+              onChangeText={(value) => setEmail(value)}
+              placeholder={"Email"}
+              style={styles.input}
+            />
+          </FormGroup>
+
+          <FormGroup>
+            <TextInput
+              value={password}
+              onChangeText={(password) => setPassword(password)}
+              placeholder={"Password"}
+              secureTextEntry={true}
+              style={styles.input}
+            />
+          </FormGroup>
+
+          <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
+            <JobApplyBtn title="Register" onPress={handleRegister} />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </ContainerFluid>
+  );
 }
-const styles=StyleSheet.create({
 
-  container:{
-    
-    flex:1,
-    justifyContent:'center',
-    backgroundColor:'#36485f',
-    paddingLeft:60,
-    paddingRight:60,
-    height:550
-
+const styles = StyleSheet.create({
+  input: {
+    height: 40,
+    marginBottom: 20,
+    color: "#fff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#fff",
+    fontSize: 18,
   },
-  regform:{
-    alignSelf:'stretch',
-  },
+});
 
-  header:{
-    fontSize:24,
-    color:'#fff',
-    paddingBottom:10,
-    marginBottom:40,
-    borderBottomWidth:1,
-    borderBottomColor:'#199187'
-  },
-  textinput:{
-    alignSelf:'stretch',
-    height:40,
-    marginBottom:40,
-    color:'#fff',
-    borderBottomWidth:1,
-    borderBottomColor:'#f8f8f8'
-
-
-  },
-  button:{
-    alignSelf:'stretch',
-    alignItems:'center',
-    padding:20,
-    backgroundColor:"#1275d8",
-    marginTop:30,
-
-  },
-  btnText:{
-    color:'#fff',
-    fontWeight:'bold',
-    fontSize:18
-
-  }
-
-})
-
-export default Register;
+export default Login;
