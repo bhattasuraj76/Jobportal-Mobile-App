@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { DarkThemeColors, DefaultThemeColors } from "../utils/constants/Colors";
-import { globalStyles } from "../styles/globalStyles";
+import { globalStyles, images } from "../styles/globalStyles";
 import Icon from "./icon";
 import { ThemeContext } from "../contexts/ThemeContext";
 import AppText from "./appText";
@@ -14,43 +14,40 @@ function JobBox({ job , onPress}) {
   return (
     <View style={{ ...styles.jobBox, backgroundColor: Colors.primaryBg }}>
       <Image
-        source={require("../assets/img/default-logo.png")}
+        source={images.defaultLogo}
         style={styles.logo}
       />
       <View style={styles.jobInfo}>
         <TouchableOpacity onPress={() => onPress(job)}>
-          <AppText title={job.title} size={18} family="bold" color="info"/>
+          <AppText size={18} color="info" family="semi-bold">
+            {job.title}
+          </AppText>
         </TouchableOpacity>
-        <AppText
-          title={job.company.name}
-          color="secondary"
-          family="bold"
-          size={15}
-        />
+        <AppText color="secondary" weight="600" size={15} family="semi-bold">
+          {job.company.name}
+        </AppText>
 
         <View style={styles.jobInfoBody}>
           <View style={globalStyles.rowAlignCenter}>
             <Icon name="location-on" size={18} color="#666666" />
-            <AppText
-              title={job.company.address}
-              color="secondary"
-              size={14}
-              css={{ marginLeft: 5 }}
-            />
+            <AppText color="secondary" size={14}>
+              <Text style="marginLeft: 5"> {job.company.address}</Text>
+            </AppText>
           </View>
           <View style={globalStyles.rowAlignCenter}>
             <Icon name="attach-money" size={18} color="#666666" />
-            <AppText
-              title={job.salary}
-              color="secondary"
-              size={14}
-              css={{ marginLeft: 5 }}
-            />
+            <AppText color="secondary" size={14}>
+              <Text style="marginLeft: 5"> {job.salary} </Text>
+            </AppText>
           </View>
         </View>
         <View style={styles.jobInfoFooter}>
-          <AppText title={job.level} color="secondary" size={12} />
-          <AppText title={`Deadline: ${job.deadline}`} color="info" size={12} />
+          <AppText color="secondary" size={12}>
+            {job.level}
+          </AppText>
+          <AppText color="info" size={12}>
+            Deadline: ${job.deadline}
+          </AppText>
         </View>
       </View>
     </View>

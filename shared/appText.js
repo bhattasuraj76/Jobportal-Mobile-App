@@ -3,23 +3,37 @@ import { Text } from "react-native";
 import { DefaultThemeColors, DarkThemeColors } from "../utils/constants/Colors";
 import { ThemeContext } from "../contexts/ThemeContext";
 
-function AppText({ title, size, family, weight, style, color, css }) {
+function AppText({ children, size, family, color }) {
   //get theme color
   const { isThemeDark } = useContext(ThemeContext);
   const Colors = isThemeDark ? DarkThemeColors : DefaultThemeColors;
 
   //resolve text styles
   const fontSize = size ? size : 14;
-  const fontWeight = weight ? weight : "normal";
-  const fontStyle = style ? style : "normal";
-
-  //resolve font family
+  
+  //resolve font Family
   switch (family) {
+    case "light":
+      family = "open-sans-light";
+      break;
+    case "light-italic":
+      family = "light-italic";
+      break;
+    case "semi-bold":
+      family = "open-sans-semi-bold";
+      break;
+    case "semi-bold-italic":
+      family = "open-sans-semi-bold-italic";
+      break;
     case "bold":
+      family = "open-sans-bold";
+      break;
+    case "bold-italic":
       family = "open-sans-bold";
       break;
     default:
       family = "open-sans-regular";
+      break;
   }
 
   //resolve font color
@@ -28,10 +42,16 @@ function AppText({ title, size, family, weight, style, color, css }) {
       color = Colors.secondayText;
       break;
     case "info":
-      color = Colors.infoText
+      color = Colors.infoText;
+      break;
+    case "light":
+      color = "#fff";
+      break;
+    case "dark":
+      color = "#333";
       break;
     default:
-      color = Colors.primaryText
+      color = Colors.primaryText;
   }
 
   return (
@@ -39,13 +59,10 @@ function AppText({ title, size, family, weight, style, color, css }) {
       style={{
         fontFamily: family,
         fontSize,
-        fontWeight,
-        fontStyle,
-        color,
-        ...css
+        color
       }}
     >
-      {title}
+      {children}
     </Text>
   );
 }

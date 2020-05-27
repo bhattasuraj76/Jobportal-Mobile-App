@@ -142,9 +142,15 @@ function Home({ navigation, route }) {
 
   return (
     <ContainerFluid>
-      <ScrollView refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['red', 'blue']} /> }>
-
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["red", "blue"]}
+          />
+        }
+      >
         {/* jobs count */}
         <View
           style={{
@@ -154,10 +160,12 @@ function Home({ navigation, route }) {
             borderBottomWidth: 1,
           }}
         >
-          <AppText title={`${jobs.length} jobs available`} size={16} />
+          <AppText size={16}>
+            {jobs.length} jobs available
+          </AppText>
         </View>
         {/* jobs count */}
-        
+
         {/* job list start */}
         <View style={{ marginBottom: 30, flex: 1 }}>
           {jobs.map((job, index) => {

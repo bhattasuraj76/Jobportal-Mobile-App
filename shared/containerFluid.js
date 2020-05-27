@@ -12,7 +12,7 @@ function ContainerFluid({ children }) {
   return (
     <View
       style={{
-        ...styles.containerFluid,
+        flex: 1,
         backgroundColor: Colors.primaryBg,
         ...(isThemeDark && { borderTopColor: "#ffffff", borderTopWidth: 0.26 }),
       }}
@@ -21,11 +21,5 @@ function ContainerFluid({ children }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  containerFluid: {
-    flex: 1
-  },
-});
 
 export default ContainerFluid;

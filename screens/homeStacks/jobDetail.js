@@ -19,8 +19,8 @@ function JobDetail({ navigation, route }) {
   }
 
   const [showJobInfo, setShowJobInfo] = useState(true);
-  const [showJobDescription, setshowDesription ] = useState(false);
-  const [showAboutCompany, setShowAboutCompany ] = useState(false);
+  const [showJobDescription, setshowDesription] = useState(false);
+  const [showAboutCompany, setShowAboutCompany] = useState(false);
 
   const applyForJob = () => {
     console.log("applied for job");
@@ -44,26 +44,24 @@ function JobDetail({ navigation, route }) {
         <View style={{ paddingHorizontal: 20 }}>
           {/* job overview start */}
           <View style={{ marginTop: 10 }}>
-            <AppText size={22} title={job.title} family="bold" color="info" />
-            <AppText size={18} title={job.company.name} />
+            <AppText size={22} family="semi-bold" color="info">
+              {job.title}
+            </AppText>
+            <AppText size={18} family="semi-bold" color="secondary">
+              {job.company.name}
+            </AppText>
             <View style={{ marginLeft: 15, marginVertical: 7 }}>
               <View style={globalStyles.rowAlignCenter}>
                 <Icon name="location-on" size={20} color="#666666" />
-                <AppText
-                  title={job.company.address}
-                  color="secondary"
-                  size={16}
-                  css={{ marginLeft: 5 }}
-                />
+                <AppText color="secondary" size={16}>
+                  <Text style="marginLeft: 5"> {job.company.address}</Text>
+                </AppText>
               </View>
               <View style={globalStyles.rowAlignCenter}>
                 <Icon name="attach-money" size={20} color="#666666" />
-                <AppText
-                  title={job.salary}
-                  color="secondary"
-                  size={16}
-                  css={{ marginLeft: 5 }}
-                />
+                <AppText color="secondary" size={16}>
+                  <Text style="marginLeft: 5"> {job.salary} </Text>
+                </AppText>
               </View>
             </View>
           </View>
@@ -80,7 +78,9 @@ function JobDetail({ navigation, route }) {
                 }}
               >
                 <AccordianHeader>
-                  <AccordianTitle>Job Info</AccordianTitle>
+                  <AppText size={18} family="semi-bold" color="info">
+                    Job Info
+                  </AppText>
                   <Icon
                     name={
                       showJobInfo
@@ -127,7 +127,9 @@ function JobDetail({ navigation, route }) {
                 }}
               >
                 <AccordianHeader>
-                  <AccordianTitle>Job Descripton</AccordianTitle>
+                  <AppText size={18} family="semi-bold" color="info">
+                    Job Descripton
+                  </AppText>
                   <Icon
                     name={
                       showJobDescription
@@ -154,9 +156,17 @@ function JobDetail({ navigation, route }) {
                   setShowAboutCompany(!showAboutCompany);
                 }}
               >
-                <View style={{ borderColor: "#ccc", border: 0, borderBottomWidth: 1,  }}>
+                <View
+                  style={{
+                    borderColor: "#ccc",
+                    border: 0,
+                    borderBottomWidth: 1,
+                  }}
+                >
                   <AccordianHeader>
-                    <AccordianTitle>About Company</AccordianTitle>
+                    <AppText size={18} family="semi-bold" color="info">
+                      About Company
+                    </AppText>
                     <Icon
                       name={
                         showAboutCompany
@@ -234,24 +244,6 @@ function AccordianHeader({ children }) {
   );
 }
 
-function AccordianTitle({ children }) {
-  const { isThemeDark } = useContext(ThemeContext);
-  const color = isThemeDark
-    ? DarkThemeColors.primaryText
-    : DefaultThemeColors.infoText;
-  return (
-    <Text
-      style={{
-        fontSize: 18,
-        fontFamily: "open-sans-bold",
-        color,
-      }}
-    >
-      {children}
-    </Text>
-  );
-}
-
 function AccordianContent({ children }) {
   return (
     <View
@@ -270,41 +262,29 @@ function AccordianContent({ children }) {
 }
 
 function TitleText({ children }) {
-  const { isThemeDark } = useContext(ThemeContext);
-  const color = isThemeDark
-    ? DarkThemeColors.primaryText
-    : DefaultThemeColors.primaryText;
-
   return (
     <Text
       style={{
-        fontSize: 16,
-        fontFamily: "open-sans-regular",
         marginBottom: 15,
-        color,
       }}
     >
-      {children}
+      <AppText size={16} color="primary">
+        {children}
+      </AppText>
     </Text>
   );
 }
 
 function InfoText({ children }) {
-  const { isThemeDark } = useContext(ThemeContext);
-  const color = isThemeDark
-    ? DarkThemeColors.primaryText
-    : DefaultThemeColors.infoText;
-
   return (
     <Text
       style={{
-        marginLeft: 20,
-        fontFamily: "open-sans-regular",
-        fontSize: 18,
-        color,
+        paddingLeft: 20,
       }}
     >
-      {children}
+      <AppText size={18} color="info">
+        {children}
+      </AppText>
     </Text>
   );
 }
@@ -339,6 +319,5 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
 });
-
 
 export default JobDetail;

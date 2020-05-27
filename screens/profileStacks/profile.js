@@ -128,24 +128,13 @@ function Profile({ navigation }) {
 
             {/* user info start */}
             <View style={{ alignItems: "center", marginTop: 5 }}>
-              <Text
-                style={{
-                  fontSize: 22,
-                  color: "white",
-                  fontFamily: "open-sans-semi-bold-italic",
-                }}
-              >
+              <AppText size={22} color="light" family="semi-bold-italic">
                 John Doe
-              </Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: "#eee",
-                  fontFamily: "open-sans-regular",
-                }}
-              >
-                johndoe@xyz.com
-              </Text>
+              </AppText>
+
+              <AppText size={16} color="light" >
+               johndoe@xyz.com
+              </AppText>
             </View>
             {/* user info end */}
           </View>

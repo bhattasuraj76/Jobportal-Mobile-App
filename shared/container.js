@@ -11,23 +11,15 @@ function Container({ children }) {
   return (
     <View
       style={{
-        ...styles.container,
+        flex: 1,
+        paddingHorizontal: 10,
         backgroundColor: Colors.secondaryBg,
         ...(isThemeDark && { borderTopColor: "#ffffff", borderTopWidth: 0.26 }),
       }}
     >
-      
       {children}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-});
 
 export default Container;
