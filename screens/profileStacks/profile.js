@@ -8,216 +8,180 @@ import AppText from "../../shared/appText";
 import Icon from "../../shared/icon";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 
-function Profile() {
-  const [personalDetails, setpersonalDetails] = useState(true);
-  const [resume, setresume] = useState(false);
-  const [password, setpassword] = useState(false);
+import { ListItem } from "react-native-elements";
+
+function Profile({ navigation }) {
+  const { isThemeDark } = useContext(ThemeContext);
+
+  const list = [
+    {
+      title: "Basci Info",
+      icon: "info-outline",
+      onPress: () => {
+        navigation.navigate("HomeTab");
+      },
+    },
+    {
+      title: "Resume",
+      icon: "attach-file",
+      onPress: () => {
+        navigation.navigate("HomeTab");
+      },
+    },
+    {
+      title: "Jobs Applied",
+      icon: "developer-board",
+      onPress: () => {
+        navigation.navigate("HomeTab");
+      },
+    },
+
+    {
+      title: "Change Password",
+      icon: "border-color",
+      onPress: () => {
+        navigation.navigate("HomeTab");
+      },
+    },
+    {
+      title: "Logout",
+      icon: "history",
+      onPress: () => {
+        navigation.navigate("HomeTab");
+      },
+    },
+  ];
+
   return (
     <ScrollView>
+      {/* top content start */}
       <View style={{}}>
-        <View
+        <ImageBackground
+          source={require("../../assets/img/sanj.jpg")}
           style={{
-         
-            
+            blurRadius: 3,
+            position: "relative",
+            zIndex: 1,
+            minHeight: 240,
+            resizeMode: "contain",
           }}
         >
-          <ImageBackground
-            source={require('../../assets/img/sanj.jpg')}
+          {/* overlay start */}
+          <View
             style={{
-              blurRadius: 3,
-              position:'relative',
-              zIndex:1,
               minHeight: 240,
-              resizeMode: "contain",
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              right: 0,
+              left: 0,
+              zIndex: 5,
+              alignItems: "center",
+              backgroundColor: "rgba(18,117,216,0.5)",
+              justifyContent: "center",
             }}
-            // imageStyle={{opacity: 0.4}}
           >
+            {/* profile image wrapper start */}
             <View
               style={{
-                minHeight:240,
-                position:'absolute',
-                top:0,
-                bottom:0,
-                right:0,
-                left:0,
-                zIndex:5,
-                alignItems: "center",
-                backgroundColor:'rgba(18,117,216,0.5)',
-                justifyContent: "center",
+                position: "relative",
               }}
             >
-              
+              {/* edit profile btn start */}
               <View
+                style={{
+                  position: "absolute",
+                  bottom: 15,
+                  right: -2,
+                  zIndex: 1,
+                }}
+              >
+                <TouchableOpacity>
+                  <View
+                    style={{
+                      width: 45,
+                      height: 45,
+                      borderRadius: 400 / 2,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundColor: isThemeDark ? "#ccc" : "#eee",
+                    }}
+                  >
+                    <Icon name="edit" size={24} color="#000" />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              {/* edit profile btn start */}
+
+              <Image
+                source={require("../../assets/img/sanj.jpg")}
                 style={{
                   height: 150,
                   width: 150,
-                  alignItems:'center',
-                  justifyContent:'center',
+                  borderColor: "#ddd",
+                  borderWidth: 4,
+                  borderRadius: 400 / 2,
+                }}
+              />
+            </View>
+            {/* profile image wrapper end */}
+
+            {/* user info start */}
+            <View style={{ alignItems: "center", marginTop: 5 }}>
+              <Text
+                style={{
+                  fontSize: 22,
+                  color: "white",
+                  fontFamily: "open-sans-semi-bold-italic",
                 }}
               >
-                <View style={{
-                   position:'absolute',
-                      bottom:15,
-                      right:-2,
-                      zIndex:1,
-                }}>
-                 <TouchableOpacity>
-                  <View
-                    style={{
-                
-                      alignItems: "center",
-                      justifyContent:'center',
-                      backgroundColor: "#eee",
-                      width: 45,
-                      borderRadius: 400/2,
-                      height: 45,
-                    }}
-                  >
-                    <Icon name={"edit"} size={24} color="black" />
-                  </View>
-                </TouchableOpacity>
-                </View>
-                <Image
-                 source={require('../../assets/img/sanj.jpg')}
-                  style={{
-                    height: 140,
-                    
-                    width: 140,
-                    borderColor: "#ddd",
-                    borderWidth: 4,
-                    borderRadius: 400 / 2,
-                  }}
-                />
-               
-              </View>
-              <View style={{ alignItems: "center" , marginTop:3}}>
-          <Text style={{ fontSize: 22,color:'white',fontFamily:'open-sans-bold',fontStyle:'italic'  }}>
-            Sanj Khatri
-          </Text>
-          <Text style={{ fontSize: 16,color:'#eee', fontFamily:'open-sans-regular',fontStyle:'italic' }}>
-            sanj@yahoo.com
-          </Text>
-        </View>
-            </View>
-          </ImageBackground>
-        </View>
-        
-        <View style={{ marginTop: 20 }}>
-          <View style={styles.accordian}>
-            <TouchableOpacity
-              onPress={(e) => {
-                setpersonalDetails(!personalDetails);
-              }}
-            >
-              <View style={styles.accordianTitle}>
-                <Text>personal Details</Text>
-                <Icon
-                  name={
-                    personalDetails
-                      ? "keyboard-arrow-down"
-                      : "keyboard-arrow-right"
-                  }
-                  size={24}
-                  color="#000"
-                />
-              </View>
-            </TouchableOpacity>
-            {personalDetails && (
-              <View style={styles.accordianContent}>
-                <Text>
-                  Name : <Text>DEAD SHOT</Text>
-                </Text>
-                <Text>
-                  Gender : <Text>Male</Text>
-                </Text>
-                <Text>
-                  Email : <Text>Sanj@a.com</Text>
-                </Text>
-                <Text>
-                  Phone : <Text>123456</Text>
-                </Text>
-              </View>
-            )}
-          </View>
-        </View>
-        <View style={styles.accordian}>
-          <TouchableOpacity
-            onPress={(e) => {
-              setresume(!resume);
-            }}
-          >
-            <View style={styles.accordianTitle}>
-              <Text>Resume</Text>
-              <Icon
-                name={resume ? "keyboard-arrow-down" : "keyboard-arrow-right"}
-                size={24}
-                color="#000"
-              />
-            </View>
-          </TouchableOpacity>
-          {resume && (
-            <View style={styles.accordianContent}>
-              <Text>
-                <Text>Resume HERE</Text>
+                John Doe
+              </Text>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: "#eee",
+                  fontFamily: "open-sans-regular",
+                }}
+              >
+                johndoe@xyz.com
               </Text>
             </View>
-          )}
-        </View>
-        <View style={styles.accordian}>
-          <TouchableOpacity
-            onPress={(e) => {
-              setpassword(!password);
-            }}
-          >
-            <View style={styles.accordianTitle}>
-              <Text>Change password</Text>
-              <Icon
-                name={password ? "keyboard-arrow-down" : "keyboard-arrow-right"}
-                size={24}
-                color="#000"
-              />
-            </View>
-          </TouchableOpacity>
-          {password && (
-            <View style={styles.accordianContent} >
-              <Text>change here</Text>
-            </View>
-          )}
-        </View>
+            {/* user info end */}
+          </View>
+
+          {/* overlay end */}
+        </ImageBackground>
       </View>
+      {/* top content end */}
+
+      {/* menu options start */}
+      <View style={{ flex: 1, alignItems: "stretch" }}>
+        {list.map((item, i) => (
+          <ListItem
+            key={i}
+            title={item.title}
+            leftIcon={{
+              name: item.icon,
+              type: item.iconType,
+              color: !isThemeDark ? "#333" : "#fff",
+            }}
+            bottomDivider
+            onPress={item.onPress}
+            containerStyle={{
+              backgroundColor: isThemeDark ? "#000" : "#fff",
+              paddingVertical: 20,
+            }}
+            titleStyle={{ color: !isThemeDark ? "#333" : "#fff" }}
+            pad={20}
+          />
+        ))}
+      </View>
+      {/* menu options end */}
     </ScrollView>
   );
 }
 const styles = StyleSheet.create({
-  accordian: {
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderBottomWidth: 0,
-    padding: 10,
-    marginTop: 10,
-    width: 400,
-  },
 
-  accordianTitle: {
-    paddingHorizontal: 20,
-    paddingVertical: 5,
-    backgroundColor: "#fff",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexDirection: "row",
-    color: "red",
-  },
-  accordianContent: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    backgroundColor: "#fff",
-    borderTopColor: "#ccc",
-    borderTopWidth: 1,
-    fontSize: 20,
-  },
-  overlay: {
-    backgroundColor:'transparent',
-    opacity: 0.6
-},
 });
 export default Profile;
