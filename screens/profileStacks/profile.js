@@ -179,7 +179,7 @@ function Profile() {
             </View>
           </TouchableOpacity>
           {password && (
-            <View style={styles.accordianContent}>
+            <View style={styles.accordianContent} >
               <Text>change here</Text>
             </View>
           )}

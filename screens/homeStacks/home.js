@@ -144,7 +144,14 @@ function Home({ navigation, route }) {
     <ContainerFluid>
       <ScrollView refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['red', 'blue']} /> }>
-
+         {/* login */}
+         <Button title='login'
+         onPress={()=>
+           
+             navigation.navigate('ProfileTab',{screen:'Login'})
+           
+         }
+          />
         {/* jobs count */}
         <View
           style={{

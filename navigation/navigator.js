@@ -117,6 +117,8 @@ function Navigator() {
             />
             <Stack.Screen name="EditProfile" component={EditProfile} />
             <Stack.Screen name="ChangePassword" component={ChangePassword} />
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Register" component={Register} />
           </>
         ) : (
           <>
