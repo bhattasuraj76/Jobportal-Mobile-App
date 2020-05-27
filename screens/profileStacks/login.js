@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Alert, Button, TextInput, View,Text, StyleSheet } from 'react-native';
+import JobApplyBtn from '../../shared/appBtn';
 
 export default class Login extends Component {
   constructor(props) {
@@ -22,6 +23,7 @@ export default class Login extends Component {
       <View style={styles.container}>
         <Text style={{textAlign:'left',
         fontSize:20,
+        color:'black'
        
       }} >Email</Text>
         <TextInput
@@ -43,13 +45,11 @@ export default class Login extends Component {
           secureTextEntry={true}
           style={styles.input}
         />
-        <View style={styles.btn}>
-        <Button
-          title={'Login'}
-          
-          onPress={this.onLogin.bind(this)}
-        />
-        </View>
+      
+       <View>
+         <JobApplyBtn title='login'/>
+       </View>
+       
       </View>
     );
   }
@@ -57,38 +57,28 @@ export default class Login extends Component {
 
 const styles = StyleSheet.create({
   container: {
-   position:'absolute',
-   left:0,   
-   top:0,
-   backgroundColor: '#ecf0f1',
-   padding:20,
-   backgroundColor:'gray',
-   height:800,
-   width:500
+    flex:1,
+    justifyContent:'center',
+    backgroundColor:'#36485f',
+    paddingLeft:60,
+    paddingRight:60,
+    height:550
+
   },
   input: {
-    width: 300,
-    height: 44,
-    padding: 12,
-    borderWidth: 1,
-    borderTopWidth:0,
-    borderLeftWidth:0,
-    borderRightWidth:0,
-    borderColor: 'black',
-    marginBottom: 10,
-    marginTop:10,
-    fontSize:18
+    alignSelf:'stretch',
+    height:40,
+    marginBottom:40,
+    color:'#fff',
+    borderBottomWidth:1,
+    borderBottomColor:'#f8f8f8'
   },
-  btn:{
-   width: 100,
-  justifyContent:'center',
-  alignContent:'center',
-  marginLeft:100,
+ 
  
  
   
 
 
     
-  }
+  
 });
