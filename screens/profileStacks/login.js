@@ -21,23 +21,14 @@ export default class Login extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={{textAlign:'left',
-        fontSize:20,
-        color:'black'
-       
-      }} >Email</Text>
+        
         <TextInput
           value={this.state.email}
           onChangeText={(email) => this.setState({ email })}
           placeholder={'Email'}
           style={styles.input}
         />
-        <Text style={{
-          marginTop:5,
-          fontSize:20,
-          
-        }}>
-          Password</Text>
+       
         <TextInput
           value={this.state.password}
           onChangeText={(password) => this.setState({ password })}
@@ -71,7 +62,10 @@ const styles = StyleSheet.create({
     marginBottom:40,
     color:'#fff',
     borderBottomWidth:1,
-    borderBottomColor:'#f8f8f8'
+    borderBottomColor:'#f8f8f8',
+    fontSize:18,
+
+
   },
  
  
