@@ -29,7 +29,7 @@ function Navigator() {
   const { authUser } = useContext(AuthContext);
 
   //user login status
-  const isUserLoggedIn = 1;
+  const isUserLoggedIn = authUser.token ? true : false;
   //theme status
   const isThemeDark = theme === "dark" ? true : false;
 
@@ -117,8 +117,6 @@ function Navigator() {
             />
             <Stack.Screen name="EditProfile" component={EditProfile} />
             <Stack.Screen name="ChangePassword" component={ChangePassword} />
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Register" component={Register} />
           </>
         ) : (
           <>

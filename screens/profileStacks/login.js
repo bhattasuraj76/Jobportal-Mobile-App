@@ -4,14 +4,18 @@ import JobApplyBtn from "../../shared/appBtn";
 import ContainerFluid from "../../shared/containerFluid";
 import FormGroup from "../../shared/formGroup";
 import { ThemeContext } from "../../contexts/ThemeContext";
+import { AuthContext } from "../../contexts/AuthContext";
 
 function Login({navigation}) {
-  const {isThemeDark} = useContext(ThemeContext)
+  const {isThemeDark} = useContext(ThemeContext);
+  const{ authUser, setAuthStatus} = useContext(AuthContext);
+
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
   const handleLogin = () => {
     if (email && password) {
+      setAuthStatus({ email: 'xyz@gmail.com', token: 'fsadklasdjlfa'});
       navigation.navigate("ProfileTab", {
         screen: "Profile",
       });

@@ -3,7 +3,7 @@ import { Text, TouchableOpacity } from "react-native";
 import { DefaultThemeColors, DarkThemeColors } from "../utils/constants/Colors";
 import { ThemeContext } from "../contexts/ThemeContext";
 
-export default function JobApplyBtn({ title, onPress }) {
+export default function AppBtn({ title, onPress }) {
   const { isThemeDark } = useContext(ThemeContext);
   const Colors = isThemeDark ? DarkThemeColors : DefaultThemeColors;
   return (

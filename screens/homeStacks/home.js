@@ -157,7 +157,7 @@ function Home({ navigation, route }) {
       >
 
         {/* login */}
-        <Button
+        {/* <Button
           title="login"
           onPress={() => navigation.navigate("ProfileTab", { screen: "Login" })}
         />
@@ -168,8 +168,8 @@ function Home({ navigation, route }) {
               navigation.navigate("ProfileTab", { screen: "Register" })
             }
           />
-        </View>
-        
+        </View> */}
+
         {/* jobs count */}
         <View
           style={{
