@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, ImageBackground } from "react-native";
 import ContainerFluid from "../../shared/containerFluid";
 import { images, globalStyles } from "../../styles/globalStyles";
 import AppText from "../../shared/appText";
-import JobApplyBtn from "../../shared/appBtn";
+import AppBtn from "../../shared/appBtn";
 import Icon from "../../shared/icon";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import {
@@ -28,7 +28,7 @@ function JobDetail({ navigation, route }) {
 
   return (
     <ContainerFluid>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         {/* company cover */}
         <View style={{ marginBottom: 20 }}>
           <ImageBackground
@@ -201,7 +201,7 @@ function JobDetail({ navigation, route }) {
 
         {/* job apply btn */}
         <View style={{ marginTop: 30 }}>
-          <JobApplyBtn title="Appy for Job" onPress={applyForJob} />
+          <AppBtn title="Appy for Job" onPress={applyForJob} />
         </View>
         {/* job apply btn */}
       </ScrollView>

@@ -1,21 +1,46 @@
 import React, { useContext } from "react";
-import { TextInput, View, StyleSheet,TouchableWithoutFeedback, Keyboard } from "react-native";
-import JobApplyBtn from "../../shared/appBtn";
+import {
+  View,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView,
+} from "react-native";
+import AppBtn from "../../shared/appBtn";
+import ErrorText from "../../shared/errorText";
 import ContainerFluid from "../../shared/containerFluid";
 import FormGroup from "../../shared/formGroup";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { AuthContext } from "../../contexts/AuthContext";
+import { Formik } from "formik";
+import * as yup from "yup";
+import Input from "../../shared/input";
 
-function Login({navigation}) {
-  const {isThemeDark} = useContext(ThemeContext);
-  const{ authUser, setAuthStatus} = useContext(AuthContext);
+//login validation schema
+const loginSchema = yup.object({
+  email: yup
+    .string()
+    .required("Email is required")
+    .email("Please enter valid email"),
+  password: yup.string().required("Password is required"),
+});
 
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+function Login({ navigation }) {
+  const { isThemeDark } = useContext(ThemeContext);
+  const { setAuthStatus } = useContext(AuthContext);
 
-  const handleLogin = () => {
-    if (email && password) {
-      setAuthStatus({ email: 'xyz@gmail.com', token: 'fsadklasdjlfa'});
+  const handleLogin = (values, actions) => {
+    const { email, password } = values;
+
+    const resp = 1; //response form server
+    if (resp == 1) {
+      //reset form
+      actions.resetForm();
+      //update authUser value
+      setAuthStatus({
+        email: "xyz@gmail.com",
+        token: "fsadklasdjlfa",
+      });
+      //navigate to profile
       navigation.navigate("ProfileTab", {
         screen: "Profile",
       });
@@ -26,54 +51,76 @@ function Login({navigation}) {
 
   return (
     <ContainerFluid>
-      <TouchableWithoutFeedback
-        onPress={() => Keyboard.dismiss()}
-      >
-        <View
-          style={{
-            flex: 1,
-            paddingHorizontal: 30,
-            backgroundColor: isThemeDark ? "#000" : "#36485f",
-            justifyContent: "center",
-          }}
-        >
-          <FormGroup>
-            <TextInput
-              value={email}
-              onChangeText={(value) => setEmail(value)}
-              placeholder={"Email"}
-              style={styles.input}
-            />
-          </FormGroup>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <View
+            style={{
+              flex: 1,
+              paddingHorizontal: 30,
+              backgroundColor: isThemeDark ? "#000" : "#36485f",
+              justifyContent: "center",
+            }}
+          >
+            <Formik
+              initialValues={{
+                password: "",
+                email: "",
+              }}
+              validationSchema={loginSchema}
+              onSubmit={(values, actions) => {
+                handleLogin(values, actions);
+              }}
+            >
+              {({
+                values,
+                errors,
+                touched,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                isSubmitting,
+              }) => (
+                <>
+                  <FormGroup>
+                    <Input
+                      value={values.email}
+                      onChangeText={handleChange("email")}
+                      onBlur={handleBlur("email")}
+                      placeholder={"Email"}
+                    />
+                    {touched.email && errors.email ? (
+                      <ErrorText>{errors.email}</ErrorText>
+                    ) : null}
+                  </FormGroup>
 
-          <FormGroup>
-            <TextInput
-              value={password}
-              onChangeText={(password) => setPassword(password)}
-              placeholder={"Password"}
-              secureTextEntry={true}
-              style={styles.input}
-            />
-          </FormGroup>
+                  <FormGroup>
+                    <Input
+                      value={values.password}
+                      onChangeText={handleChange("password")}
+                      onBlur={handleBlur("password")}
+                      placeholder={"Password"}
+                      secureTextEntry={true}
+                    />
+                    {touched.password && errors.password ? (
+                      <ErrorText>{errors.password}</ErrorText>
+                    ) : null}
+                  </FormGroup>
 
-          <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
-            <JobApplyBtn title="Login" onPress={handleLogin} />
+                  <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
+                    <AppBtn
+                      title="Login"
+                      onPress={handleSubmit}
+                      disabled={isSubmitting}
+                    />
+                  </View>
+                </>
+              )}
+            </Formik>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </ScrollView>
     </ContainerFluid>
   );
 }
-
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    marginBottom: 20,
-    color: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#fff",
-    fontSize: 18
-  }
-});
 
 export default Login;

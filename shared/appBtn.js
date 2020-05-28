@@ -3,7 +3,7 @@ import { Text, TouchableOpacity } from "react-native";
 import { DefaultThemeColors, DarkThemeColors } from "../utils/constants/Colors";
 import { ThemeContext } from "../contexts/ThemeContext";
 
-export default function AppBtn({ title, onPress }) {
+export default function AppBtn(props) {
   const { isThemeDark } = useContext(ThemeContext);
   const Colors = isThemeDark ? DarkThemeColors : DefaultThemeColors;
   return (
@@ -13,7 +13,8 @@ export default function AppBtn({ title, onPress }) {
         backgroundColor: Colors.btnPrimaryBg,
         width: "100%",
       }}
-      onPress={onPress}
+      onPress={props.onPress}
+     {...props}
     >
       <Text
         style={{
@@ -23,7 +24,7 @@ export default function AppBtn({ title, onPress }) {
           textAlign: "center",
         }}
       >
-        {title}
+        {props.title}
       </Text>
     </TouchableOpacity>
   );

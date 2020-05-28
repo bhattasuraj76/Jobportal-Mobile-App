@@ -9,7 +9,7 @@ import { DEFAULT_JOB_CATEGORIES, DEFAULT_JOB_TYPES, DEFAULT_JOB_LEVELS } from ".
 import AppBtn from "../../shared/appBtn";
 import InputLevel from "../../shared/inputLevel";
 import FormGroup from "../../shared/formGroup";
-import Input from "../../shared/input";
+import SearchInput from "../../shared/searchInput";
 
 function Search({navigation}) {
   //theme value
@@ -42,7 +42,7 @@ function Search({navigation}) {
             {/* search by title  start*/}
             <FormGroup>
               <InputLevel>Job Title</InputLevel>
-              <Input
+              <SearchInput
                 placeholder="Search by job title"
                 onChangeText={(value) => setTitle(value)}
               />

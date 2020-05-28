@@ -2,6 +2,7 @@ export const DefaultThemeColors = {
          tabIconSelected: "#1275d8",
          tabIconDefault: "#333",
          tabBarBorderDefault: "#d20e0e",
+         tabBg: "#fff",
          statusBarBg: "#065cb1",
          headerBg: "#1275d8",
          headerTint: "#fff",
@@ -14,13 +15,14 @@ export const DefaultThemeColors = {
          primaryBorder: "#d20e0e",
          secondaryBorder: "#eee",
          btnPrimaryBg: "#1771c4",
-         btnPrimaryText: '#fff'
+         btnPrimaryText: "#fff",
        };
 
 export const DarkThemeColors = {
          tabIconSelected: "#1275d8",
          tabIconDefault: "#ffffff",
          tabBarBorderDefault: "#d20e0e",
+         tabBg: "#181818",
          statusBarBg: "#000000",
          headerBg: "#181818",
          headerTint: "#ffffff",

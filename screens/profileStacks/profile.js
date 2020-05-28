@@ -16,8 +16,8 @@ function Profile({ navigation }) {
   const { isThemeDark } = useContext(ThemeContext);
   const { authUser, setUnauthStatus } = useContext(AuthContext);
 
-  // const isUserLoggedIn = true;
-  const isUserLoggedIn = authUser.token ? true : false;
+  const isUserLoggedIn = true;
+  // const isUserLoggedIn = authUser.token ? true : false;
 
   const list = [
     {

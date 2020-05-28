@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Button, RefreshControl } from "react-native";
+import { View, ScrollView, FlatList , RefreshControl } from "react-native";
 import ContainerFluid from "../../shared/containerFluid";
 import JobBox from "../../shared/jobBox";
 import AppText from "../../shared/appText";
-import { ScrollView } from "react-native-gesture-handler";
 import { useFocusEffect } from "@react-navigation/native";
 
 function Home({ navigation, route }) {
   const [jobs, setJobs] = useState([
     {
+      id: 1,
       title: "Web Developer",
       salary: "Rs. 20,000",
       category: "It/Computing",
@@ -26,6 +26,7 @@ function Home({ navigation, route }) {
       },
     },
     {
+      id: 2,
       title: "Web Developer",
       salary: "Rs. 20,000",
       category: "It/Computing",
@@ -43,6 +44,7 @@ function Home({ navigation, route }) {
       },
     },
     {
+      id: 3,
       title: "Web Developer",
       salary: "Rs. 20,000",
       category: "It/Computing",
@@ -60,6 +62,7 @@ function Home({ navigation, route }) {
       },
     },
     {
+      id: 4,
       title: "Web Developer",
       salary: "Rs. 20,000",
       category: "It/Computing",
@@ -77,6 +80,7 @@ function Home({ navigation, route }) {
       },
     },
     {
+      id: 5,
       title: "Web Developer",
       salary: "Rs. 20,000",
       category: "It/Computing",
@@ -122,7 +126,7 @@ function Home({ navigation, route }) {
     route.params?.title,
     route.params?.category,
     route.params?.type,
-    route.params?.level,
+    route.params?.level
   ]);
 
   //handle refresh functionality
@@ -147,6 +151,7 @@ function Home({ navigation, route }) {
   return (
     <ContainerFluid>
       <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -155,7 +160,6 @@ function Home({ navigation, route }) {
           />
         }
       >
-
         {/* login */}
         {/* <Button
           title="login"
@@ -184,10 +188,15 @@ function Home({ navigation, route }) {
         {/* jobs count */}
 
         {/* job list start */}
-        <View style={{ marginBottom: 30, flex: 1 }}>
-          {jobs.map((job, index) => {
-            return <JobBox job={job} key={index} onPress={gotoJobDetail} />;
-          })}
+        <View style={{ marginBottom: 30 }}>
+          <FlatList
+            nestedScrollEnabled
+            keyExtractor={(item) => item.id.toString()}
+            data={jobs}
+            renderItem={({ item }) => (
+              <JobBox job={item} onPress={gotoJobDetail} />
+            )}
+          />
         </View>
         {/* job list start */}
       </ScrollView>

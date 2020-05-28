@@ -32,8 +32,8 @@ function Navigator() {
   const { authUser } = useContext(AuthContext);
 
   //user login status
-  // const isUserLoggedIn = true;
-  const isUserLoggedIn = authUser.token ? true : false;
+  const isUserLoggedIn = true;
+  // const isUserLoggedIn = authUser.token ? true : false;
   //theme status
   const isThemeDark = theme === "dark" ? true : false;
 
@@ -57,6 +57,7 @@ function Navigator() {
     labelStyle: { fontSize: 12, paddingTop: 2 },
     tabStyle: { paddingTop: 10, paddingBottom: 5 },
     style: {
+      backgroundColor: Colors.tabBg,
       height: 60,
       borderTopColor: DefaultThemeColors.tabBarBorderDefault,
     },
@@ -115,12 +116,45 @@ function Navigator() {
             <Stack.Screen
               name="ChangeDisplayPicture"
               component={ChangeDisplayPicture}
+              options={{
+                title: "Change Display Picture"
+              }}
             />
-            <Stack.Screen name="BasicInfo" component={BasicInfo} />
-            <Stack.Screen name="EditProfile" component={EditProfile} />
-            <Stack.Screen name="Resume" component={Resume} />
-            <Stack.Screen name="JobsApplied" component={JobsApplied} />
-            <Stack.Screen name="ChangePassword" component={ChangePassword} />
+            <Stack.Screen
+              name="BasicInfo"
+              component={BasicInfo}
+              options={{
+                title: "Basic Info",
+              }}
+            />
+            <Stack.Screen
+              name="EditProfile"
+              component={EditProfile}
+              options={{
+                title: "Edit Profile",
+              }}
+            />
+            <Stack.Screen
+              name="Resume"
+              component={Resume}
+              options={{
+                title: "Resume",
+              }}
+            />
+            <Stack.Screen
+              name="JobsApplied"
+              component={JobsApplied}
+              options={{
+                title: "Jobs Applied",
+              }}
+            />
+            <Stack.Screen
+              name="ChangePassword"
+              component={ChangePassword}
+              options={{
+                title: "Change Password",
+              }}
+            />
           </>
         ) : (
           <>
