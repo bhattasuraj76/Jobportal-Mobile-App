@@ -12,12 +12,15 @@ import ChangePassword from "../screens/profileStacks/changePassword";
 import Home from "../screens/homeStacks/home";
 import Profile from "../screens/profileStacks/profile";
 /** utils */
-import { DefaultThemeColors,  DarkThemeColors } from "../utils/constants/Colors";
+import { DefaultThemeColors, DarkThemeColors } from "../utils/constants/Colors";
 /** shared components */
 import TabBarIcon from "../shared/tabBarIcon";
 import Header from "../shared/header";
 import { AuthContext } from "../contexts/AuthContext";
 import { ThemeContext } from "../contexts/ThemeContext";
+import BasicInfo from "../screens/profileStacks/BasicInfo";
+import Resume from "../screens/profileStacks/Resume";
+import JobsApplied from "../screens/profileStacks/JobsApplied";
 
 //initial route name upon app load
 const INITIAL_ROUTE_NAME = "HomeTabs";
@@ -29,12 +32,13 @@ function Navigator() {
   const { authUser } = useContext(AuthContext);
 
   //user login status
+  // const isUserLoggedIn = true;
   const isUserLoggedIn = authUser.token ? true : false;
   //theme status
   const isThemeDark = theme === "dark" ? true : false;
 
   //colors object
-  const Colors = isThemeDark ? DarkThemeColors: DefaultThemeColors ;
+  const Colors = isThemeDark ? DarkThemeColors : DefaultThemeColors;
 
   //cutomizing stack header
   const customStackHeaderStyle = {
@@ -47,7 +51,7 @@ function Navigator() {
 
   //cutomizing bottom tab-bar
   const customTabBarStyle = {
-    activeTintColor : Colors.tabIconSelected,
+    activeTintColor: Colors.tabIconSelected,
     inactiveTintColor: Colors.tabIconDefault,
     allowFontScaling: true,
     labelStyle: { fontSize: 12, paddingTop: 2 },
@@ -72,10 +76,7 @@ function Navigator() {
             headerTitle: () => <Header />,
           }}
         />
-        <Stack.Screen
-          name="JobDetail"
-          component={JobDetail}
-        />
+        <Stack.Screen name="JobDetail" component={JobDetail} />
       </Stack.Navigator>
     );
   };
@@ -115,7 +116,10 @@ function Navigator() {
               name="ChangeDisplayPicture"
               component={ChangeDisplayPicture}
             />
+            <Stack.Screen name="BasicInfo" component={BasicInfo} />
             <Stack.Screen name="EditProfile" component={EditProfile} />
+            <Stack.Screen name="Resume" component={Resume} />
+            <Stack.Screen name="JobsApplied" component={JobsApplied} />
             <Stack.Screen name="ChangePassword" component={ChangePassword} />
           </>
         ) : (

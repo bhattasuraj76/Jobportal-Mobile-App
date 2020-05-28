@@ -14,8 +14,9 @@ import AppBtn from "../../shared/appBtn";
 
 function Profile({ navigation }) {
   const { isThemeDark } = useContext(ThemeContext);
-  const { authUser , setUnauthStatus} = useContext(AuthContext);
+  const { authUser, setUnauthStatus } = useContext(AuthContext);
 
+  // const isUserLoggedIn = true;
   const isUserLoggedIn = authUser.token ? true : false;
 
   const list = [
@@ -23,21 +24,27 @@ function Profile({ navigation }) {
       title: "Basci Info",
       icon: "info-outline",
       onPress: () => {
-        navigation.navigate("HomeTab");
+        navigation.navigate("ProfileTab", {
+          screen: "BasicInfo",
+        });
       },
     },
     {
       title: "Resume",
       icon: "attach-file",
       onPress: () => {
-        navigation.navigate("HomeTab");
+        navigation.navigate("ProfileTab", {
+          screen: "Resume",
+        });
       },
     },
     {
       title: "Jobs Applied",
       icon: "developer-board",
       onPress: () => {
-        navigation.navigate("HomeTab");
+        navigation.navigate("ProfileTab", {
+          screen: "JobsApplied",
+        });
       },
     },
 
@@ -45,7 +52,9 @@ function Profile({ navigation }) {
       title: "Change Password",
       icon: "border-color",
       onPress: () => {
-        navigation.navigate("HomeTab");
+        navigation.navigate("ProfileTab", {
+          screen: "ChangePassword",
+        });
       },
     },
     {
@@ -53,7 +62,9 @@ function Profile({ navigation }) {
       icon: "history",
       onPress: () => {
         setUnauthStatus();
-        navigation.navigate("ProfileTab",{screen: "Profile"});
+        navigation.navigate("ProfileTab", {
+          screen: "Profile",
+        });
       },
     },
   ];
@@ -104,7 +115,14 @@ function Profile({ navigation }) {
                       zIndex: 1,
                     }}
                   >
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      opacity={1}
+                      onPress={() =>
+                        navigation.navigate("ProfileTab", {
+                          screen: "ChangeDisplayPicture",
+                        })
+                      }
+                    >
                       <View
                         style={{
                           width: 45,
@@ -135,7 +153,12 @@ function Profile({ navigation }) {
                 {/* profile image wrapper end */}
 
                 {/* user info start */}
-                <View style={{ alignItems: "center", marginTop: 5 }}>
+                <View
+                  style={{
+                    alignItems: "center",
+                    marginTop: 5,
+                  }}
+                >
                   <AppText size={22} color="light" family="semi-bold-italic">
                     John Doe
                   </AppText>
@@ -167,9 +190,11 @@ function Profile({ navigation }) {
                 onPress={item.onPress}
                 containerStyle={{
                   backgroundColor: isThemeDark ? "#000" : "#fff",
-                  paddingBottom: 19
+                  paddingBottom: 19,
                 }}
-                titleStyle={{ color: !isThemeDark ? "#333" : "#fff"}}
+                titleStyle={{
+                  color: !isThemeDark ? "#333" : "#fff",
+                }}
                 pad={25}
               />
             ))}
@@ -178,7 +203,11 @@ function Profile({ navigation }) {
         </ScrollView>
       ) : (
         <View
-          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
           <View>
             <AppText size={18}>Please sign in to view your profile</AppText>
@@ -199,7 +228,11 @@ function Profile({ navigation }) {
                 </AppText>
               </TouchableOpacity>
 
-              <Text style={{ marginHorizontal: 10 }}>
+              <Text
+                style={{
+                  marginHorizontal: 10,
+                }}
+              >
                 <AppText size={18}>or</AppText>
               </Text>
 
