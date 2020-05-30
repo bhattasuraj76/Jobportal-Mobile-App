@@ -54,6 +54,7 @@ function ChangePassword({ navigation }) {
             style={{
               flex: 1,
               paddingHorizontal: 30,
+              paddingVertical: 30,
               backgroundColor: isThemeDark ? "#000" : "#36485f",
               justifyContent: "center",
             }}
