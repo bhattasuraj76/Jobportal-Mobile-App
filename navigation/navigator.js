@@ -19,8 +19,8 @@ import Header from "../shared/header";
 import { AuthContext } from "../contexts/AuthContext";
 import { ThemeContext } from "../contexts/ThemeContext";
 import BasicInfo from "../screens/profileStacks/BasicInfo";
-import Resume from "../screens/profileStacks/Resume";
-import JobsApplied from "../screens/profileStacks/JobsApplied";
+import Resume from "../screens/profileStacks/resume";
+import JobsApplied from "../screens/profileStacks/jobsApplied";
 
 //initial route name upon app load
 const INITIAL_ROUTE_NAME = "HomeTabs";

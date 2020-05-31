@@ -38,7 +38,7 @@ function Search({navigation}) {
     <ContainerFluid>
       <ScrollView>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-          <View style={{ marginTop: 30, paddingHorizontal: 30 }}>
+          <View style={{ marginVertical: 30, paddingHorizontal: 30 }}>
             {/* search by title  start*/}
             <FormGroup>
               <InputLevel>Job Title</InputLevel>
