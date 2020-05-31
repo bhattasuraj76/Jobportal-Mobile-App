@@ -14,11 +14,12 @@ export default function Checkbox(props) {
       buttonOuterSize={20}
       formHorizontal={true}
       labelHorizontal={true}
-      buttonColor={
-        isThemeDark ? DarkThemeColors.primaryBg : DefaultThemeColors.infoBg
+      selectedButtonColor={
+        isThemeDark ? DarkThemeColors.primaryText: DefaultThemeColors.infoBg
       }
-      animation={false}
-      labelStyle={{ fontSize: 16 }}
+      buttonColor={isThemeDark ? "#fff" : DefaultThemeColors.infoBg}
+      animation={true}
+      labelStyle={{ fontSize: 16, color: isThemeDark ? "#fff" : "#111" }}
       {...props}
     />
   );
