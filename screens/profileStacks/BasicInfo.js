@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef, createRef } from "react";
 import {
   View,
   TouchableWithoutFeedback,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   Text,
   StyleSheet,
+  Button,
 } from "react-native";
 import AppBtn from "../../shared/appBtn";
 import ErrorText from "../../shared/errorText";
@@ -15,13 +16,14 @@ import { ThemeContext } from "../../contexts/ThemeContext";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Formik } from "formik";
 import * as yup from "yup";
-import Input from "../../shared/input";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import Icon from "../../shared/icon";
-import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from "react-native-simple-radio-button";
+import InputLevel from "../../shared/inputLevel";
+import AppText from "../../shared/appText";
+import HeaderRightActionBtn from "../../shared/headerRightActionBtn";
+import Checkbox from "../../shared/checkbox";
+import BasicFormInput from "../../shared/basicFormInput";
 
 //register validation schema
-const registerSchema = yup.object({
+const basicInfoSchema = yup.object({
   firstName: yup.string().required("First name is required"),
   lastName: yup.string().required("Last name is required"),
   address: yup.string().required("Phone number is required"),
@@ -29,34 +31,69 @@ const registerSchema = yup.object({
   gender: yup.string().required("Bio is required"),
 });
 
-
+const gender = [
+  { label: "Male", value: "Male" },
+  { label: "Female", value: "Female" },
+  { label: "Others", value: "None" },
+];
 
 function BasicInfo({ navigation }) {
   const { isThemeDark } = useContext(ThemeContext);
-  const { authUser, setAuthStatus } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
+  const [user, setUser] = useState({
+    firstName: "John",
+    lastName: "Doe",
+    phone: "9860536208",
+    address: "Kathmandu",
+    gender: "Male",
+    description: "I am web developer",
+  });
+  //creates refrence to formik element
+ const formikElement = createRef(null);
 
+  //customize header right buttons to perfom form actons
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <View style={{ marginRight: 20, flexDirection: "row" }}>
+          {!isEditing ? (
+            <HeaderRightActionBtn
+              title="Edit"
+              onPress={() => setIsEditing(true)}
+            />
+          ) : (
+            <>
+              <HeaderRightActionBtn
+                title="Cancel"
+                onPress={() => setIsEditing(!isEditing)}
+              />
+              <Text style={{ marginHorizontal: 5 }}>
+                <AppText size={20} color="light">
+                  |
+                </AppText>
+              </Text>
 
-  
+              <HeaderRightActionBtn
+                title="Save"
+                onPress={() => formikElement.current.handleSubmit()}
+              />
+            </>
+          )}
+        </View>
+      ),
+    });
+  }, [navigation, isEditing]);
 
-  const editBasicInfo = () => {
-    console.log("fasd");
-  };
-
-  const resetBasicInfo = () => {
-    setIsEditing(false);
-
-    console.log("fasd");
-  };
-
-  const updateBasicInfo = (values) => {
+  //save user info
+  const saveUserInfo = (values, actions) => {
     console.log(values);
     const { firstName, lastName, gender, address, phone, description } = values;
 
     const resp = 1; //response form server
     if (resp == 1) {
-      //reset form
-      // actions.resetForm();
+      //update user
+      setUser(values);
+      setIsEditing(false);
       //alert user
       alert("Updated Basic Info Successfully");
     } else {
@@ -64,46 +101,22 @@ function BasicInfo({ navigation }) {
     }
   };
 
-  const updateGender=(handleChange,value)=>{
+  const updateGender = (handleChange, value) => {
     handleChange(value);
-
-
-
-  }
-
-  const gender=[
-    {label:"male", value:"male"},
-    {label:"female",value:"feamle"},
-    {label:"Others",value:"non"},
-  
-  ]
+  };
 
   return (
     <ContainerFluid>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-          <View
-            style={{
-              flex: 1,
-              paddingHorizontal: 30,
-              paddingVertical: 10,
-              backgroundColor: isThemeDark ? "#000" : "#fff",
-              justifyContent: "center",
-            }}
-          >
+          <View style={styles.basicInfoWrapper}>
             <Formik
-              initialValues={{
-                firstName: "dafa",
-                lastName: "fasf",
-                phone: "12345",
-                address: "fasdfa",
-                gender: "male",
-                description: "fsdafas",
-              }}
-              validationSchema={registerSchema}
+              initialValues={{ ...user }}
+              validationSchema={basicInfoSchema}
               onSubmit={(values, actions) => {
-                handleRegister(values, actions);
+                saveUserInfo(values, actions);
               }}
+              innerRef={formikElement}
             >
               {({
                 values,
@@ -115,76 +128,28 @@ function BasicInfo({ navigation }) {
                 isSubmitting,
               }) => (
                 <>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      marginBottom: 20,
-                      paddingHorizontal: 10,
-                      justifyContent: "space-evenly",
-                    }}
-                  >
-                    <Text style={{
-                      borderBottomColor:'red',
-                      borderRadius:1,
-                      borderBottomWidth:2,
-                      fontWeight:'bold',
-                      borderBottomColor:'black',
-                      fontSize:20,
-                    }}>Personal Details</Text>
-
-                    {!isEditing ? (
-                      <TouchableOpacity style={styles.Editbtns} onPress={() => setIsEditing(true)}>                      
-                        <Icon name="edit" size={26} color="blue" />
-                        <Text style={{padding:5,fontSize:20,fontWeight:"normal"}}>Edit</Text>
-                      </TouchableOpacity>
-                    ) : (
-                      <>
-                        <TouchableOpacity style={styles.Allbtns} onPress={() => resetBasicInfo()}>
-                          <Icon name="update" size={28} color="blue" />
-                          <Text style={{padding:5,fontSize:20,fontWeight:"normal"}}>Reset</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={styles.Allbtns} onPress={() => updateBasicInfo(values)}>
-                          <Icon name="format-color-reset" size={28} color="blue" />
-                           <Text style={{padding:5,fontSize:20,fontWeight:"normal"}}>Update</Text>
-                        </TouchableOpacity>
-                      </>
-                    )}
-
-                   
-                  </View>
-
                   <FormGroup>
-                  <Text style={styles.label}>First Name</Text>
-                    <TextInput
-                      style={{
-                        ...styles.input,
-                        ...(!isEditing && styles.inputNoEditable),
-                      }}
+                    <InputLevel>First Name</InputLevel>
+                    <BasicFormInput
                       value={values.firstName}
                       onChangeText={handleChange("firstName")}
                       onBlur={handleBlur("firstName")}
                       placeholder={"First Name"}
-                      editable={isEditing ? true : false}
+                      isEditing={isEditing}
                     />
                     {touched.firstName && errors.firstName ? (
                       <ErrorText>{errors.firstName}</ErrorText>
                     ) : null}
                   </FormGroup>
-                  
-                  <FormGroup>  
-                        
-                    <Text style={styles.label}>Last Name</Text>
-                    <TextInput
-                      style={{
-                        ...styles.input,
-                        ...(!isEditing && styles.inputNoEditable),
-                      }}
+
+                  <FormGroup>
+                    <InputLevel>Last Name</InputLevel>
+                    <BasicFormInput
                       value={values.lastName}
                       onChangeText={handleChange("lastName")}
                       onBlur={handleBlur("lastName")}
                       placeholder={"Last Name"}
-                      editable={isEditing ? true : false}
+                      isEditing={isEditing}
                     />
                     {touched.lastName && errors.lastName ? (
                       <ErrorText>{errors.lastName}</ErrorText>
@@ -192,17 +157,13 @@ function BasicInfo({ navigation }) {
                   </FormGroup>
 
                   <FormGroup>
-                  <Text style={styles.label}>Phone</Text>
-                    <TextInput
-                      style={{
-                        ...styles.input,
-                        ...(!isEditing && styles.inputNoEditable),
-                      }}
+                    <InputLevel>Phone</InputLevel>
+                    <BasicFormInput
                       value={values.phone}
                       onChangeText={handleChange("phone")}
                       onBlur={handleBlur("phone")}
                       placeholder={"phone"}
-                      editable={isEditing ? true : false}
+                      isEditing={isEditing}
                     />
                     {touched.phone && errors.phone ? (
                       <ErrorText>{errors.phone}</ErrorText>
@@ -210,17 +171,13 @@ function BasicInfo({ navigation }) {
                   </FormGroup>
 
                   <FormGroup>
-                  <Text style={styles.label}>Address</Text>
-                    <TextInput
-                      style={{
-                        ...styles.input,
-                        ...(!isEditing && styles.inputNoEditable),
-                      }}
+                    <InputLevel>Address</InputLevel>
+                    <BasicFormInput
                       value={values.address}
                       onChangeText={handleChange("address")}
                       onBlur={handleBlur("address")}
                       placeholder={"Address"}
-                      editable={isEditing ? true : false}
+                      isEditing={isEditing}
                     />
                     {touched.address && errors.address ? (
                       <ErrorText>{errors.address}</ErrorText>
@@ -229,97 +186,43 @@ function BasicInfo({ navigation }) {
 
                   <FormGroup>
                     <View>
-                  <Text style={styles.label}>Gender</Text>
-
-                    <RadioForm
-                      style={{
-                        ...styles.inputbtn,
-                        ...(!isEditing && styles.inputNoEditablebtn),
-                      }}
-                      radio_props={gender}
-                      initial={1}
-                      buttonSize={20}
-                      buttonOuterSize={30}
-                      
-                      formHorizontal={true}
-                      labelHorizontal={true}
-                      buttonColor={'#2196f3'}
-                      animation={true}
-                      onPress={(value) => {
-                        updateGender(handleChange("gender"),value);
-                     
-                    }}
-                      // value={values.phone}
-                      // onChangeText={handleChange("phone")}
-                      // onBlur={handleBlur("phone")}
-                      // placeholder={"Phone"}
-                      
-                    />
-                    
-                      
-                    
-                    {touched.phone && errors.phone ? (
-                      <ErrorText>{errors.phone}</ErrorText>
-                    ) : null}
+                      <InputLevel>Gender</InputLevel>
+                      {isEditing ? (
+                        <Checkbox
+                          radio_props={gender}
+                          initial={1}
+                          onPress={(value) => {
+                            updateGender(handleChange("gender"), value);
+                          }}
+                        />
+                      ) : (
+                        <BasicFormInput
+                          value={values.gender}
+                          placeholder={"About yourself"}
+                          isEditing={false}
+                        />
+                      )}
+                      {touched.phone && errors.phone ? (
+                        <ErrorText>{errors.phone}</ErrorText>
+                      ) : null}
                     </View>
                   </FormGroup>
 
                   <FormGroup>
-                  <Text style={styles.label}>Bio</Text>
-                    <TextInput
-                      style={{
-                        ...styles.input,
-                        ...(!isEditing && styles.inputNoEditable),
-                      }}
+                    <InputLevel>Bio</InputLevel>
+                    <BasicFormInput
                       multiline
                       minHeight={100}
                       value={values.description}
                       onChangeText={handleChange("description")}
                       onBlur={handleBlur("description")}
                       placeholder={"About yourself"}
-                      editable={isEditing ? true : false}
+                      isEditing={isEditing}
                     />
                     {touched.description && errors.description ? (
                       <ErrorText>{errors.description}</ErrorText>
                     ) : null}
                   </FormGroup>
-
-                  {/* <FormGroup>
-                    <Input
-                      value={values.lastName}
-                      onChangeText={handleChange("lastName")}
-                      onBlur={handleBlur("lastName")}
-                      placeholder={"Last Name"}
-                    />
-                    {touched.email && errors.email ? (
-                      <ErrorText>{errors.email}</ErrorText>
-                    ) : null}
-                  </FormGroup>
-
-                  <FormGroup>
-                    <Input
-                      value={values.email}
-                      onChangeText={handleChange("email")}
-                      onBlur={handleBlur("email")}
-                      placeholder={"Email"}
-                    />
-                    {touched.email && errors.email ? (
-                      <ErrorText>{errors.email}</ErrorText>
-                    ) : null}
-                  </FormGroup> */}
-
-                  {/* <FormGroup>
-                    <Input
-                      value={values.password}
-                      onChangeText={handleChange("password")}
-                      onBlur={handleBlur("password")}
-                      placeholder={"Password"}
-                      secureTextEntry={true}
-                    />
-                    {touched.password && errors.password ? (
-                      <ErrorText>{errors.password}</ErrorText>
-                    ) : null}
-                  </FormGroup> */}
                 </>
               )}
             </Formik>
@@ -333,57 +236,11 @@ function BasicInfo({ navigation }) {
 export default BasicInfo;
 
 const styles = StyleSheet.create({
-  input: {
-    borderColor: "#ccc",
-    borderWidth: 1,
-    padding: 8,
-    borderRadius: 4,
-    fontSize: 18,
+  basicInfoWrapper: {
+    flex: 1,
+    paddingHorizontal: 30,
+    marginTop: 20,
+    marginBottom: 30,
+    justifyContent: "center",
   },
-  inputNoEditable: {
-    backgroundColor: "#ccc",
-    borderWidth: 0,
-  },
-  label:{
-    fontSize:16,
-    fontWeight:'bold'
-  },
-  Allbtns:{
-    backgroundColor:"#fff",
-    borderColor:"black",
-    borderWidth:1,
-    flexDirection:"row-reverse",
-    marginRight:30,
-    justifyContent:'space-between',
-   
-  },
-  Editbtns:{
-    backgroundColor:"#fff",
-    borderColor:"black",
-    borderWidth:1,
-    flexDirection:"row-reverse",
-    marginRight:0,
-    justifyContent:'space-between',
-    
-   
-  },
-  inputNoEditablebtn:{
-    backgroundColor: "#ccc",
-    borderWidth: 0, 
-    padding: 8,
-    justifyContent:"space-between"
-    
-    
-    
-
-  },
-  inputbtn:{
-    borderColor: "#ccc",
-    borderWidth: 1,
-    padding: 8,
-    borderRadius: 4,
-    fontSize: 18,
-    justifyContent:"space-between"
-   
-  }
 });

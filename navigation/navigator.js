@@ -18,7 +18,7 @@ import TabBarIcon from "../shared/tabBarIcon";
 import Header from "../shared/header";
 import { AuthContext } from "../contexts/AuthContext";
 import { ThemeContext } from "../contexts/ThemeContext";
-import BasicInfo from "../screens/profileStacks/BasicInfo";
+import BasicInfo from "../screens/profileStacks/basicInfo";
 import Resume from "../screens/profileStacks/resume";
 import JobsApplied from "../screens/profileStacks/jobsApplied";
 
