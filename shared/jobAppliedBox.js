@@ -7,47 +7,36 @@ import { ThemeContext } from "../contexts/ThemeContext";
 import AppText from "./appText";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-function JobBox({ job , onPress}) {
+function JobAppliedBox({ job, onPress }) {
   const { isThemeDark } = useContext(ThemeContext);
   const Colors = isThemeDark ? DarkThemeColors : DefaultThemeColors;
-  
+
   return (
-    <View style={{ ...styles.jobBox, backgroundColor: Colors.primaryBg }}>
-      <Image
-        source={images.defaultLogo}
-        style={styles.logo}
-      />
+    <View style={{ ...styles.JobAppliedBox, backgroundColor: Colors.primaryBg }}>
+      <Image source={images.defaultLogo} style={styles.logo} />
       <View style={styles.jobInfo}>
         <TouchableOpacity onPress={() => onPress(job)}>
-          <AppText size={18} color="info" family="semi-bold">
+          <AppText size={16} color="info" family="semi-bold">
             {job.title}
           </AppText>
         </TouchableOpacity>
-        <AppText color="secondary" weight="600" size={15} family="semi-bold">
+        <AppText color="secondary" weight="600" size={14} family="semi-bold">
           {job.company.name}
         </AppText>
 
         <View style={styles.jobInfoBody}>
           <View style={globalStyles.rowAlignCenter}>
-            <Icon name="location-on" size={18} color="#666666" />
-            <AppText color="secondary" size={14}>
+            <Icon name="location-on" size={14} color="#666666" />
+            <AppText color="secondary" size={12}>
               <Text style="marginLeft: 5"> {job.company.address}</Text>
             </AppText>
           </View>
           <View style={globalStyles.rowAlignCenter}>
-            <Icon name="attach-money" size={18} color="#666666" />
-            <AppText color="secondary" size={14}>
+            <Icon name="attach-money" size={14} color="#666666" />
+            <AppText color="secondary" size={12}>
               <Text style="marginLeft: 5"> {job.salary} </Text>
             </AppText>
           </View>
-        </View>
-        <View style={styles.jobInfoFooter}>
-          <AppText color="secondary" size={12}>
-            {job.level}
-          </AppText>
-          <AppText color="info" size={10}>
-            Deadline: {job.deadline}
-          </AppText>
         </View>
       </View>
     </View>
@@ -55,7 +44,7 @@ function JobBox({ job , onPress}) {
 }
 
 const styles = StyleSheet.create({
-  jobBox: {
+  JobAppliedBox: {
     padding: 10,
     flexDirection: "row",
     backgroundColor: "#ffffff",
@@ -63,8 +52,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   logo: {
-    height: 80,
-    width: 80,
+    height: 70,
+    width: 70,
     alignSelf: "center",
     borderWidth: 1,
     borderColor: "#ccc",
@@ -74,14 +63,8 @@ const styles = StyleSheet.create({
   jobInfoBody: {
     marginLeft: 10,
     marginVertical: 5,
-  },
-
-  jobInfoFooter: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
+  }
 
 });
 
-export default JobBox;
+export default JobAppliedBox;

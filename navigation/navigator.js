@@ -18,6 +18,9 @@ import TabBarIcon from "../shared/tabBarIcon";
 import Header from "../shared/header";
 import { AuthContext } from "../contexts/AuthContext";
 import { ThemeContext } from "../contexts/ThemeContext";
+import BasicInfo from "../screens/profileStacks/basicInfo";
+import Resume from "../screens/profileStacks/resume";
+import JobsApplied from "../screens/profileStacks/jobsApplied";
 
 //initial route name upon app load
 const INITIAL_ROUTE_NAME = "HomeTabs";
@@ -29,12 +32,13 @@ function Navigator() {
   const { authUser } = useContext(AuthContext);
 
   //user login status
-  const isUserLoggedIn = 1;
+  const isUserLoggedIn = true;
+  // const isUserLoggedIn = authUser.token ? true : false;
   //theme status
   const isThemeDark = theme === "dark" ? true : false;
 
   //colors object
-  const Colors = isThemeDark ? DarkThemeColors: DefaultThemeColors ;
+  const Colors = isThemeDark ? DarkThemeColors : DefaultThemeColors;
 
   //cutomizing stack header
   const customStackHeaderStyle = {
@@ -53,6 +57,7 @@ function Navigator() {
     labelStyle: { fontSize: 12, paddingTop: 2 },
     tabStyle: { paddingTop: 10, paddingBottom: 5 },
     style: {
+      backgroundColor: Colors.tabBg,
       height: 60,
       borderTopColor: DefaultThemeColors.tabBarBorderDefault,
     },
@@ -111,9 +116,45 @@ function Navigator() {
             <Stack.Screen
               name="ChangeDisplayPicture"
               component={ChangeDisplayPicture}
+              options={{
+                title: "Change Display Picture"
+              }}
             />
-            <Stack.Screen name="EditProfile" component={EditProfile} />
-            <Stack.Screen name="ChangePassword" component={ChangePassword} />
+            <Stack.Screen
+              name="BasicInfo"
+              component={BasicInfo}
+              options={{
+                title: "Basic Info",
+              }}
+            />
+            <Stack.Screen
+              name="EditProfile"
+              component={EditProfile}
+              options={{
+                title: "Edit Profile",
+              }}
+            />
+            <Stack.Screen
+              name="Resume"
+              component={Resume}
+              options={{
+                title: "Resume",
+              }}
+            />
+            <Stack.Screen
+              name="JobsApplied"
+              component={JobsApplied}
+              options={{
+                title: "Jobs Applied",
+              }}
+            />
+            <Stack.Screen
+              name="ChangePassword"
+              component={ChangePassword}
+              options={{
+                title: "Change Password",
+              }}
+            />
           </>
         ) : (
           <>

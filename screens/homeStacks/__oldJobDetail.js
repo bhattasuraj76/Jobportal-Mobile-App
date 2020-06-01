@@ -19,7 +19,7 @@ function JobDetail({ navigation, route }) {
   }
 
   const [showJobInfo, setShowJobInfo] = useState(true);
-  const [showJobDescription, setshowDesription] = useState(false);
+  const [showJobDescription, setShowJobDescription] = useState(false);
   const [showAboutCompany, setShowAboutCompany] = useState(false);
 
   const applyForJob = () => {
@@ -28,7 +28,7 @@ function JobDetail({ navigation, route }) {
 
   return (
     <ContainerFluid>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView>
         {/* company cover */}
         <View style={{ marginBottom: 20 }}>
           <ImageBackground
@@ -44,24 +44,26 @@ function JobDetail({ navigation, route }) {
         <View style={{ paddingHorizontal: 20 }}>
           {/* job overview start */}
           <View style={{ marginTop: 10 }}>
-            <AppText size={22} family="semi-bold" color="info">
-              {job.title}
-            </AppText>
-            <AppText size={18} family="semi-bold" color="secondary">
-              {job.company.name}
-            </AppText>
+            <AppText size={22} title={job.title} family="bold" color="info" />
+            <AppText size={18} title={job.company.name} />
             <View style={{ marginLeft: 15, marginVertical: 7 }}>
               <View style={globalStyles.rowAlignCenter}>
                 <Icon name="location-on" size={20} color="#666666" />
-                <AppText color="secondary" size={16}>
-                  <Text style="marginLeft: 5"> {job.company.address}</Text>
-                </AppText>
+                <AppText
+                  title={job.company.address}
+                  color="secondary"
+                  size={16}
+                  css={{ marginLeft: 5 }}
+                />
               </View>
               <View style={globalStyles.rowAlignCenter}>
                 <Icon name="attach-money" size={20} color="#666666" />
-                <AppText color="secondary" size={16}>
-                  <Text style="marginLeft: 5"> {job.salary} </Text>
-                </AppText>
+                <AppText
+                  title={job.salary}
+                  color="secondary"
+                  size={16}
+                  css={{ marginLeft: 5 }}
+                />
               </View>
             </View>
           </View>
@@ -69,18 +71,15 @@ function JobDetail({ navigation, route }) {
 
           {/* accordian wrapper start */}
           <View style={{ marginTop: 20 }}>
-            {/* job info */}
+
+            {/* job info start */}
             <Accordian>
               <TouchableOpacity
-                onPress={(e) => {
-                  console.log(e);
-                  setShowJobInfo(!showJobInfo);
-                }}
+                activeOpacity={1}
+                onPress={(e) => setShowJobInfo(!showJobInfo)}
               >
-                <AccordianHeader>
-                  <AppText size={18} family="semi-bold" color="info">
-                    Job Info
-                  </AppText>
+                <View style={styles.accordianTitle}>
+                  <AccordianTitle>Job Info</AccordianTitle>
                   <Icon
                     name={
                       showJobInfo
@@ -88,12 +87,13 @@ function JobDetail({ navigation, route }) {
                         : "keyboard-arrow-right"
                     }
                     size={24}
+                    color="#000"
                   />
-                </AccordianHeader>
+                </View>
               </TouchableOpacity>
 
               {showJobInfo && (
-                <AccordianContent>
+                <View style={styles.accordianContent}>
                   <TitleText>
                     Categoy : <InfoText>{job.category}</InfoText>
                   </TitleText>
@@ -112,24 +112,19 @@ function JobDetail({ navigation, route }) {
                   <TitleText>
                     Deadline : <InfoText>{job.deadline}</InfoText>
                   </TitleText>
-                </AccordianContent>
+                </View>
               )}
             </Accordian>
+            {/* job info  end*/}
 
-            {/* job info */}
-
-            {/* job description */}
+            {/* job description start*/}
             <Accordian>
               <TouchableOpacity
-                onPress={(e) => {
-                  console.log(e);
-                  setshowDesription(!showJobDescription);
-                }}
+                activeOpacity={1}
+                onPress={(e) => setShowJobDescription(!showJobDescription)}
               >
-                <AccordianHeader>
-                  <AppText size={18} family="semi-bold" color="info">
-                    Job Descripton
-                  </AppText>
+                <View style={styles.accordianTitle}>
+                  <AccordianTitle>Job Descripton</AccordianTitle>
                   <Icon
                     name={
                       showJobDescription
@@ -137,24 +132,23 @@ function JobDetail({ navigation, route }) {
                         : "keyboard-arrow-right"
                     }
                     size={24}
+                    color="#000"
                   />
-                </AccordianHeader>
+                </View>
               </TouchableOpacity>
               {showJobDescription && (
-                <AccordianContent>
+                <View style={styles.accordianContent}>
                   <InfoText>{job.description}</InfoText>
-                </AccordianContent>
+                </View>
               )}
             </Accordian>
-            {/* job description */}
+            {/* job description  end*/}
 
-            {/* about company */}
+            {/* about company start */}
             <Accordian>
               <TouchableOpacity
-                onPress={(e) => {
-                  console.log(e);
-                  setShowAboutCompany(!showAboutCompany);
-                }}
+                activeOpacity={1}
+                onPress={(e) => setShowAboutCompany(!showAboutCompany)}
               >
                 <View
                   style={{
@@ -164,9 +158,7 @@ function JobDetail({ navigation, route }) {
                   }}
                 >
                   <AccordianHeader>
-                    <AppText size={18} family="semi-bold" color="info">
-                      About Company
-                    </AppText>
+                    <AccordianTitle>About Company</AccordianTitle>
                     <Icon
                       name={
                         showAboutCompany
@@ -180,7 +172,7 @@ function JobDetail({ navigation, route }) {
               </TouchableOpacity>
 
               {showAboutCompany && (
-                <AccordianContent>
+                <View style={styles.accordianContent}>
                   <TitleText>
                     Address : <InfoText>{job.company.address}</InfoText>
                   </TitleText>
@@ -190,20 +182,23 @@ function JobDetail({ navigation, route }) {
                   <TitleText>
                     Phone : <InfoText>{job.company.phone}</InfoText>
                   </TitleText>
-                </AccordianContent>
+                </View>
               )}
             </Accordian>
-            {/* about about */}
+            {/* about company end*/}
+
           </View>
           {/* accordian wrapper start */}
+
         </View>
-        {/* content end */}
+        {/* content start */}
 
         {/* job apply btn */}
         <View style={{ marginTop: 30 }}>
           <AppBtn title="Appy for Job" onPress={applyForJob} />
         </View>
         {/* job apply btn */}
+
       </ScrollView>
     </ContainerFluid>
   );
@@ -244,6 +239,24 @@ function AccordianHeader({ children }) {
   );
 }
 
+function AccordianTitle({ children }) {
+  const { isThemeDark } = useContext(ThemeContext);
+  const color = isThemeDark
+    ? DarkThemeColors.primaryText
+    : DefaultThemeColors.infoText;
+  return (
+    <Text
+      style={{
+        fontSize: 18,
+        fontFamily: "open-sans-bold",
+        color,
+      }}
+    >
+      {children}
+    </Text>
+  );
+}
+
 function AccordianContent({ children }) {
   return (
     <View
@@ -262,29 +275,41 @@ function AccordianContent({ children }) {
 }
 
 function TitleText({ children }) {
+  const { isThemeDark } = useContext(ThemeContext);
+  const color = isThemeDark
+    ? DarkThemeColors.primaryText
+    : DefaultThemeColors.primaryText;
+
   return (
     <Text
       style={{
+        fontSize: 16,
+        fontFamily: "open-sans-regular",
         marginBottom: 15,
+        color,
       }}
     >
-      <AppText size={16} color="primary">
-        {children}
-      </AppText>
+      {children}
     </Text>
   );
 }
 
 function InfoText({ children }) {
+  const { isThemeDark } = useContext(ThemeContext);
+  const color = isThemeDark
+    ? DarkThemeColors.primaryText
+    : DefaultThemeColors.infoText;
+
   return (
     <Text
       style={{
-        paddingLeft: 20,
+        marginLeft: 20,
+        fontFamily: "open-sans-regular",
+        fontSize: 18,
+        color,
       }}
     >
-      <AppText size={18} color="info">
-        {children}
-      </AppText>
+      {children}
     </Text>
   );
 }
@@ -319,5 +344,4 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
 });
-
 export default JobDetail;

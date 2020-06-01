@@ -1,17 +1,28 @@
-import React, { useContext } from "react";
-import { useFocusEffect } from "@react-navigation/native";
-import { View, Text } from "react-native";
+import React, { useState, useContext } from "react";
+import { View, Text, Image, StyleSheet, ImageBackground } from "react-native";
 import { ThemeContext } from "../../contexts/ThemeContext";
-import TitleText from "../../shared/titleText";
-import Container from "../../shared/container";
-import { globalStyles } from "../../styles/globalStyles";
 
-function Profile() {
-     return (
-       <Container>
-         <TitleText title="Profile" />
-       </Container>
-     );
+import { AuthContext } from "../../contexts/AuthContext";
+import * as DocumentPicker from "expo-document-picker";
+import DefaultDisplayPicture from "../../assets/img/sanj.jpg";
+import Guest from "./guest";
+import User from "./user";
+
+function Profile({ navigation }) {
+  const { authUser, setUnauthStatus } = useContext(AuthContext);
+
+  const isUserLoggedIn = true;
+  // const isUserLoggedIn = authUser.token ? true : false;
+
+  return (
+    <View style={{ flex: 1 }}>
+      {isUserLoggedIn ? (
+        <User navigation={navigation} />
+      ) : (
+        <Guest navigation={navigation} />
+      )}
+    </View>
+  );
 }
 
 export default Profile;

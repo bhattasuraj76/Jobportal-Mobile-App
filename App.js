@@ -7,8 +7,13 @@ import RootContaienr from "./containers/rootContainer";
 
 const getFonts = () =>
   Font.loadAsync({
+    "open-sans-light": require("./assets/fonts/OpenSans-Light.ttf"),
+    "open-sans-light-italic": require("./assets/fonts/OpenSans-LightItalic.ttf"),
     "open-sans-regular": require("./assets/fonts/OpenSans-Regular.ttf"),
-    "open-sans-bold":  require("./assets/fonts/OpenSans-Bold.ttf"),
+    "open-sans-semi-bold": require("./assets/fonts/OpenSans-SemiBold.ttf"),
+    "open-sans-semi-bold-italic": require("./assets/fonts/OpenSans-SemiBoldItalic.ttf"),
+    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+    "open-sans-bold-italic": require("./assets/fonts/OpenSans-BoldItalic.ttf"),
   });
 
 export default function App() {

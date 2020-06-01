@@ -7,10 +7,10 @@ import { getStoredTheme } from "../utils/Helpers";
 import { DEFAULT_IS_THEME_DARK } from "../utils/constants/Consts";
 
 export const ThemeContext = React.createContext({
-         theme: DEFAULT_THEME,
-         toggleTheme: () => {},
-         isThemeDark: DEFAULT_IS_THEME_DARK,
-       });
+  theme: DEFAULT_THEME,
+  toggleTheme: () => {},
+  isThemeDark: (DEFAULT_THEME === "dark" ? true : false),
+});
 
 const ThemeContextProvider = ({ children }) => {
   const { theme, toggleTheme, isThemeDark } = useThemeHandler(
