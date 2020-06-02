@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { View, Text, Image, StyleSheet, ImageBackground } from "react-native";
+import React, { useState, useContext, useRef } from "react";
+import { View, Text, Image, StyleSheet, ImageBackground, ActivityIndicator, Button } from "react-native";
 import ContainerFluid from "../../shared/containerFluid";
 import { images, globalStyles } from "../../styles/globalStyles";
 import AppText from "../../shared/appText";
@@ -11,26 +11,78 @@ import {
   DarkThemeColors,
 } from "../../utils/constants/Colors";
 import { ThemeContext } from "../../contexts/ThemeContext";
+import { AppLoading } from "expo";
+import { useFocusEffect } from "@react-navigation/native";
 
 function JobDetail({ navigation, route }) {
-  const job = route.params.job;
-  if (!job) {
-    return navigation.goBack();
+  const [job,setJob]=useState('');
+  
+  const jobsLug = route.params.jobsLug;
+  console.log(jobsLug);
+  if (!jobsLug) {
+    return null;
   }
 
   const [showJobInfo, setShowJobInfo] = useState(true);
   const [showJobDescription, setshowDesription] = useState(false);
   const [showAboutCompany, setShowAboutCompany] = useState(false);
-
+ 
   const applyForJob = () => {
     console.log("applied for job");
   };
+ 
+  const slug=useRef(route.params.jobsLug);
+  console.log(slug);
+  useFocusEffect(
+    React.useCallback(() => {
+      let isActive=true;
+      slug.current=route.params.jobsLug
+      const fetchJob=async()=>{
+    
+        try {
+          let response =await  fetch(
+          'http://jpapi.vertexwebsurf.com/api/job/'+route.params.jobsLug
+          );
+          let responseJson = await response.json();
+          if (isActive){
+            setJob(responseJson.job);
+            console.log(responseJson);
+          }
+          
+          } catch (error) {
+          console.error(error);
+          }
+        
+      }
+     fetchJob();
+     console.log('bb');
+     
+     return()=>{
+       isActive=false;
+       console.log("ff")
+     }
+
+     
+    },[slug.current])
+    
+  );
 
   return (
     <ContainerFluid>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+
+     {
+       job? (<ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         {/* company cover */}
+        <Button
+        title="goto job"
+        onPress={()=>
+          navigation.setParams({jobsLug:'38530'})
+        
+        }
+        
+        />
         <View style={{ marginBottom: 20 }}>
+
           <ImageBackground
             source={images.defaultCover}
             style={styles.companyCover}
@@ -48,13 +100,13 @@ function JobDetail({ navigation, route }) {
               {job.title}
             </AppText>
             <AppText size={18} family="semi-bold" color="secondary">
-              {job.company.name}
+              {job.employer.name}
             </AppText>
             <View style={{ marginLeft: 15, marginVertical: 7 }}>
               <View style={globalStyles.rowAlignCenter}>
                 <Icon name="location-on" size={20} color="#666666" />
                 <AppText color="secondary" size={16}>
-                  <Text style="marginLeft: 5"> {job.company.address}</Text>
+                  <Text style="marginLeft: 5"> {job.employer.address}</Text>
                 </AppText>
               </View>
               <View style={globalStyles.rowAlignCenter}>
@@ -182,13 +234,13 @@ function JobDetail({ navigation, route }) {
               {showAboutCompany && (
                 <AccordianContent>
                   <TitleText>
-                    Address : <InfoText>{job.company.address}</InfoText>
+                    Address : <InfoText>{job.employer.address}</InfoText>
                   </TitleText>
                   <TitleText>
-                    Email : <InfoText>{job.company.email}</InfoText>
+                    Email : <InfoText>{job.employer.email}</InfoText>
                   </TitleText>
                   <TitleText>
-                    Phone : <InfoText>{job.company.phone}</InfoText>
+                    Phone : <InfoText>{job.employer.phone}</InfoText>
                   </TitleText>
                 </AccordianContent>
               )}
@@ -204,7 +256,21 @@ function JobDetail({ navigation, route }) {
           <AppBtn title="Appy for Job" onPress={applyForJob} />
         </View>
         {/* job apply btn */}
-      </ScrollView>
+      </ScrollView>):(
+        <View style={{
+          flex:1,
+          alignContent:"center",
+          justifyContent:"center",
+        }}>
+        <ActivityIndicator
+        size={80}
+        color={DefaultThemeColors.headerBg}
+        
+        />
+        </View>
+      )
+     }
+      
     </ContainerFluid>
   );
 }

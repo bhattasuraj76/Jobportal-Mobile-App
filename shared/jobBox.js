@@ -18,20 +18,20 @@ function JobBox({ job , onPress}) {
         style={styles.logo}
       />
       <View style={styles.jobInfo}>
-        <TouchableOpacity onPress={() => onPress(job)}>
+        <TouchableOpacity onPress={() => onPress(job.slug)}>
           <AppText size={18} color="info" family="semi-bold">
             {job.title}
           </AppText>
         </TouchableOpacity>
         <AppText color="secondary" weight="600" size={15} family="semi-bold">
-          {job.company.name}
+          {job.employer.name}
         </AppText>
 
         <View style={styles.jobInfoBody}>
           <View style={globalStyles.rowAlignCenter}>
             <Icon name="location-on" size={18} color="#666666" />
             <AppText color="secondary" size={14}>
-              <Text style="marginLeft: 5"> {job.company.address}</Text>
+              <Text style="marginLeft: 5"> {job.employer.address}</Text>
             </AppText>
           </View>
           <View style={globalStyles.rowAlignCenter}>

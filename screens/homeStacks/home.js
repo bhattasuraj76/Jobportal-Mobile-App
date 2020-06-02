@@ -7,104 +7,47 @@ import { useFocusEffect } from "@react-navigation/native";
 
 function Home({ navigation, route }) {
   const [jobs, setJobs] = useState([
-    {
-      id: 1,
-      title: "Web Developer",
-      salary: "Rs. 20,000",
-      category: "It/Computing",
-      type: "Full Time",
-      level: "Mid Level",
-      education: "BIT/BIM",
-      experience: "2-3 years",
-      deadline: "2 weeks from now",
-      description: "Lorem ipsum",
-      company: {
-        name: "ABC Company",
-        address: "Samakhusi, Kathmandu",
-        email: "xyz@gmail.com",
-        phone: "+977-9890000000",
-      },
-    },
-    {
-      id: 2,
-      title: "Web Developer",
-      salary: "Rs. 20,000",
-      category: "It/Computing",
-      type: "Full Time",
-      level: "Mid Level",
-      education: "BIT/BIM",
-      experience: "2-3 years",
-      deadline: "2 weeks from now",
-      description: "Lorem ipsum",
-      company: {
-        name: "ABC Company",
-        address: "Samakhusi, Kathmandu",
-        email: "xyz@gmail.com",
-        phone: "+977-9890000000",
-      },
-    },
-    {
-      id: 3,
-      title: "Web Developer",
-      salary: "Rs. 20,000",
-      category: "It/Computing",
-      type: "Full Time",
-      level: "Mid Level",
-      education: "BIT/BIM",
-      experience: "2-3 years",
-      deadline: "2 weeks from now",
-      description: "Lorem ipsum",
-      company: {
-        name: "ABC Company",
-        address: "Samakhusi, Kathmandu",
-        email: "xyz@gmail.com",
-        phone: "+977-9890000000",
-      },
-    },
-    {
-      id: 4,
-      title: "Web Developer",
-      salary: "Rs. 20,000",
-      category: "It/Computing",
-      type: "Full Time",
-      level: "Mid Level",
-      education: "BIT/BIM",
-      experience: "2-3 years",
-      deadline: "2 weeks from now",
-      description: "Lorem ipsum",
-      company: {
-        name: "ABC Company",
-        address: "Samakhusi, Kathmandu",
-        email: "xyz@gmail.com",
-        phone: "+977-9890000000",
-      },
-    },
-    {
-      id: 5,
-      title: "Web Developer",
-      salary: "Rs. 20,000",
-      category: "It/Computing",
-      type: "Full Time",
-      level: "Mid Level",
-      education: "BIT/BIM",
-      experience: "2-3 years",
-      deadline: "2 weeks from now",
-      description: "Lorem ipsum",
-      company: {
-        name: "ABC Company",
-        address: "Samakhusi, Kathmandu",
-        email: "xyz@gmail.com",
-        phone: "+977-9890000000",
-      },
-    },
+   
+    
   ]);
+  
+  useFocusEffect(
+    React.useCallback(() => {
+      let isActive=true;
+      const fetchJob=async()=>{
+    
+        try {
+          let response =await  fetch(
+          'http://jpapi.vertexwebsurf.com/api/mobile-app-home'
+          );
+          let responseJson = await response.json();
+          if (isActive){
+            setJobs(responseJson.jobs);
+            console.log(responseJson);
+          }
+          
+          } catch (error) {
+          console.error(error);
+          }
+        
+      }
+     fetchJob();
+     console.log('ll');
+     
+     return()=>{
+       isActive=false;
+     }
 
+     
+    },[])
+    
+  );
   //navigate to job detail
-  const gotoJobDetail = (job) => {
+  const gotoJobDetail = (jobsLug) => {
     navigation.navigate("HomeTab", {
       screen: "JobDetail",
       params: {
-        job,
+        jobsLug
       },
     });
   };
@@ -145,8 +88,41 @@ function Home({ navigation, route }) {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
 
-    fetchJobs().then(() => setRefreshing(false));
-  }, [refreshing]);
+    // fetchJobs().then(() => setRefreshing(false));
+
+    let isActive=true;
+    const fetchJob=async()=>{
+  
+      try {
+        let response =await  fetch(
+        'http://jpapi.vertexwebsurf.com/api/mobile-app-home'
+        );
+        let responseJson = await response.json();
+        
+          
+            if (isActive){
+            setJobs(responseJson.jobs);
+          setRefreshing(false);
+          console.log(responseJson);
+            }
+          }
+          
+        
+        
+         catch (error) {
+        console.error(error);
+        }
+      
+    }
+   fetchJob();
+   console.log('ll');
+   
+   return()=>{
+     isActive=false;
+     console.log('active status');
+   }
+  },[refreshing]);
+
 
   return (
     <ContainerFluid>
