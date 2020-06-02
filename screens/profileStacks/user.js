@@ -11,7 +11,6 @@ import DefaultDisplayPicture from "../../assets/img/sanj.jpg";
 import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
-import { Assets } from "@react-navigation/stack";
 import { Asset } from "expo-asset";
   
 function User({ navigation }) {

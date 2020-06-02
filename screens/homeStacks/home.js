@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { View, ScrollView, FlatList, RefreshControl } from "react-native";
+import { View, FlatList, RefreshControl, StyleSheet } from "react-native";
 import ContainerFluid from "../../shared/containerFluid";
 import JobBox from "../../shared/jobBox";
 import AppText from "../../shared/appText";
 import { useFocusEffect } from "@react-navigation/native";
 import Axios from "axios";
 import { apiPath } from "../../utils/constants/Consts";
+import Loader from "../../shared/loader";
 
 function Home({ navigation, route }) {
+  const [isLoading, setIsLoading] = useState(true);
   const [jobs, setJobs] = useState([]);
 
   //fetch jobs
@@ -38,7 +40,7 @@ function Home({ navigation, route }) {
         fetchJobs()
         .then((jobs) => {
           if (isActive && jobs) setJobs(jobs);
-        })
+        }).then(() => setIsLoading(false))
 
       return () => {
         isActive = false;
@@ -66,6 +68,7 @@ function Home({ navigation, route }) {
     route.params?.level,
   ]);
 
+
   //handle refresh and refetch jobs
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -80,58 +83,47 @@ function Home({ navigation, route }) {
 
   return (
     <ContainerFluid>
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={["red", "blue"]}
-          />
-        }
-      >
-        {/* login */}
-        {/* <Button
-          title="login"
-          onPress={() => navigation.navigate("ProfileTab", { screen: "Login" })}
-        />
-        <View style={{ color: "red", borderColor: "red", borderWidth: 1 }}>
-          <Button
-            title="Register"
-            onPress={() =>
-              navigation.navigate("ProfileTab", { screen: "Register" })
-            }
-          />
-        </View> */}
-
-        {/* jobs count */}
-        <View
-          style={{
-            paddingVertical: 7,
-            paddingLeft: 20,
-            borderBottomColor: "#c1c1c1",
-            borderBottomWidth: 1,
-          }}
-        >
-          <AppText size={16}>{jobs.length} jobs available</AppText>
-        </View>
-        {/* jobs count */}
-
-        {/* job list start */}
-        <View style={{ marginBottom: 30 }}>
+      <View style={styles.container}>
+        {isLoading ? (
+         <Loader />
+        ) : (
+          // job list
           <FlatList
-            nestedScrollEnabled
-            keyExtractor={(item) => item.id.toString()}
             data={jobs}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <JobBox job={item} onPress={gotoJobDetail} />
             )}
+            ListHeaderComponent={() => (
+              <View style={styles.jobsCountWrap}>
+                <AppText size={16}>{jobs.length} jobs available</AppText>
+              </View>
+            )}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={["red", "blue"]}
+              />
+            }
           />
-        </View>
-        {/* job list start */}
-      </ScrollView>
+          // job list
+        )}
+      </View>
     </ContainerFluid>
   );
 }
 
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 30,
+    flex: 1,
+  },
+  jobsCountWrap: {
+    paddingVertical: 7,
+    paddingLeft: 20,
+    borderBottomColor: "#c1c1c1",
+    borderBottomWidth: 1,
+  },
+});
 export default Home;

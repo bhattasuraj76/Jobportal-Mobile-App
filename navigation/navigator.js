@@ -6,7 +6,6 @@ import JobDetail from "../screens/homeStacks/jobDetail";
 import Search from "../screens/searchStacks/search";
 import Login from "../screens/profileStacks/login";
 import Register from "../screens/profileStacks/register";
-import ChangeDisplayPicture from "../screens/profileStacks/changeDisplayPicture";
 import EditProfile from "../screens/profileStacks/editProfile";
 import ChangePassword from "../screens/profileStacks/changePassword";
 import Home from "../screens/homeStacks/home";
@@ -113,13 +112,6 @@ function Navigator() {
         {/* check if user is logged in */}
         {isUserLoggedIn ? (
           <>
-            <Stack.Screen
-              name="ChangeDisplayPicture"
-              component={ChangeDisplayPicture}
-              options={{
-                title: "Change Display Picture"
-              }}
-            />
             <Stack.Screen
               name="BasicInfo"
               component={BasicInfo}

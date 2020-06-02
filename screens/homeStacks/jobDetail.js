@@ -5,8 +5,6 @@ import {
   Image,
   StyleSheet,
   ImageBackground,
-  ActivityIndicator,
-  Button,
 } from "react-native";
 import ContainerFluid from "../../shared/containerFluid";
 import { images, globalStyles } from "../../styles/globalStyles";
@@ -19,10 +17,10 @@ import {
   DarkThemeColors,
 } from "../../utils/constants/Colors";
 import { ThemeContext } from "../../contexts/ThemeContext";
-import { AppLoading } from "expo";
-import { useFocusEffect } from "@react-navigation/native";
 import Axios from "axios";
 import { apiPath } from "../../utils/constants/Consts";
+import { Asset } from "expo-asset";
+import Loader from "../../shared/loader";
 
 function JobDetail({ navigation, route }) {
   //retun null if there no job slug
@@ -30,10 +28,16 @@ function JobDetail({ navigation, route }) {
     return null;
   }
 
+  //state
+  const [isLoading, setIsLoading] = useState(true);
   const [job, setJob] = useState("");
   const [showJobInfo, setShowJobInfo] = useState(true);
   const [showJobDescription, setshowDesription] = useState(false);
   const [showAboutCompany, setShowAboutCompany] = useState(false);
+
+  //default logo and cover uri
+  const defaultCoverUri = Asset.fromModule(images.defaultCover).uri;
+  const defaultLogoUri = Asset.fromModule(images.defaultLogo).uri;
 
   //fetch job detail
   const fetchJobDetail = async (slug) => {
@@ -54,26 +58,31 @@ function JobDetail({ navigation, route }) {
 
   //fetch job detail on first render and job slug change only
   useEffect(() => {
-    fetchJobDetail(route.params.jobSlug).then(job => {
+    fetchJobDetail(route.params.jobSlug).then((job) => {
       if (job) setJob(job);
-    });
-  }, [route.params.jobSlug]);
+    }).then(() => setIsLoading(false));
+  }, [route]);
 
   return (
     <ContainerFluid>
-      {job ? (
+      {isLoading ? (
+       <Loader />
+      ) : (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           {/* company cover */}
-          <Button
-            title="goto job"
-            onPress={() => navigation.setParams({ jobSlug: "38530" })}
-          />
           <View style={{ marginBottom: 20 }}>
             <ImageBackground
-              source={images.defaultCover}
+              source={{
+                uri: job.employer.logo ? job.employer.logo : defaultCoverUri,
+              }}
               style={styles.companyCover}
             >
-              <Image source={images.defaultLogo} style={styles.companyLogo} />
+              <Image
+                source={{
+                  uri: job.employer.logo ? job.employer.logo : defaultLogoUri,
+                }}
+                style={styles.companyLogo}
+              />
             </ImageBackground>
           </View>
           {/* company cover */}
@@ -243,16 +252,6 @@ function JobDetail({ navigation, route }) {
           </View>
           {/* job apply btn */}
         </ScrollView>
-      ) : (
-        <View
-          style={{
-            flex: 1,
-            alignContent: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ActivityIndicator size={80} color={DefaultThemeColors.headerBg} />
-        </View>
       )}
     </ContainerFluid>
   );
@@ -264,58 +263,22 @@ function Accordian({ children }) {
     ? DarkThemeColors.primaryBg
     : DefaultThemeColors.primaryBg;
   return (
-    <View
-      style={{
-        backgroundColor,
-        borderColor: "#ccc",
-        borderWidth: 1,
-        borderBottomWidth: 0,
-      }}
-    >
-      {children}
-    </View>
+    <View style={{ ...styles.accordian, backgroundColor }}>{children}</View>
   );
 }
 
 function AccordianHeader({ children }) {
-  return (
-    <View
-      style={{
-        paddingHorizontal: 20,
-        paddingVertical: 5,
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexDirection: "row",
-      }}
-    >
-      {children}
-    </View>
-  );
+  return <View style={styles.accordianHeader}>{children}</View>;
 }
 
 function AccordianContent({ children }) {
-  return (
-    <View
-      style={{
-        paddingHorizontal: 20,
-        paddingVertical: 20,
-        borderColor: "#ccc",
-        borderWidth: 0,
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
-      }}
-    >
-      {children}
-    </View>
-  );
+  return <View style={styles.accordianContent}>{children}</View>;
 }
 
 function TitleText({ children }) {
   return (
     <Text
-      style={{
-        marginBottom: 15,
-      }}
+      style={styles.titleText}
     >
       <AppText size={16} color="primary">
         {children}
@@ -327,9 +290,7 @@ function TitleText({ children }) {
 function InfoText({ children }) {
   return (
     <Text
-      style={{
-        paddingLeft: 20,
-      }}
+      style={styles.infoText}
     >
       <AppText size={18} color="info">
         {children}
@@ -351,11 +312,14 @@ const styles = StyleSheet.create({
     bottom: -20,
     left: 20,
   },
-  accordian: { borderColor: "#ccc", borderWidth: 1, borderBottomWidth: 0 },
-  accordianTitle: {
+  accordian: {
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderBottomWidth: 0,
+  },
+  accordianHeader: {
     paddingHorizontal: 20,
     paddingVertical: 5,
-    backgroundColor: "#fff",
     justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
@@ -363,10 +327,17 @@ const styles = StyleSheet.create({
   accordianContent: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-    backgroundColor: "#fff",
-    borderTopColor: "#ccc",
+    borderColor: "#ccc",
+    borderWidth: 0,
     borderTopWidth: 1,
+    borderBottomWidth: 1,
   },
+  infoText: {
+    paddingLeft: 20,
+  },
+  titleText: {
+    marginBottom: 15,
+  }
 });
 
 export default JobDetail;
