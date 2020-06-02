@@ -1,56 +1,50 @@
 import React, { useState } from "react";
-import { View, ScrollView, FlatList , RefreshControl } from "react-native";
+import { View, ScrollView, FlatList, RefreshControl } from "react-native";
 import ContainerFluid from "../../shared/containerFluid";
 import JobBox from "../../shared/jobBox";
 import AppText from "../../shared/appText";
 import { useFocusEffect } from "@react-navigation/native";
+import Axios from "axios";
+import { apiPath } from "../../utils/constants/Consts";
 
 function Home({ navigation, route }) {
-  const [jobs, setJobs] = useState([
-   
-    
-  ]);
-  
-  useFocusEffect(
-    React.useCallback(() => {
-      let isActive=true;
-      const fetchJob=async()=>{
-    
-        try {
-          let response =await  fetch(
-          'http://jpapi.vertexwebsurf.com/api/mobile-app-home'
-          );
-          let responseJson = await response.json();
-          if (isActive){
-            setJobs(responseJson.jobs);
-            console.log(responseJson);
-          }
-          
-          } catch (error) {
-          console.error(error);
-          }
-        
-      }
-     fetchJob();
-     console.log('ll');
-     
-     return()=>{
-       isActive=false;
-     }
+  const [jobs, setJobs] = useState([]);
 
-     
-    },[])
-    
-  );
+  //fetch jobs
+  const fetchJobs = async () => {
+    try {
+      let data = await Axios.get(`${apiPath}/mobile-app-home`).then(res => res.data);
+      if (data.resp == 1) return data.jobs;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   //navigate to job detail
-  const gotoJobDetail = (jobsLug) => {
+  const gotoJobDetail = (jobSlug) => {
     navigation.navigate("HomeTab", {
       screen: "JobDetail",
       params: {
-        jobsLug
+        jobSlug,
       },
     });
   };
+
+  //fetch jobs on screen foucus
+  useFocusEffect(
+    React.useCallback(() => {
+      let isActive = true;
+
+        fetchJobs()
+        .then((jobs) => {
+          if (isActive && jobs) setJobs(jobs);
+        })
+
+      return () => {
+        isActive = false;
+      };
+    }, [])
+  );
 
   //search jobs on getting params back from search screen
   React.useEffect(() => {
@@ -69,60 +63,20 @@ function Home({ navigation, route }) {
     route.params?.title,
     route.params?.category,
     route.params?.type,
-    route.params?.level
+    route.params?.level,
   ]);
 
-  //handle refresh functionality
+  //handle refresh and refetch jobs
   const [refreshing, setRefreshing] = React.useState(false);
-
-  function fetchJobs(timeout) {
-    return new Promise((resolve) => {
-      setJobs((prevJobs) => {
-        prevJobs.shift();
-        return prevJobs;
-      });
-      return resolve("dsfas");
-    });
-  }
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
 
-    // fetchJobs().then(() => setRefreshing(false));
-
-    let isActive=true;
-    const fetchJob=async()=>{
-  
-      try {
-        let response =await  fetch(
-        'http://jpapi.vertexwebsurf.com/api/mobile-app-home'
-        );
-        let responseJson = await response.json();
-        
-          
-            if (isActive){
-            setJobs(responseJson.jobs);
-          setRefreshing(false);
-          console.log(responseJson);
-            }
-          }
-          
-        
-        
-         catch (error) {
-        console.error(error);
-        }
-      
-    }
-   fetchJob();
-   console.log('ll');
-   
-   return()=>{
-     isActive=false;
-     console.log('active status');
-   }
-  },[refreshing]);
-
+    fetchJobs().then((jobs) => {
+      if (jobs) setJobs(jobs);
+      setRefreshing(false);
+    });
+  }, [refreshing]);
 
   return (
     <ContainerFluid>

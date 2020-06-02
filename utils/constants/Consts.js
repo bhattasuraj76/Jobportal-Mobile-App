@@ -66,4 +66,4 @@ export const DEFAULT_JOB_LEVELS = [
   },
 ];
 
-export const apiPath = "http://jobportal.test";
+export const apiPath = "http://jpapi.vertexwebsurf.com/api";
