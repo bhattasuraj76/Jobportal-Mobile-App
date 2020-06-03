@@ -19,6 +19,7 @@ import useErrorHandler from "../../utils/custom-hooks/ErrorHandler";
 import { serializeErrors } from "../../utils/Helpers";
 import { apiPath } from "../../utils/constants/Consts";
 import Axios from "axios";
+import { globalStyles } from "../../styles/globalStyles";
 
 //login validation schema
 const loginSchema = yup.object({
@@ -88,18 +89,16 @@ function Login({ navigation }) {
   return (
     <ContainerFluid>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View
             style={{
-              flex: 1,
-              paddingHorizontal: 30,
-              paddingVertical: 30,
+              ...globalStyles.authForm,
               backgroundColor: isThemeDark ? "#000" : "#36485f",
-              justifyContent: "center",
             }}
           >
+
+            {error && <ErrorMessage>{error}</ErrorMessage>}
+
             <Formik
               initialValues={{
                 password: "",

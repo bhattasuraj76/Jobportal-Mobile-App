@@ -12,8 +12,9 @@ const styles = StyleSheet.create({
   errorWrapper: {
     backgroundColor: "#ff0000",
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 15,
     alignItems: "center",
+    marginBottom: 20
   },
   errorText: {
     color: "#fff",
