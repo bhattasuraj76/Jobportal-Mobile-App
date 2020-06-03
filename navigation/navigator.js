@@ -6,7 +6,6 @@ import JobDetail from "../screens/homeStacks/jobDetail";
 import Search from "../screens/searchStacks/search";
 import Login from "../screens/profileStacks/login";
 import Register from "../screens/profileStacks/register";
-import EditProfile from "../screens/profileStacks/editProfile";
 import ChangePassword from "../screens/profileStacks/changePassword";
 import Home from "../screens/homeStacks/home";
 import Profile from "../screens/profileStacks/profile";
@@ -32,7 +31,7 @@ function Navigator() {
 
   //user login status
   const isUserLoggedIn = authUser.token ? true : false;
-  
+
   //theme status
   const isThemeDark = theme === "dark" ? true : false;
 
@@ -117,13 +116,6 @@ function Navigator() {
               component={BasicInfo}
               options={{
                 title: "Basic Info",
-              }}
-            />
-            <Stack.Screen
-              name="EditProfile"
-              component={EditProfile}
-              options={{
-                title: "Edit Profile",
               }}
             />
             <Stack.Screen

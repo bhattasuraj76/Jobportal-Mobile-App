@@ -1,6 +1,8 @@
 export const DEFAULT_AUTH_USER = {
   email: "",
   token: "",
+  dispalyPicture: "",
+  name: ""
 };
 
 export const DEFAULT_THEME = "default";

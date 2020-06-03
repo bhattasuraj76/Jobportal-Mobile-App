@@ -121,7 +121,11 @@ function User({ navigation }) {
       {/* top content start */}
       <View>
         <ImageBackground
-          source={{ uri: displayPicture }}
+          source={{
+            uri: authUser.dispalyPicture
+              ? authUser.DisplayPicture
+              : displayPicture,
+          }}
           style={styles.profileBg}
         >
           {/* overlay content start */}
@@ -149,7 +153,11 @@ function User({ navigation }) {
               </View>
 
               <Image
-                source={{ uri: displayPicture }}
+                source={{
+                  uri: authUser.dispalyPicture
+                    ? authUser.DisplayPicture
+                    : displayPicture,
+                }}
                 style={styles.displayPicture}
               />
             </View>
@@ -158,11 +166,11 @@ function User({ navigation }) {
             {/* user info start */}
             <View style={styles.userInfo}>
               <AppText size={22} color="light" family="semi-bold-italic">
-                John Doe
+                {authUser.name ? authUser.name : "John Doe"}
               </AppText>
 
               <AppText size={16} color="light">
-                johndoe@xyz.com
+                {authUser.email ? authUser.email : "xyz@example.com"}
               </AppText>
             </View>
             {/* user info end */}

@@ -1,96 +1,77 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { View, ScrollView, FlatList, RefreshControl } from "react-native";
 import ContainerFluid from "../../shared/containerFluid";
 import JobBox from "../../shared/jobBox";
 import AppText from "../../shared/appText";
 import { useFocusEffect } from "@react-navigation/native";
 import JobAppliedBox from "../../shared/jobAppliedBox";
+import Axios from "axios";
+import { apiPath } from "../../utils/constants/Consts";
+import Loader from "../../shared/loader";
 
 function JobsApplied({ navigation, route }) {
-  const [jobs, setJobs] = useState([
-    {
-      id: 1,
-      title: "Web Developer",
-      salary: "Rs. 20,000",
-      category: "It/Computing",
-      type: "Full Time",
-      level: "Mid Level",
-      education: "BIT/BIM",
-      experience: "2-3 years",
-      deadline: "2 weeks from now",
-      description: "Lorem ipsum",
-      company: {
-        name: "ABC Company",
-        address: "Samakhusi, Kathmandu",
-        email: "xyz@gmail.com",
-        phone: "+977-9890000000",
-      },
-    },
-    {
-      id: 2,
-      title: "Web Developer",
-      salary: "Rs. 20,000",
-      category: "It/Computing",
-      type: "Full Time",
-      level: "Mid Level",
-      education: "BIT/BIM",
-      experience: "2-3 years",
-      deadline: "2 weeks from now",
-      description: "Lorem ipsum",
-      company: {
-        name: "ABC Company",
-        address: "Samakhusi, Kathmandu",
-        email: "xyz@gmail.com",
-        phone: "+977-9890000000",
-      },
-    },
-    {
-      id: 3,
-      title: "Web Developer",
-      salary: "Rs. 20,000",
-      category: "It/Computing",
-      type: "Full Time",
-      level: "Mid Level",
-      education: "BIT/BIM",
-      experience: "2-3 years",
-      deadline: "2 weeks from now",
-      description: "Lorem ipsum",
-      company: {
-        name: "ABC Company",
-        address: "Samakhusi, Kathmandu",
-        email: "xyz@gmail.com",
-        phone: "+977-9890000000",
-      },
-    },
-   
-  ]);
+  const [jobs, setJobs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   //navigate to job detail
-  const gotoJobDetail = (job) => {
+  const gotoJobDetail = (jobSlug) => {
     navigation.navigate("HomeTab", {
       screen: "JobDetail",
       params: {
-        job,
+        jobSlug,
       },
     });
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      let isAcitve = true;
+      if (isAcitve) {
+        _fetchAppliedJobs()
+          .then(jobs => {
+            if (jobs) setJobs(jobs);
+          })
+          .catch((err) => console.log(err))
+          .then(() => setIsLoading(false));
+      }
+      return () => {
+        isAcitve = false;
+      };
+    }, [])
+  );
+
+  const _fetchAppliedJobs = async () => {
+    try {
+      let url = `${apiPath}/jobseeker`;
+      let response = await Axios.get(url).then((res) => res.data);
+      if (response.resp == 1) return response.result.jobs;
+    } catch (err) {
+      if (Axios.isCancel(err)) {
+        console.log("Request Cancelled", err);
+      } else if (err.response) {
+        console.log(err.response.data);
+      } else {
+        console.log("Error", err);
+      }
+    }
+  };
+
   return (
     <ContainerFluid>
-      <View style={{ marginBottom: 30 }}>
-        {/* job list start */}
-
+      {isLoading ? (
+        <Loader />
+      ) : (
+        //  job list start
         <FlatList
-          nestedScrollEnabled
-          keyExtractor={(item) => item.id.toString()}
           data={jobs}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <JobAppliedBox job={item} onPress={gotoJobDetail} />
           )}
+          contentContainerStyle={{ marginBottom: 30 }}
         />
-
-        {/* job list start */}
-      </View>
+        //  job list end
+      )}
     </ContainerFluid>
   );
 }

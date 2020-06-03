@@ -29,6 +29,9 @@ export const globalStyles = StyleSheet.create({
            justifyContent: "center",
            alignItems: "center",
          },
+         flexGrow: {
+            flexGrow: 1 
+         },
          titleText: {
            fontFamily: "open-sans-bold",
            fontSize: 18,

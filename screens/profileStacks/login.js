@@ -88,7 +88,7 @@ function Login({ navigation }) {
 
   return (
     <ContainerFluid>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={globalStyles.flexGrow}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View
             style={{

@@ -7,6 +7,7 @@ import {
   Text,
   StyleSheet,
   Button,
+  ActivityIndicator,
 } from "react-native";
 import AppBtn from "../../shared/appBtn";
 import ErrorText from "../../shared/errorText";
@@ -14,13 +15,19 @@ import ContainerFluid from "../../shared/containerFluid";
 import FormGroup from "../../shared/formGroup";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Formik } from "formik";
+import { Formik, ErrorMessage } from "formik";
 import * as yup from "yup";
 import InputLevel from "../../shared/inputLevel";
 import AppText from "../../shared/appText";
 import HeaderRightActionBtn from "../../shared/headerRightActionBtn";
 import Checkbox from "../../shared/checkbox";
 import BasicFormInput from "../../shared/basicFormInput";
+import { globalStyles } from "../../styles/globalStyles";
+import Axios from "axios";
+import { serializeErrors } from "../../utils/Helpers";
+import { apiPath } from "../../utils/constants/Consts";
+import useErrorHandler from "../../utils/custom-hooks/ErrorHandler";
+import { useFocusEffect } from "@react-navigation/native";
 
 //register validation schema
 const basicInfoSchema = yup.object({
@@ -40,6 +47,10 @@ const gender = [
 function BasicInfo({ navigation }) {
   const { isThemeDark } = useContext(ThemeContext);
   const [isEditing, setIsEditing] = useState(false);
+
+  const { error, showError } = useErrorHandler(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [user, setUser] = useState({
     firstName: "John",
     lastName: "Doe",
@@ -48,10 +59,11 @@ function BasicInfo({ navigation }) {
     gender: "Male",
     description: "I am web developer",
   });
-  //creates refrence to formik element
- const formikElement = createRef(null);
 
-  //customize header right buttons to perfom form actons
+  //creates refrence to formik element
+  const formikElement = createRef(null);
+
+  //customize header right buttons right before componenet mount to perfom form actons
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -63,20 +75,28 @@ function BasicInfo({ navigation }) {
             />
           ) : (
             <>
-              <HeaderRightActionBtn
-                title="Cancel"
-                onPress={() => setIsEditing(!isEditing)}
-              />
-              <Text style={{ marginHorizontal: 5 }}>
-                <AppText size={20} color="light">
-                  |
-                </AppText>
-              </Text>
+              {isSubmitting ? (
+                <>
+                  <ActivityIndicator size={20} />
+                </>
+              ) : (
+                <>
+                  <HeaderRightActionBtn
+                    title="Cancel"
+                    onPress={() => setIsEditing(!isEditing)}
+                  />
+                  <Text style={{ marginHorizontal: 5 }}>
+                    <AppText size={20} color="light">
+                      |
+                    </AppText>
+                  </Text>
 
-              <HeaderRightActionBtn
-                title="Save"
-                onPress={() => formikElement.current.handleSubmit()}
-              />
+                  <HeaderRightActionBtn
+                    title="Save"
+                    onPress={() => formikElement.current.handleSubmit()}
+                  />
+                </>
+              )}
             </>
           )}
         </View>
@@ -84,37 +104,96 @@ function BasicInfo({ navigation }) {
     });
   }, [navigation, isEditing]);
 
-  //save user info
-  const saveUserInfo = (values, actions) => {
-    console.log(values);
-    const { firstName, lastName, gender, address, phone, description } = values;
+  //fetch user data
+  useFocusEffect(
+    React.useCallback(() => {
+      const _fetchUserData = async () => {
+        let url = `${apiPath}/jobseeker/edit-profile`;
+        let response = await Axios.get(url).then((res) => res.data);
+        console.log(response);
+        try {
+          if (response.resp == 1) return response.user;
+        } catch (err) {
+          console.log("Error", err);
+        }
+      };
 
-    const resp = 1; //response form server
-    if (resp == 1) {
-      //update user
-      setUser(values);
-      setIsEditing(false);
-      //alert user
-      alert("Updated Basic Info Successfully");
-    } else {
-      alert("Update Failed");
+      _fetchUserData()
+        .then((user) => {
+          if (!user) return;
+
+          const userData = {
+            firstName: user.first_name,
+            lastName: user.last_name,
+            phone: user.phone,
+            address: user.address,
+            gender: user.gender,
+            description: user.description,
+          };
+          setUser(userData);
+        })
+        .catch((err) => console.log(err));
+    }, [])
+  );
+ 
+
+  //handle profile update
+  const handleProfileUpdate = (values, actions) => {
+    setIsSubmitting(true);
+    const { firstName, lastName, address, phone, gender, description } = values;
+
+    //perform api call to update password
+    _saveBasicInfo({
+      first_name: firstName,
+      last_name: lastName,
+      address: address,
+      phone: phone,
+      gender: gender,
+      description: description,
+    })
+      .then((message) => {
+        if (message) alert(message);
+      })
+      .catch((err) => console.log(err))
+      .then(() => setIsSubmitting(false));
+  };
+
+  //save user data
+  const _saveBasicInfo = async (data) => {
+    try {
+      let url = `${apiPath}/edit-profile`;
+      let response = await Axios.post(url, data).then((res) => res.data);
+      if (response.resp == 1) return response.message;
+    } catch (err) {
+      if (Axios.isCancel(err)) {
+        console.log("Request Cancelled", err);
+      } else if (err.response) {
+        if (err.response.data.resp == 0)
+          showError(serializeErrors({ error: err.response.data.message }));
+        else showError(serializeErrors(err.response.data));
+      } else {
+        console.log("Error", err);
+      }
     }
   };
 
+  //update gender formik value
   const updateGender = (handleChange, value) => {
     handleChange(value);
   };
 
   return (
     <ContainerFluid>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={globalStyles.flexGrow}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.basicInfoWrapper}>
+            {error && <ErrorMessage>{error} </ErrorMessage>}
+
             <Formik
               initialValues={{ ...user }}
               validationSchema={basicInfoSchema}
               onSubmit={(values, actions) => {
-                saveUserInfo(values, actions);
+                handleProfileUpdate(values, actions);
               }}
               innerRef={formikElement}
             >
@@ -125,7 +204,6 @@ function BasicInfo({ navigation }) {
                 handleChange,
                 handleBlur,
                 handleSubmit,
-                isSubmitting,
               }) => (
                 <>
                   <FormGroup>
@@ -202,9 +280,7 @@ function BasicInfo({ navigation }) {
                           isEditing={false}
                         />
                       )}
-                      {touched.phone && errors.phone ? (
-                        <ErrorText>{errors.phone}</ErrorText>
-                      ) : null}
+                      
                     </View>
                   </FormGroup>
 
