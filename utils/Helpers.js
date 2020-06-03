@@ -17,7 +17,7 @@ export const getStoredAuthUser = async () => {
 };
 
 /** Return theme from local storage */
-export const getStoredTheme =  () => {
+export const getStoredTheme = () => {
   // try {
   //   let theme = await AsyncStorage.getItem("theme");
   //   if (theme) {
@@ -41,4 +41,9 @@ export const apiRequest = async (url, method, bodyParams) => {
     body: bodyParams ? JSON.stringify(bodyParams) : undefined,
   });
   return await response.json();
+};
+
+/** stringify errors */
+export const serializeErrors = (errors) => {
+  return Object.values(errors).join(" ");
 };

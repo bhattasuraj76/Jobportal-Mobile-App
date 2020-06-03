@@ -12,7 +12,7 @@ import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import { Asset } from "expo-asset";
-  
+
 function User({ navigation }) {
   const imageURI = Asset.fromModule(require("../../assets/img/sanj.jpg")).uri;
 
@@ -25,6 +25,7 @@ function User({ navigation }) {
     getPermissionAsync();
   }, []);
 
+  //ask for user permission for camera roll
   const getPermissionAsync = async () => {
     if (Constants.platform.ios) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -34,6 +35,7 @@ function User({ navigation }) {
     }
   };
 
+  //open image picker
   const _pickImage = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -52,9 +54,21 @@ function User({ navigation }) {
     }
   };
 
+  //change display picture
   const _changeDisplayPicture = () => {
     _pickImage();
   };
+
+  //logout user
+    const logoutUser = () => {
+      //destroy user value
+      setUnauthStatus().then(() => {
+        //navigate to profile
+        navigation.navigate("ProfileTab", {
+          screen: "Profile",
+        });
+      });
+    };
 
   const list = [
     {
@@ -97,14 +111,10 @@ function User({ navigation }) {
     {
       title: "Logout",
       icon: "history",
-      onPress: () => {
-        setUnauthStatus();
-        navigation.navigate("ProfileTab", {
-          screen: "Profile",
-        });
-      },
+      onPress: () => logoutUser(),
     },
   ];
+
 
   return (
     <ScrollView>

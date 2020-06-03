@@ -3,7 +3,7 @@ const useErrorHandler = (initialState) => {
   const [error, setError] = React.useState(initialState);
   const showError = (errorMessage) => {
     setError(errorMessage);
-    window.setTimeout(() => {
+    setTimeout(() => {
       setError(null);
     }, 3000);
   };

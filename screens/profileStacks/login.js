@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   TouchableWithoutFeedback,
@@ -14,6 +14,11 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { Formik } from "formik";
 import * as yup from "yup";
 import Input from "../../shared/input";
+import ErrorMessage from "../../shared/errorMessage";
+import useErrorHandler from "../../utils/custom-hooks/ErrorHandler";
+import { serializeErrors } from "../../utils/Helpers";
+import { apiPath } from "../../utils/constants/Consts";
+import Axios from "axios";
 
 //login validation schema
 const loginSchema = yup.object({
@@ -27,31 +32,64 @@ const loginSchema = yup.object({
 function Login({ navigation }) {
   const { isThemeDark } = useContext(ThemeContext);
   const { setAuthStatus } = useContext(AuthContext);
+  const { error, showError } = useErrorHandler(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  //handle user login form submit
   const handleLogin = (values, actions) => {
+    setIsSubmitting(true);
     const { email, password } = values;
 
-    const resp = 1; //response form server
-    if (resp == 1) {
-      //reset form
-      actions.resetForm();
-      //update authUser value
-      setAuthStatus({
-        email: "xyz@gmail.com",
-        token: "fsadklasdjlfa",
+    _loginUser({ email, password, entity: "jobseeker" })
+      .then((user) => {
+        console.log(user);
+        if (user && user.token) {
+          //update authUser value
+          setAuthStatus({
+            email: user.email,
+            token: user.token,
+          }).then(() => {
+            //navigate to profile
+            navigation.navigate("ProfileTab", {
+              screen: "Profile",
+            });
+          });
+        }
+      })
+      .catch((err) => console.log("Error"))
+      .then(() => {
+        setIsSubmitting(false);
+         //reset form
+          actions.resetForm();
       });
-      //navigate to profile
-      navigation.navigate("ProfileTab", {
-        screen: "Profile",
-      });
-    } else {
-      alert("Invalid email or password");
+  };
+
+  //aync login user
+  const _loginUser = async (data) => {
+    let url = `${apiPath}/login`;
+
+    try {
+      const result = await Axios.post(url, data).then((res) => res.data);
+      if (result.resp == 1) return result.user;
+    } catch (err) {
+      if (Axios.isCancel(err)) {
+        console.log("Request cancelled");
+      } else if (err.response) {
+        console.log(err.response.data);
+        if (err.response.data.resp == 0)
+          showError(serializeErrors({error : err.response.data.message}))
+        else showError(serializeErrors(err.response.data))
+      } else {
+        console.log(err);
+      }
     }
   };
 
   return (
     <ContainerFluid>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View
             style={{
@@ -79,7 +117,6 @@ function Login({ navigation }) {
                 handleChange,
                 handleBlur,
                 handleSubmit,
-                isSubmitting,
               }) => (
                 <>
                   <FormGroup>
@@ -111,7 +148,7 @@ function Login({ navigation }) {
                     <AppBtn
                       title="Login"
                       onPress={handleSubmit}
-                      disabled={isSubmitting}
+                      disabled={false}
                     />
                   </View>
                 </>

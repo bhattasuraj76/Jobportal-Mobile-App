@@ -7,8 +7,7 @@ import User from "./user";
 function Profile({ navigation }) {
   const { authUser, setUnauthStatus } = useContext(AuthContext);
 
-  const isUserLoggedIn = true;
-  // const isUserLoggedIn = authUser.token ? true : false;
+  const isUserLoggedIn = authUser.token ? true : false;
 
   return (
     <View style={{ flex: 1 }}>

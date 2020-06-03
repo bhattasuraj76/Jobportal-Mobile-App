@@ -31,8 +31,8 @@ function Navigator() {
   const { authUser } = useContext(AuthContext);
 
   //user login status
-  const isUserLoggedIn = true;
-  // const isUserLoggedIn = authUser.token ? true : false;
+  const isUserLoggedIn = authUser.token ? true : false;
+  
   //theme status
   const isThemeDark = theme === "dark" ? true : false;
 

@@ -1,11 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  ImageBackground,
-} from "react-native";
+import { View, Text, Image, StyleSheet, ImageBackground } from "react-native";
 import ContainerFluid from "../../shared/containerFluid";
 import { images, globalStyles } from "../../styles/globalStyles";
 import AppText from "../../shared/appText";
@@ -58,15 +52,18 @@ function JobDetail({ navigation, route }) {
 
   //fetch job detail on first render and job slug change only
   useEffect(() => {
-    fetchJobDetail(route.params.jobSlug).then((job) => {
-      if (job) setJob(job);
-    }).then(() => setIsLoading(false));
+    fetchJobDetail(route.params.jobSlug)
+      .then((job) => {
+        if (job) setJob(job);
+      })
+      .catch((err) => console.log(err))
+      .then(() => setIsLoading(false));
   }, [route]);
 
   return (
     <ContainerFluid>
       {isLoading ? (
-       <Loader />
+        <Loader />
       ) : (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           {/* company cover */}
@@ -277,9 +274,7 @@ function AccordianContent({ children }) {
 
 function TitleText({ children }) {
   return (
-    <Text
-      style={styles.titleText}
-    >
+    <Text style={styles.titleText}>
       <AppText size={16} color="primary">
         {children}
       </AppText>
@@ -289,9 +284,7 @@ function TitleText({ children }) {
 
 function InfoText({ children }) {
   return (
-    <Text
-      style={styles.infoText}
-    >
+    <Text style={styles.infoText}>
       <AppText size={18} color="info">
         {children}
       </AppText>
@@ -337,7 +330,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     marginBottom: 15,
-  }
+  },
 });
 
 export default JobDetail;

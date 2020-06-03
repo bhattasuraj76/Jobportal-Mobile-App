@@ -15,7 +15,9 @@ function Home({ navigation, route }) {
   //fetch jobs
   const fetchJobs = async () => {
     try {
-      let data = await Axios.get(`${apiPath}/mobile-app-home`).then(res => res.data);
+      let data = await Axios.get(`${apiPath}/mobile-app-home`).then(
+        (res) => res.data
+      );
       if (data.resp == 1) return data.jobs;
     } catch (err) {
       console.error(err);
@@ -37,10 +39,12 @@ function Home({ navigation, route }) {
     React.useCallback(() => {
       let isActive = true;
 
-        fetchJobs()
-        .then((jobs) => {
+      fetchJobs()
+        .then(jobs => {
           if (isActive && jobs) setJobs(jobs);
-        }).then(() => setIsLoading(false))
+        })
+        .catch(err => console.log(err))
+        .then(() => setIsLoading(false));
 
       return () => {
         isActive = false;
@@ -68,7 +72,6 @@ function Home({ navigation, route }) {
     route.params?.level,
   ]);
 
-
   //handle refresh and refetch jobs
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -85,7 +88,7 @@ function Home({ navigation, route }) {
     <ContainerFluid>
       <View style={styles.container}>
         {isLoading ? (
-         <Loader />
+          <Loader />
         ) : (
           // job list
           <FlatList
