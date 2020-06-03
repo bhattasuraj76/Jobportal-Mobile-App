@@ -43,12 +43,14 @@ function Login({ navigation }) {
     _loginUser({ email, password, entity: "jobseeker" })
       .then((user) => {
         console.log(user);
+        //update authUser value provided user and user token
         if (user && user.token) {
-          //update authUser value
           setAuthStatus({
             email: user.email,
             token: user.token,
           }).then(() => {
+            //reset form
+            actions.resetForm();
             //navigate to profile
             navigation.navigate("ProfileTab", {
               screen: "Profile",
@@ -59,8 +61,6 @@ function Login({ navigation }) {
       .catch((err) => console.log("Error"))
       .then(() => {
         setIsSubmitting(false);
-         //reset form
-          actions.resetForm();
       });
   };
 
@@ -77,8 +77,8 @@ function Login({ navigation }) {
       } else if (err.response) {
         console.log(err.response.data);
         if (err.response.data.resp == 0)
-          showError(serializeErrors({error : err.response.data.message}))
-        else showError(serializeErrors(err.response.data))
+          showError(serializeErrors({ error: err.response.data.message }));
+        else showError(serializeErrors(err.response.data));
       } else {
         console.log(err);
       }

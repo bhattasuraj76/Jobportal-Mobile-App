@@ -57,7 +57,9 @@ function Register({ navigation }) {
    
     _regitserUser(userRegisterData)
       .then((res) => {
+        //show success message
         if (res) alert(res);
+        //reset form
         actions.resetForm();
       })
       .then(() => {
