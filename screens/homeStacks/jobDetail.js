@@ -148,7 +148,7 @@ function JobDetail({ navigation, route }) {
                       Type : <InfoText>{job.type}</InfoText>
                     </TitleText>
                     <TitleText>
-                      Education : <InfoText>{job.education}</InfoText>
+                      Education : <InfoText>{job.qualification}</InfoText>
                     </TitleText>
                     <TitleText>
                       Experience : <InfoText>{job.experience}</InfoText>
