@@ -28,8 +28,8 @@ function RootContaienr() {
 
   useEffect(() => {
     setAuthStatus({
-      email: "a@gmail.com",
-      token: "YVROUjk3THlqcnROa084am1rZ290NU55M1dLdHR1RFVJb0ZjRlljbg==",
+      email: "jobseeker@test.com",
+      token: "djFJUmxJVVVGeTdaaXBaUzNpTWtWbUpPZUxXRm01Nk8zbnRESldoaw==",
       entity: "jobseeker",
     });
   }, []);

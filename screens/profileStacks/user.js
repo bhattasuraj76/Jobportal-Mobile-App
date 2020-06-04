@@ -111,7 +111,7 @@ function User({ navigation }) {
     {
       title: "Logout",
       icon: "history",
-      onPress: () => logoutUser(),
+      onPress: () => console.log('logout'),
     },
   ];
 
