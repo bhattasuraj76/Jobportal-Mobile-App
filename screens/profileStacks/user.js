@@ -12,6 +12,7 @@ import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import { Asset } from "expo-asset";
+import RNFetchBlob from 'react-native-fetch-blob';
 
 function User({ navigation }) {
   const imageURI = Asset.fromModule(require("../../assets/img/sanj.jpg")).uri;
@@ -56,7 +57,20 @@ function User({ navigation }) {
 
   //change display picture
   const _changeDisplayPicture = () => {
-    _pickImage();
+    // _pickImage();
+    RNFetchBlob.fetch('POST', ' http://jpapi.vertexwebsurf.com/api/jobseeker/edit-profile', {
+      Authorization : "Bearer access-token",
+      otherHeader : "foo",
+      'Content-Type' : 'multipart/form-data',
+    }, [
+    
+      { name : 'image-png', filename : 'image-png.png', type:'image/png', data:},
+     
+    ]).then((resp) => {
+      // ...
+    }).catch((err) => {
+      // ...
+    })
   };
 
   //logout user
