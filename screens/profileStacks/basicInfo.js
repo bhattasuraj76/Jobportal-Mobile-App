@@ -28,40 +28,39 @@ import { serializeErrors } from "../../utils/Helpers";
 import { apiPath } from "../../utils/constants/Consts";
 import useErrorHandler from "../../utils/custom-hooks/ErrorHandler";
 import { useFocusEffect } from "@react-navigation/native";
+import VerticalDivider from "../../shared/verticalDivider";
 
 //register validation schema
 const basicInfoSchema = yup.object({
   firstName: yup.string().required("First name is required"),
   lastName: yup.string().required("Last name is required"),
-  address: yup.string().required("Phone number is required"),
-  phone: yup.string().required("Address is required"),
-  gender: yup.string().required("Bio is required"),
+  address: yup.string().nullable(),
+  phone: yup.string().nullable(),
+  bio: yup.string().nullable(),
 });
 
 const gender = [
-  { label: "Male", value: "Male" },
-  { label: "Female", value: "Female" },
-  { label: "Others", value: "None" },
+  { label: "Male", value: "male" },
+  { label: "Female", value: "female" },
+  { label: "Others", value: "other" },
 ];
 
 function BasicInfo({ navigation }) {
   const { isThemeDark } = useContext(ThemeContext);
   const [isEditing, setIsEditing] = useState(false);
-
+  //creates refrence to formik element
+  const formikElement = createRef(null);
   const { error, showError } = useErrorHandler(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [user, setUser] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    phone: "9860536208",
-    address: "Kathmandu",
-    gender: "Male",
-    description: "I am web developer",
+    firstName: "",
+    lastName: "",
+    phone: "",
+    address: "",
+    gender: "",
+    description: "",
   });
-
-  //creates refrence to formik element
-  const formikElement = createRef(null);
 
   //customize header right buttons right before componenet mount to perfom form actons
   React.useLayoutEffect(() => {
@@ -77,7 +76,7 @@ function BasicInfo({ navigation }) {
             <>
               {isSubmitting ? (
                 <>
-                  <ActivityIndicator size={20} />
+                  <ActivityIndicator size={25} color="#fff" />
                 </>
               ) : (
                 <>
@@ -85,12 +84,7 @@ function BasicInfo({ navigation }) {
                     title="Cancel"
                     onPress={() => setIsEditing(!isEditing)}
                   />
-                  <Text style={{ marginHorizontal: 5 }}>
-                    <AppText size={20} color="light">
-                      |
-                    </AppText>
-                  </Text>
-
+                  <VerticalDivider />
                   <HeaderRightActionBtn
                     title="Save"
                     onPress={() => formikElement.current.handleSubmit()}
@@ -102,16 +96,16 @@ function BasicInfo({ navigation }) {
         </View>
       ),
     });
-  }, [navigation, isEditing]);
+  }, [navigation, isEditing, isSubmitting, formikElement]);
 
-  //fetch user data
+  //fetch user data upon screen foucus
   useFocusEffect(
     React.useCallback(() => {
+      //async fetch user data
       const _fetchUserData = async () => {
-        let url = `${apiPath}/jobseeker/edit-profile`;
-        let response = await Axios.get(url).then((res) => res.data);
-        console.log(response);
         try {
+          let url = `${apiPath}/jobseeker/edit-profile`;
+          let response = await Axios.get(url).then((res) => res.data);
           if (response.resp == 1) return response.user;
         } catch (err) {
           console.log("Error", err);
@@ -121,38 +115,58 @@ function BasicInfo({ navigation }) {
       _fetchUserData()
         .then((user) => {
           if (!user) return;
+          const {
+            first_name = "",
+            last_name = "",
+            phone = "",
+            address = "",
+            gender = "",
+            description = "",
+          } = user;
 
-          const userData = {
-            firstName: user.first_name,
-            lastName: user.last_name,
-            phone: user.phone,
-            address: user.address,
-            gender: user.gender,
-            description: user.description,
-          };
-          setUser(userData);
+          setUser({
+            firstName: first_name,
+            lastName: last_name,
+            phone,
+            address,
+            gender,
+            description,
+          });
         })
         .catch((err) => console.log(err));
     }, [])
   );
- 
 
   //handle profile update
   const handleProfileUpdate = (values, actions) => {
     setIsSubmitting(true);
-    const { firstName, lastName, address, phone, gender, description } = values;
+    const {
+      firstName = "",
+      lastName = "",
+      address = "",
+      phone = "",
+      gender = "",
+      description = "",
+    } = values;
 
-    //perform api call to update password
-    _saveBasicInfo({
+    const userData = {
       first_name: firstName,
       last_name: lastName,
-      address: address,
-      phone: phone,
-      gender: gender,
-      description: description,
-    })
-      .then((message) => {
-        if (message) alert(message);
+      address,
+      phone,
+      gender,
+      description,
+    };
+
+    //perform api call to update password
+    _saveBasicInfo(userData)
+      .then((user) => {
+        if (user) {
+          setUser(userData);
+          alert("Successfully updated");
+        }
+
+        console.log(user);
       })
       .catch((err) => console.log(err))
       .then(() => setIsSubmitting(false));
@@ -161,16 +175,20 @@ function BasicInfo({ navigation }) {
   //save user data
   const _saveBasicInfo = async (data) => {
     try {
-      let url = `${apiPath}/edit-profile`;
+      let url = `${apiPath}/jobseeker/edit-profile`;
       let response = await Axios.post(url, data).then((res) => res.data);
-      if (response.resp == 1) return response.message;
+      console.log(response);
+      if (response.resp == 1) return response.user;
     } catch (err) {
       if (Axios.isCancel(err)) {
         console.log("Request Cancelled", err);
       } else if (err.response) {
-        if (err.response.data.resp == 0)
+        if (err.response.status == 422)
+          showError(serializeErrors(err.response.data));
+        else if (err.response.data.resp == 0)
           showError(serializeErrors({ error: err.response.data.message }));
-        else showError(serializeErrors(err.response.data));
+        else
+          showError(serializeErrors({ error: "Failed to update basic info" }));
       } else {
         console.log("Error", err);
       }
@@ -187,9 +205,8 @@ function BasicInfo({ navigation }) {
       <ScrollView contentContainerStyle={globalStyles.flexGrow}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.basicInfoWrapper}>
-            {error && <ErrorMessage>{error} </ErrorMessage>}
-
             <Formik
+              enableReinitialize
               initialValues={{ ...user }}
               validationSchema={basicInfoSchema}
               onSubmit={(values, actions) => {
@@ -197,14 +214,7 @@ function BasicInfo({ navigation }) {
               }}
               innerRef={formikElement}
             >
-              {({
-                values,
-                errors,
-                touched,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-              }) => (
+              {({ values, errors, touched, handleChange, handleBlur }) => (
                 <>
                   <FormGroup>
                     <InputLevel>First Name</InputLevel>
@@ -268,19 +278,18 @@ function BasicInfo({ navigation }) {
                       {isEditing ? (
                         <Checkbox
                           radio_props={gender}
-                          initial={1}
+                          initial={0}
                           onPress={(value) => {
                             updateGender(handleChange("gender"), value);
                           }}
                         />
                       ) : (
                         <BasicFormInput
-                          value={values.gender}
+                          value={values.gender ? values.gender : ""}
                           placeholder={"About yourself"}
                           isEditing={false}
                         />
                       )}
-                      
                     </View>
                   </FormGroup>
 

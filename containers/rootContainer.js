@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { AppearanceProvider } from "react-native-appearance";
 import {
   NavigationContainer,
@@ -6,32 +6,40 @@ import {
   DarkTheme,
 } from "@react-navigation/native";
 import Navigation from "../navigation/navigator";
-import { StatusBar } from "react-native";
-import { DefaultThemeColors, DarkThemeColors } from "../utils/constants/Colors";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { AuthContext } from "../contexts/AuthContext";
 import Axios from "axios";
+import GeneralStatusBar from "../shared/generalStatusBar";
 
 function RootContaienr() {
+  //define default theme based on theme context
   const { isThemeDark } = useContext(ThemeContext);
-  //define default color and theme based on theme context
-  const Colors = isThemeDark ? DarkThemeColors : DefaultThemeColors;
   const AppTheme = isThemeDark ? DarkTheme : DefaultTheme;
 
-  // Add a request interceptor if authenticated
-  const { authUser } = useContext(AuthContext);
-  
-  if (authUser.email && authUser.token) {
-    Axios.interceptors.request.use(function (config) {
-      config.headers.Authorization = authUser.token;
-      return config;
+  //  request interceptor to add token if authenticated
+  const { authUser, setAuthStatus } = useContext(AuthContext);
+  const AUTH_TOKEN = authUser.token;
+
+  // Axios.interceptors.request.use(function (config) {
+  //   config.headers.Authorization = AUTH_TOKEN ;
+  //   console.log(config);
+  //   return config;
+  // });
+
+  useEffect(() => {
+    setAuthStatus({
+      email: "a@gmail.com",
+      token: "YVROUjk3THlqcnROa084am1rZ290NU55M1dLdHR1RFVJb0ZjRlljbg==",
+      entity: "jobseeker",
     });
-  }
+  }, []);
+
+  Axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
 
   return (
     <AppearanceProvider>
       <NavigationContainer theme={AppTheme}>
-        <StatusBar backgroundColor={Colors.statusBarBg} />
+        <GeneralStatusBar />
         <Navigation />
       </NavigationContainer>
     </AppearanceProvider>

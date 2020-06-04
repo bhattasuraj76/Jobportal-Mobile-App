@@ -44,6 +44,7 @@ function JobsApplied({ navigation, route }) {
     try {
       let url = `${apiPath}/jobseeker`;
       let response = await Axios.get(url).then((res) => res.data);
+      console.log(response);
       if (response.resp == 1) return response.result.jobs;
     } catch (err) {
       if (Axios.isCancel(err)) {
@@ -61,7 +62,9 @@ function JobsApplied({ navigation, route }) {
       {isLoading ? (
         <Loader />
       ) : (
-        //  job list start
+        <>
+        {jobs.length ? (
+//  job list start
         <FlatList
           data={jobs}
           keyExtractor={(item) => item.id.toString()}
@@ -71,6 +74,13 @@ function JobsApplied({ navigation, route }) {
           contentContainerStyle={{ marginBottom: 30 }}
         />
         //  job list end
+        ): (
+          <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
+            <AppText size={20}>No jobs applied yet</AppText>
+          </View>
+        )}
+
+        </>
       )}
     </ContainerFluid>
   );

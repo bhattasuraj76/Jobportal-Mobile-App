@@ -27,7 +27,10 @@ import { serializeErrors } from "../../utils/Helpers";
 //change password validation schema
 const changePasswordSchema = yup.object({
   oldPassword: yup.string().required("Old Password is required"),
-  password: yup.string().required("Password is required"),
+  password: yup
+    .string()
+    .required("Password is required")
+    .min(6, "Password must be minimum of 6 charaters"),
   confirmPassword: yup
     .string()
     .required("Confimation Password is required")
@@ -65,9 +68,11 @@ function ChangePassword({ navigation }) {
       if (Axios.isCancel(err)) {
         console.log("Request Cancelled", err);
       } else if (err.response) {
-        if (err.response.data.resp == 0)
+        if (err.response.status == 422)
+          showError(serializeErrors(err.response.data));
+        else if (err.response.data.resp == 0)
           showError(serializeErrors({ error: err.response.data.message }));
-        else showError(serializeErrors(err.response.data));
+        else showError(serializeErrors({ error: "Failed to change password" }));
       } else {
         console.log("Error", err);
       }
@@ -123,7 +128,7 @@ function ChangePassword({ navigation }) {
                       value={values.password}
                       onChangeText={handleChange("password")}
                       onBlur={handleBlur("password")}
-                      placeholder={"Password"}
+                      placeholder={"New Password"}
                       secureTextEntry={true}
                     />
                     {touched.password && errors.password ? (

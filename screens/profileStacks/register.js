@@ -29,7 +29,10 @@ const registerSchema = yup.object({
     .string()
     .required("Email is required")
     .email("Please enter valid email"),
-  password: yup.string().required("Password is required"),
+  password: yup
+    .string()
+    .required("Password is required")
+    .min(6, "Password must be minimum of 6 charaters"),
   confirmPassword: yup
     .string()
     .required("Confimation Password is required")
@@ -63,6 +66,7 @@ function Register({ navigation }) {
         //reset form
         actions.resetForm();
       })
+      .catch(err => console.log(err))
       .then(() => {
         setIsSubmitting(false);
       });
@@ -185,7 +189,7 @@ function Register({ navigation }) {
                   </FormGroup>
 
                   <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
-                    <AppBtn title="Register" onPress={handleSubmit} />
+                    <AppBtn title="Register" onPress={handleSubmit} disabled={isSubmitting}/>
                   </View>
                 </>
               )}

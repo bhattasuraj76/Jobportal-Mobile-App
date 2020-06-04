@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { View, FlatList, RefreshControl, StyleSheet } from "react-native";
+import { View, FlatList, RefreshControl, StyleSheet, StatusBar } from "react-native";
 import ContainerFluid from "../../shared/containerFluid";
 import JobBox from "../../shared/jobBox";
 import AppText from "../../shared/appText";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, CommonActions } from "@react-navigation/native";
 import Axios from "axios";
 import { apiPath } from "../../utils/constants/Consts";
 import Loader from "../../shared/loader";
@@ -11,8 +11,6 @@ import Loader from "../../shared/loader";
 function Home({ navigation, route }) {
   const [isLoading, setIsLoading] = useState(true);
   const [jobs, setJobs] = useState([]);
-  const [isSearching, setIsSearching] = useState(false); 
-  
 
   //async fetch jobs
   const _fetchJobs = async () => {
@@ -29,15 +27,8 @@ function Home({ navigation, route }) {
   //async search jobs
   const _searchJobs = async (data) => {
     try {
-      let  url =`${apiPath}/search`
-      console.log(data);
-      let response = await Axios.post(url, data).then(
-       
-        (res) => res.data
-        
-      );
-      console.log(response);
-      
+      let url = `${apiPath}/search`;
+      let response = await Axios.post(url, data).then((res) => res.data);
       if (response.resp == 1) return response.jobs.data;
     } catch (err) {
       console.error(err);
@@ -53,76 +44,95 @@ function Home({ navigation, route }) {
       },
     });
   };
-  //use effect
 
-  React.useEffect(()=>{
-  console.log(route);
-  if (route.params){
-    
-    let keyword=route.params.title;
-    let category=route.params.category?[route.params.category]:null;
-    let type=route.params.type?[route.params.type]:null;
-    let level=route.params.level?[route.params.level]:null;
-    // console.log(title,category,type, level);
-    if(!keyword && !category && !type && !level)
-    return;
+  //get params of route
+  const getRouteParams = ({
+    title = null,
+    category = null,
+    type = null,
+    level = null,
+  } = {}) => {
+    let jobTitle = title;
+    let jobCat = category && [category];
+    let jobType = type && [type];
+    let jobLevel = level && [level];
 
-    // console.log(title,category,type, level);
-    setIsSearching(true);
-    _searchJobs({
-      keyword, category,type,level
-    }).then(jobs=>{
-      if (jobs) setJobs(jobs);
-      console.log(jobs);
-    }).catch(err=>{
-      console.log(err);
-    });
+    return {
+      keyword: jobTitle,
+      category: jobCat,
+      type: jobType,
+      level: jobLevel,
+    };
+  };
 
-  }
-  // return()=>{
-  //   setIsSearching(false);
-
-  // }
-  
-
-
-  },[route])
-
-  // fetch jobs on screen foucus
+  // handle screen foucus
   useFocusEffect(
     React.useCallback(() => {
-     if(isSearching)return;
       let isActive = true;
+      let isSearching = false;
 
-      _fetchJobs()
-        .then(jobs => {
-          console.log('x');
-          if (isActive && jobs) setJobs(jobs);
+      //deconstruct route params if avaliable
+      const { keyword, category, type, level } = route.params
+        ? getRouteParams(route.params)
+        : {};
+
+      //if any route params defined , set isSearching true to search jobs
+      isSearching = keyword || category || type || level ? true : false;
+
+      if (isSearching) {
+        //search job on route paramas available
+        _searchJobs({
+          keyword,
+          category,
+          type,
+          level,
         })
-        .catch(err => console.log(err))
-        .then(() => setIsLoading(false));
+          .then((jobs) => {
+            if (isActive && jobs) setJobs(jobs);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        //fetch jobs if params are unavailable i.e no search happens
+        _fetchJobs()
+          .then((jobs) => {
+            if (isActive && jobs) setJobs(jobs);
+          })
+          .catch((err) => console.log(err))
+          .then(() => setIsLoading(false));
+      }
 
       return () => {
         isActive = false;
+        console.log("ad", isSearching);
       };
-    }, [isSearching])
+    }, [route])
   );
-
-  
-  
 
   //handle refresh and refetch jobs
   const [refreshing, setRefreshing] = React.useState(false);
-
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
 
-    _fetchJobs().then((jobs) => {
-      if (jobs) setJobs(jobs);
-      setRefreshing(false);
-      setIsSearching(false);
-    });
-  }, [refreshing]);
+    // _fetchJobs().then((jobs) => {
+    //   if (jobs) setJobs(jobs);
+    // setRefreshing(false);
+    // });
+
+    //reset route params passed from search screen so default behaviour occurs
+    //default-behaviour : refetch jobs on screen foucus
+    navigation.dispatch(
+      CommonActions.setParams({
+        category: null,
+        title: null,
+        type: null,
+        level: null,
+      })
+    );
+
+    setRefreshing(false);
+  }, [refreshing, navigation]);
 
   return (
     <ContainerFluid>
