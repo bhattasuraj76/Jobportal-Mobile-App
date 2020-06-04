@@ -27,9 +27,9 @@ function Home({ navigation, route }) {
   //async search jobs
   const _searchJobs = async (data) => {
     try {
-      let url = `${apiPath}/search`;
+      let url = `${apiPath}/mobile-search`;
       let response = await Axios.post(url, data).then((res) => res.data);
-      if (response.resp == 1) return response.jobs.data;
+      if (response.resp == 1) return response.jobs;
     } catch (err) {
       console.error(err);
     }
