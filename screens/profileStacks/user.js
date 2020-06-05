@@ -12,13 +12,14 @@ import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import { Asset } from "expo-asset";
-import RNFetchBlob from 'react-native-fetch-blob';
+import axios from "axios";
+
 
 function User({ navigation }) {
   const imageURI = Asset.fromModule(require("../../assets/img/sanj.jpg")).uri;
 
   const { isThemeDark } = useContext(ThemeContext);
-  const { authUser, setUnauthStatus } = useContext(AuthContext);
+  const { authUser, setUnauthStatus, updateAuthUserProfile } = useContext(AuthContext);
 
   const [displayPicture, setDisplayPicture] = useState(imageURI);
 
@@ -46,10 +47,11 @@ function User({ navigation }) {
         quality: 1,
       });
       if (!result.cancelled) {
-        setDisplayPicture(result.uri);
+        // setDisplayPicture(result.uri);
+        return result;
       }
 
-      console.log(result);
+      
     } catch (err) {
       console.log(err);
     }
@@ -57,21 +59,53 @@ function User({ navigation }) {
 
   //change display picture
   const _changeDisplayPicture = () => {
-    // _pickImage();
-    RNFetchBlob.fetch('POST', ' http://jpapi.vertexwebsurf.com/api/jobseeker/edit-profile', {
-      Authorization : "Bearer access-token",
-      otherHeader : "foo",
-      'Content-Type' : 'multipart/form-data',
-    }, [
+    _pickImage().then(Image=>{
+      var photo = {
+        uri: Image.uri,
+        type: 'image/png',
+        name: 'photo.jpg',
+    };
     
-      { name : 'image-png', filename : 'image-png.png', type:'image/png', data:},
-     
-    ]).then((resp) => {
-      // ...
-    }).catch((err) => {
-      // ...
-    })
-  };
+    //use formdata
+    var formData = new FormData(); 
+    //append created photo{} to formdata
+    formData.append('profile', photo);
+    //use axios to POST
+    axios({
+        method: 'POST',
+        url: ' http://jpapi.vertexwebsurf.com/api/jobseeker/edit-profile',
+        data: formData,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'multipart/form-data;'    
+        }}) .then(function (response) { 
+          if (response.data.resp == 1){
+            
+            updateAuthUserProfile(response.data.user.profile).then(() => {
+              alert('Successfully updated profile');
+            })
+            console.log(response.data.user);
+          }else{
+            console.log(response.data);
+          }
+        })
+        .catch(function (error) {
+          if (error.response){
+            console.log(error.response.data);
+          }
+          else{
+            console.log(error);
+          }
+          
+       
+    });
+    
+
+
+    }).catch(function (error) { console.log(error.response)});
+  }
+
+    
 
   //logout user
     const logoutUser = () => {
@@ -136,9 +170,7 @@ function User({ navigation }) {
       <View>
         <ImageBackground
           source={{
-            uri: authUser.dispalyPicture
-              ? authUser.DisplayPicture
-              : displayPicture,
+            uri: authUser.profile ||  displayPicture,
           }}
           style={styles.profileBg}
         >
@@ -168,9 +200,7 @@ function User({ navigation }) {
 
               <Image
                 source={{
-                  uri: authUser.dispalyPicture
-                    ? authUser.DisplayPicture
-                    : displayPicture,
+                  uri: authUser.profile ||  displayPicture,
                 }}
                 style={styles.displayPicture}
               />
