@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { View, Text, Image, StyleSheet, ImageBackground } from "react-native";
 import ContainerFluid from "../../shared/containerFluid";
 import { images, globalStyles } from "../../styles/globalStyles";
@@ -11,200 +11,245 @@ import {
   DarkThemeColors,
 } from "../../utils/constants/Colors";
 import { ThemeContext } from "../../contexts/ThemeContext";
+import Axios from "axios";
+import { apiPath } from "../../utils/constants/Consts";
+import { Asset } from "expo-asset";
+import Loader from "../../shared/loader";
 
 function JobDetail({ navigation, route }) {
-  const job = route.params.job;
-  if (!job) {
-    return navigation.goBack();
+  //retun null if there no job slug
+  if (!route.params.jobSlug) {
+    return null;
   }
 
+  //state
+  const [isLoading, setIsLoading] = useState(true);
+  const [job, setJob] = useState("");
   const [showJobInfo, setShowJobInfo] = useState(true);
   const [showJobDescription, setshowDesription] = useState(false);
   const [showAboutCompany, setShowAboutCompany] = useState(false);
 
+  //default logo and cover uri
+  const defaultCoverUri = Asset.fromModule(images.defaultCover).uri;
+  const defaultLogoUri = Asset.fromModule(images.defaultLogo).uri;
+
+  //fetch job detail
+  const fetchJobDetail = async (slug) => {
+    try {
+      let data = await Axios.get(`${apiPath}/job/${slug}`).then(
+        (res) => res.data
+      );
+      if (data.resp == 1) return data.job;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  //handle applyforjob btn press
   const applyForJob = () => {
     console.log("applied for job");
   };
 
+  //fetch job detail on first render and job slug change only
+  useEffect(() => {
+    fetchJobDetail(route.params.jobSlug)
+      .then((job) => {
+        if (job) setJob(job);
+      })
+      .catch((err) => console.log(err))
+      .then(() => setIsLoading(false));
+  }, [route]);
+
   return (
     <ContainerFluid>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {/* company cover */}
-        <View style={{ marginBottom: 20 }}>
-          <ImageBackground
-            source={images.defaultCover}
-            style={styles.companyCover}
-          >
-            <Image source={images.defaultLogo} style={styles.companyLogo} />
-          </ImageBackground>
-        </View>
-        {/* company cover */}
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          {/* company cover */}
+          <View style={{ marginBottom: 20 }}>
+            <ImageBackground
+              source={{
+                uri: job.employer.logo ? job.employer.logo : defaultCoverUri,
+              }}
+              style={styles.companyCover}
+            >
+              <Image
+                source={{
+                  uri: job.employer.logo ? job.employer.logo : defaultLogoUri,
+                }}
+                style={styles.companyLogo}
+              />
+            </ImageBackground>
+          </View>
+          {/* company cover */}
 
-        {/* content start */}
-        <View style={{ paddingHorizontal: 20 }}>
-          {/* job overview start */}
-          <View style={{ marginTop: 10 }}>
-            <AppText size={22} family="semi-bold" color="info">
-              {job.title}
-            </AppText>
-            <AppText size={18} family="semi-bold" color="secondary">
-              {job.company.name}
-            </AppText>
-            <View style={{ marginLeft: 15, marginVertical: 7 }}>
-              <View style={globalStyles.rowAlignCenter}>
-                <Icon name="location-on" size={20} color="#666666" />
-                <AppText color="secondary" size={16}>
-                  <Text style="marginLeft: 5"> {job.company.address}</Text>
-                </AppText>
-              </View>
-              <View style={globalStyles.rowAlignCenter}>
-                <Icon name="attach-money" size={20} color="#666666" />
-                <AppText color="secondary" size={16}>
-                  <Text style="marginLeft: 5"> {job.salary} </Text>
-                </AppText>
+          {/* content start */}
+          <View style={{ paddingHorizontal: 20 }}>
+            {/* job overview start */}
+            <View style={{ marginTop: 10 }}>
+              <AppText size={22} family="semi-bold" color="info">
+                {job.title}
+              </AppText>
+              <AppText size={18} family="semi-bold" color="secondary">
+                {job.employer.name}
+              </AppText>
+              <View style={{ marginLeft: 15, marginVertical: 7 }}>
+                <View style={globalStyles.rowAlignCenter}>
+                  <Icon name="location-on" size={20} color="#666666" />
+                  <AppText color="secondary" size={16}>
+                    <Text style="marginLeft: 5"> {job.employer.address}</Text>
+                  </AppText>
+                </View>
+                <View style={globalStyles.rowAlignCenter}>
+                  <Icon name="attach-money" size={20} color="#666666" />
+                  <AppText color="secondary" size={16}>
+                    <Text style="marginLeft: 5"> {job.salary} </Text>
+                  </AppText>
+                </View>
               </View>
             </View>
-          </View>
-          {/* job overview end */}
+            {/* job overview end */}
 
-          {/* accordian wrapper start */}
-          <View style={{ marginTop: 20 }}>
-            {/* job info */}
-            <Accordian>
-              <TouchableOpacity
-                onPress={(e) => {
-                  console.log(e);
-                  setShowJobInfo(!showJobInfo);
-                }}
-              >
-                <AccordianHeader>
-                  <AppText size={18} family="semi-bold" color="info">
-                    Job Info
-                  </AppText>
-                  <Icon
-                    name={
-                      showJobInfo
-                        ? "keyboard-arrow-down"
-                        : "keyboard-arrow-right"
-                    }
-                    size={24}
-                  />
-                </AccordianHeader>
-              </TouchableOpacity>
-
-              {showJobInfo && (
-                <AccordianContent>
-                  <TitleText>
-                    Categoy : <InfoText>{job.category}</InfoText>
-                  </TitleText>
-                  <TitleText>
-                    Level : <InfoText>{job.level}</InfoText>
-                  </TitleText>
-                  <TitleText>
-                    Type : <InfoText>{job.type}</InfoText>
-                  </TitleText>
-                  <TitleText>
-                    Education : <InfoText>{job.education}</InfoText>
-                  </TitleText>
-                  <TitleText>
-                    Experience : <InfoText>{job.experience}</InfoText>
-                  </TitleText>
-                  <TitleText>
-                    Deadline : <InfoText>{job.deadline}</InfoText>
-                  </TitleText>
-                </AccordianContent>
-              )}
-            </Accordian>
-
-            {/* job info */}
-
-            {/* job description */}
-            <Accordian>
-              <TouchableOpacity
-                onPress={(e) => {
-                  console.log(e);
-                  setshowDesription(!showJobDescription);
-                }}
-              >
-                <AccordianHeader>
-                  <AppText size={18} family="semi-bold" color="info">
-                    Job Descripton
-                  </AppText>
-                  <Icon
-                    name={
-                      showJobDescription
-                        ? "keyboard-arrow-down"
-                        : "keyboard-arrow-right"
-                    }
-                    size={24}
-                  />
-                </AccordianHeader>
-              </TouchableOpacity>
-              {showJobDescription && (
-                <AccordianContent>
-                  <InfoText>{job.description}</InfoText>
-                </AccordianContent>
-              )}
-            </Accordian>
-            {/* job description */}
-
-            {/* about company */}
-            <Accordian>
-              <TouchableOpacity
-                onPress={(e) => {
-                  console.log(e);
-                  setShowAboutCompany(!showAboutCompany);
-                }}
-              >
-                <View
-                  style={{
-                    borderColor: "#ccc",
-                    border: 0,
-                    borderBottomWidth: 1,
+            {/* accordian wrapper start */}
+            <View style={{ marginTop: 20 }}>
+              {/* job info */}
+              <Accordian>
+                <TouchableOpacity
+                  onPress={(e) => {
+                    console.log(e);
+                    setShowJobInfo(!showJobInfo);
                   }}
                 >
                   <AccordianHeader>
                     <AppText size={18} family="semi-bold" color="info">
-                      About Company
+                      Job Info
                     </AppText>
                     <Icon
                       name={
-                        showAboutCompany
+                        showJobInfo
                           ? "keyboard-arrow-down"
                           : "keyboard-arrow-right"
                       }
                       size={24}
                     />
                   </AccordianHeader>
-                </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
 
-              {showAboutCompany && (
-                <AccordianContent>
-                  <TitleText>
-                    Address : <InfoText>{job.company.address}</InfoText>
-                  </TitleText>
-                  <TitleText>
-                    Email : <InfoText>{job.company.email}</InfoText>
-                  </TitleText>
-                  <TitleText>
-                    Phone : <InfoText>{job.company.phone}</InfoText>
-                  </TitleText>
-                </AccordianContent>
-              )}
-            </Accordian>
-            {/* about about */}
+                {showJobInfo && (
+                  <AccordianContent>
+                    <TitleText>
+                      Categoy : <InfoText>{job.category}</InfoText>
+                    </TitleText>
+                    <TitleText>
+                      Level : <InfoText>{job.level}</InfoText>
+                    </TitleText>
+                    <TitleText>
+                      Type : <InfoText>{job.type}</InfoText>
+                    </TitleText>
+                    <TitleText>
+                      Education : <InfoText>{job.qualification}</InfoText>
+                    </TitleText>
+                    <TitleText>
+                      Experience : <InfoText>{job.experience}</InfoText>
+                    </TitleText>
+                    <TitleText>
+                      Deadline : <InfoText>{job.deadline}</InfoText>
+                    </TitleText>
+                  </AccordianContent>
+                )}
+              </Accordian>
+
+              {/* job info */}
+
+              {/* job description */}
+              <Accordian>
+                <TouchableOpacity
+                  onPress={(e) => {
+                    console.log(e);
+                    setshowDesription(!showJobDescription);
+                  }}
+                >
+                  <AccordianHeader>
+                    <AppText size={18} family="semi-bold" color="info">
+                      Job Descripton
+                    </AppText>
+                    <Icon
+                      name={
+                        showJobDescription
+                          ? "keyboard-arrow-down"
+                          : "keyboard-arrow-right"
+                      }
+                      size={24}
+                    />
+                  </AccordianHeader>
+                </TouchableOpacity>
+                {showJobDescription && (
+                  <AccordianContent>
+                    <InfoText>{job.description}</InfoText>
+                  </AccordianContent>
+                )}
+              </Accordian>
+              {/* job description */}
+
+              {/* about company */}
+              <Accordian>
+                <TouchableOpacity
+                  onPress={(e) => {
+                    console.log(e);
+                    setShowAboutCompany(!showAboutCompany);
+                  }}
+                >
+                  <View
+                    style={{
+                      borderColor: "#ccc",
+                      border: 0,
+                      borderBottomWidth: 1,
+                    }}
+                  >
+                    <AccordianHeader>
+                      <AppText size={18} family="semi-bold" color="info">
+                        About Company
+                      </AppText>
+                      <Icon
+                        name={
+                          showAboutCompany
+                            ? "keyboard-arrow-down"
+                            : "keyboard-arrow-right"
+                        }
+                        size={24}
+                      />
+                    </AccordianHeader>
+                  </View>
+                </TouchableOpacity>
+
+                {showAboutCompany && (
+                  <AccordianContent>
+                    <TitleText>
+                      Address : <InfoText>{job.employer.address}</InfoText>
+                    </TitleText>
+                    <TitleText>
+                      Email : <InfoText>{job.employer.email}</InfoText>
+                    </TitleText>
+                    <TitleText>
+                      Phone : <InfoText>{job.employer.phone}</InfoText>
+                    </TitleText>
+                  </AccordianContent>
+                )}
+              </Accordian>
+              {/* about about */}
+            </View>
+            {/* accordian wrapper start */}
           </View>
-          {/* accordian wrapper start */}
-        </View>
-        {/* content end */}
+          {/* content end */}
 
-        {/* job apply btn */}
-        <View style={{ marginTop: 30 }}>
-          <AppBtn title="Appy for Job" onPress={applyForJob} />
-        </View>
-        {/* job apply btn */}
-      </ScrollView>
+          {/* job apply btn */}
+          <View style={{ marginTop: 30 }}>
+            <AppBtn title="Appy for Job" onPress={applyForJob} />
+          </View>
+          {/* job apply btn */}
+        </ScrollView>
+      )}
     </ContainerFluid>
   );
 }
@@ -215,59 +260,21 @@ function Accordian({ children }) {
     ? DarkThemeColors.primaryBg
     : DefaultThemeColors.primaryBg;
   return (
-    <View
-      style={{
-        backgroundColor,
-        borderColor: "#ccc",
-        borderWidth: 1,
-        borderBottomWidth: 0,
-      }}
-    >
-      {children}
-    </View>
+    <View style={{ ...styles.accordian, backgroundColor }}>{children}</View>
   );
 }
 
 function AccordianHeader({ children }) {
-  return (
-    <View
-      style={{
-        paddingHorizontal: 20,
-        paddingVertical: 5,
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexDirection: "row",
-      }}
-    >
-      {children}
-    </View>
-  );
+  return <View style={styles.accordianHeader}>{children}</View>;
 }
 
 function AccordianContent({ children }) {
-  return (
-    <View
-      style={{
-        paddingHorizontal: 20,
-        paddingVertical: 20,
-        borderColor: "#ccc",
-        borderWidth: 0,
-        borderTopWidth: 1,
-        borderBottomWidth: 1,
-      }}
-    >
-      {children}
-    </View>
-  );
+  return <View style={styles.accordianContent}>{children}</View>;
 }
 
 function TitleText({ children }) {
   return (
-    <Text
-      style={{
-        marginBottom: 15,
-      }}
-    >
+    <Text style={styles.titleText}>
       <AppText size={16} color="primary">
         {children}
       </AppText>
@@ -277,11 +284,7 @@ function TitleText({ children }) {
 
 function InfoText({ children }) {
   return (
-    <Text
-      style={{
-        paddingLeft: 20,
-      }}
-    >
+    <Text style={styles.infoText}>
       <AppText size={18} color="info">
         {children}
       </AppText>
@@ -302,11 +305,14 @@ const styles = StyleSheet.create({
     bottom: -20,
     left: 20,
   },
-  accordian: { borderColor: "#ccc", borderWidth: 1, borderBottomWidth: 0 },
-  accordianTitle: {
+  accordian: {
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderBottomWidth: 0,
+  },
+  accordianHeader: {
     paddingHorizontal: 20,
     paddingVertical: 5,
-    backgroundColor: "#fff",
     justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
@@ -314,9 +320,16 @@ const styles = StyleSheet.create({
   accordianContent: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-    backgroundColor: "#fff",
-    borderTopColor: "#ccc",
+    borderColor: "#ccc",
+    borderWidth: 0,
     borderTopWidth: 1,
+    borderBottomWidth: 1,
+  },
+  infoText: {
+    paddingLeft: 20,
+  },
+  titleText: {
+    marginBottom: 15,
   },
 });
 

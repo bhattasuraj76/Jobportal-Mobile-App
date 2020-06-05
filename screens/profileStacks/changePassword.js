@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   TextInput,
   View,
@@ -17,11 +17,20 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { Formik } from "formik";
 import * as yup from "yup";
 import Input from "../../shared/input";
+import { globalStyles } from "../../styles/globalStyles";
+import useErrorHandler from "../../utils/custom-hooks/ErrorHandler";
+import ErrorMessage from "../../shared/errorMessage";
+import Axios from "axios";
+import { apiPath } from "../../utils/constants/Consts";
+import { serializeErrors } from "../../utils/Helpers";
 
 //change password validation schema
 const changePasswordSchema = yup.object({
   oldPassword: yup.string().required("Old Password is required"),
-  password: yup.string().required("Password is required"),
+  password: yup
+    .string()
+    .required("Password is required")
+    .min(6, "Password must be minimum of 6 charaters"),
   confirmPassword: yup
     .string()
     .required("Confimation Password is required")
@@ -30,35 +39,58 @@ const changePasswordSchema = yup.object({
 
 function ChangePassword({ navigation }) {
   const { isThemeDark } = useContext(ThemeContext);
+  const { error, showError } = useErrorHandler(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handlePasswordChange = (values, actions) => {
+    setIsSubmitting(true);
     const { password, confirmPassword, oldPassword } = values;
 
     //perform api call to update password
-    new Promise((r) => setTimeout(r, 2000))
-      .then((val) => {
-                       const resp = 1; //response form server
-                       if (resp === 1) {
-                         actions.resetForm();
-                         alert("Password changed successfully");
-                       }
-                     })
-      .catch((err) => console.log(err));
+    _changePassword({
+      password,
+      password_confirmation: confirmPassword,
+      old_password: oldPassword,
+    })
+      .then((message) => {
+        if (message) alert(message);
+      })
+      .catch((err) => console.log(err))
+      .then(() => setIsSubmitting(false));
+  };
+
+  const _changePassword = async (data) => {
+    try {
+      let url = `${apiPath}/change-password`;
+      let response = await Axios.post(url, data).then((res) => res.data);
+      if (response.resp == 1) return response.message;
+    } catch (err) {
+      if (Axios.isCancel(err)) {
+        console.log("Request Cancelled", err);
+      } else if (err.response) {
+        if (err.response.status == 422)
+          showError(serializeErrors(err.response.data));
+        else if (err.response.data.resp == 0)
+          showError(serializeErrors({ error: err.response.data.message }));
+        else showError(serializeErrors({ error: "Failed to change password" }));
+      } else {
+        console.log("Error", err);
+      }
+    }
   };
 
   return (
     <ContainerFluid>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={globalStyles.flexGrow}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View
             style={{
-              flex: 1,
-              paddingHorizontal: 30,
-              paddingVertical: 30,
+              ...globalStyles.authForm,
               backgroundColor: isThemeDark ? "#000" : "#36485f",
-              justifyContent: "center",
             }}
           >
+            {error && <ErrorMessage>{error} </ErrorMessage>}
+
             <Formik
               initialValues={{
                 password: "",
@@ -77,7 +109,6 @@ function ChangePassword({ navigation }) {
                 handleChange,
                 handleBlur,
                 handleSubmit,
-                isSubmitting,
               }) => (
                 <>
                   <FormGroup>
@@ -97,7 +128,7 @@ function ChangePassword({ navigation }) {
                       value={values.password}
                       onChangeText={handleChange("password")}
                       onBlur={handleBlur("password")}
-                      placeholder={"Password"}
+                      placeholder={"New Password"}
                       secureTextEntry={true}
                     />
                     {touched.password && errors.password ? (

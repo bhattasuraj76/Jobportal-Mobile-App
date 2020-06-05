@@ -7,8 +7,8 @@ import {
   Text,
   StyleSheet,
   Button,
+  ActivityIndicator,
 } from "react-native";
-import AppBtn from "../../shared/appBtn";
 import ErrorText from "../../shared/errorText";
 import ContainerFluid from "../../shared/containerFluid";
 import FormGroup from "../../shared/formGroup";
@@ -17,41 +17,53 @@ import { AuthContext } from "../../contexts/AuthContext";
 import { Formik } from "formik";
 import * as yup from "yup";
 import InputLevel from "../../shared/inputLevel";
-import AppText from "../../shared/appText";
 import HeaderRightActionBtn from "../../shared/headerRightActionBtn";
 import Checkbox from "../../shared/checkbox";
 import BasicFormInput from "../../shared/basicFormInput";
+import { globalStyles } from "../../styles/globalStyles";
+import Axios from "axios";
+import { serializeErrors } from "../../utils/Helpers";
+import { apiPath } from "../../utils/constants/Consts";
+import useErrorHandler from "../../utils/custom-hooks/ErrorHandler";
+import { useFocusEffect } from "@react-navigation/native";
+import VerticalDivider from "../../shared/verticalDivider";
+import ErrorMessage from "../../shared/errorMessage";
 
 //register validation schema
 const basicInfoSchema = yup.object({
   firstName: yup.string().required("First name is required"),
   lastName: yup.string().required("Last name is required"),
-  address: yup.string().required("Phone number is required"),
-  phone: yup.string().required("Address is required"),
-  gender: yup.string().required("Bio is required"),
+  address: yup.string().nullable(),
+  phone: yup.string().nullable(),
+  bio: yup.string().nullable(),
 });
 
 const gender = [
-  { label: "Male", value: "Male" },
-  { label: "Female", value: "Female" },
-  { label: "Others", value: "None" },
+  { label: "Male", value: "male" },
+  { label: "Female", value: "female" },
+  { label: "Others", value: "other" },
 ];
 
 function BasicInfo({ navigation }) {
   const { isThemeDark } = useContext(ThemeContext);
+  const { updateAuthUserName } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
-  const [user, setUser] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    phone: "9860536208",
-    address: "Kathmandu",
-    gender: "Male",
-    description: "I am web developer",
-  });
-  //creates refrence to formik element
- const formikElement = createRef(null);
+  const { error, showError } = useErrorHandler(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  //customize header right buttons to perfom form actons
+  //creates refrence to formik element
+  const formikElement = createRef(null);
+
+  const [user, setUser] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    address: "",
+    gender: "",
+    description: "",
+  });
+
+  //customize header right buttons right before componenet mount to perfom form actons
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -63,70 +75,142 @@ function BasicInfo({ navigation }) {
             />
           ) : (
             <>
-              <HeaderRightActionBtn
-                title="Cancel"
-                onPress={() => setIsEditing(!isEditing)}
-              />
-              <Text style={{ marginHorizontal: 5 }}>
-                <AppText size={20} color="light">
-                  |
-                </AppText>
-              </Text>
-
-              <HeaderRightActionBtn
-                title="Save"
-                onPress={() => formikElement.current.handleSubmit()}
-              />
+              {isSubmitting ? (
+                <>
+                  <ActivityIndicator size={25} color="#fff" />
+                </>
+              ) : (
+                <>
+                  <HeaderRightActionBtn
+                    title="Cancel"
+                    onPress={() => setIsEditing(!isEditing)}
+                  />
+                  <VerticalDivider />
+                  <HeaderRightActionBtn
+                    title="Save"
+                    onPress={() => formikElement.current.handleSubmit()}
+                  />
+                </>
+              )}
             </>
           )}
         </View>
       ),
     });
-  }, [navigation, isEditing]);
+  }, [navigation, isEditing, isSubmitting, formikElement]);
 
-  //save user info
-  const saveUserInfo = (values, actions) => {
-    console.log(values);
-    const { firstName, lastName, gender, address, phone, description } = values;
+  //fetch user data upon screen foucus
+  useFocusEffect(
+    React.useCallback(() => {
+      //async fetch user data
+      const _fetchUserData = async () => {
+        try {
+          let url = `${apiPath}/jobseeker/edit-profile`;
+          let response = await Axios.get(url).then((res) => res.data);
+          if (response.resp == 1) return response.user;
+        } catch (err) {
+          console.log("Error", err);
+        }
+      };
 
-    const resp = 1; //response form server
-    if (resp == 1) {
-      //update user
-      setUser(values);
-      setIsEditing(false);
-      //alert user
-      alert("Updated Basic Info Successfully");
-    } else {
-      alert("Update Failed");
+      _fetchUserData()
+        .then((user) => {
+          if (!user) return;
+          const {
+            first_name = "",
+            last_name = "",
+            phone = "",
+            address = "",
+            gender = "",
+            description = "",
+          } = user;
+
+          setUser({
+            firstName: first_name,
+            lastName: last_name,
+            phone,
+            address,
+            gender,
+            description,
+          });
+        })
+        .catch((err) => console.log(err));
+    }, [])
+  );
+
+  //handle profile update
+  const handleProfileUpdate = (values, actions) => {
+    setIsSubmitting(true);
+    const { firstName, lastName, address, phone, gender, description } = values;
+
+    const userData = {
+      first_name: firstName,
+      last_name: lastName,
+      address,
+      phone,
+      gender,
+      description,
+    };
+
+    //perform api call to update password
+    _saveBasicInfo(userData)
+      .then((user) => {
+        if (!user) return;
+        updateAuthUserName(`${firstName} ${lastName}`).then(() => {
+          setUser(values);
+          alert("Successfully updated");
+        });
+      })
+      .catch((err) => console.log(err))
+      .then(() => setIsSubmitting(false));
+  };
+
+  //save user data
+  const _saveBasicInfo = async (data) => {
+    try {
+      let url = `${apiPath}/jobseeker/edit-profile`;
+      let response = await Axios.post(url, data).then((res) => res.data);
+      console.log(response);
+      if (response.resp == 1) return response.user;
+    } catch (err) {
+      if (Axios.isCancel(err)) {
+        console.log("Request Cancelled", err);
+      } else if (err.response) {
+        if (err.response.status == 422)
+          showError(serializeErrors(err.response.data));
+        else if (err.response.data.resp == 0)
+          showError(serializeErrors({ error: err.response.data.message }));
+        else
+          showError(serializeErrors({ error: "Failed to update basic info" }));
+      } else {
+        console.log("Error", err);
+      }
     }
   };
 
+  //update gender formik value
   const updateGender = (handleChange, value) => {
     handleChange(value);
   };
 
   return (
     <ContainerFluid>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={globalStyles.flexGrow}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.basicInfoWrapper}>
+
+            {error && <ErrorMessage>{error}</ErrorMessage>}
+
             <Formik
+              enableReinitialize
               initialValues={{ ...user }}
               validationSchema={basicInfoSchema}
               onSubmit={(values, actions) => {
-                saveUserInfo(values, actions);
+                handleProfileUpdate(values, actions);
               }}
               innerRef={formikElement}
             >
-              {({
-                values,
-                errors,
-                touched,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                isSubmitting,
-              }) => (
+              {({ values, errors, touched, handleChange, handleBlur }) => (
                 <>
                   <FormGroup>
                     <InputLevel>First Name</InputLevel>
@@ -190,21 +274,18 @@ function BasicInfo({ navigation }) {
                       {isEditing ? (
                         <Checkbox
                           radio_props={gender}
-                          initial={1}
+                          initial={0}
                           onPress={(value) => {
                             updateGender(handleChange("gender"), value);
                           }}
                         />
                       ) : (
                         <BasicFormInput
-                          value={values.gender}
+                          value={values.gender ? values.gender : ""}
                           placeholder={"About yourself"}
                           isEditing={false}
                         />
                       )}
-                      {touched.phone && errors.phone ? (
-                        <ErrorText>{errors.phone}</ErrorText>
-                      ) : null}
                     </View>
                   </FormGroup>
 

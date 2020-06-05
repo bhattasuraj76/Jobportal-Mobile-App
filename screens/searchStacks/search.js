@@ -16,10 +16,10 @@ function Search({navigation}) {
   const { isThemeDark} = useContext(ThemeContext);
 
   //state 
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [type, setType] = useState("");
-  const [level, setLevel] = useState("");
+  const [title, setTitle] = useState(null);
+  const [category, setCategory] = useState(null);
+  const [type, setType] = useState(null)
+  const [level, setLevel] = useState(null);
 
 
   const searchJobs = () => {

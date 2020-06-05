@@ -6,32 +6,36 @@ import Icon from "./icon";
 import { ThemeContext } from "../contexts/ThemeContext";
 import AppText from "./appText";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { Asset } from "expo-asset";
 
 function JobBox({ job , onPress}) {
   const { isThemeDark } = useContext(ThemeContext);
   const Colors = isThemeDark ? DarkThemeColors : DefaultThemeColors;
   
+  //default logo and cover uri
+  const defaultLogoUri = Asset.fromModule(images.defaultLogo).uri;
+
   return (
     <View style={{ ...styles.jobBox, backgroundColor: Colors.primaryBg }}>
       <Image
-        source={images.defaultLogo}
+        source={{uri : job.employer.logo ? job.employer.logo : defaultLogoUri}}
         style={styles.logo}
       />
       <View style={styles.jobInfo}>
-        <TouchableOpacity onPress={() => onPress(job)}>
+        <TouchableOpacity onPress={() => onPress(job.slug)}>
           <AppText size={18} color="info" family="semi-bold">
             {job.title}
           </AppText>
         </TouchableOpacity>
         <AppText color="secondary" weight="600" size={15} family="semi-bold">
-          {job.company.name}
+          {job.employer.name}
         </AppText>
 
         <View style={styles.jobInfoBody}>
           <View style={globalStyles.rowAlignCenter}>
             <Icon name="location-on" size={18} color="#666666" />
             <AppText color="secondary" size={14}>
-              <Text style="marginLeft: 5"> {job.company.address}</Text>
+              <Text style="marginLeft: 5"> {job.employer.address}</Text>
             </AppText>
           </View>
           <View style={globalStyles.rowAlignCenter}>

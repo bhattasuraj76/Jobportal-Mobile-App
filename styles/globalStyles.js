@@ -29,6 +29,14 @@ export const globalStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  flexGrow: {
+    flexGrow: 1,
+  },
+  contentWrapperCenter: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   titleText: {
     fontFamily: "open-sans-bold",
     fontSize: 18,
@@ -51,6 +59,12 @@ export const globalStyles = StyleSheet.create({
   errorText: {
     color: "#ff0000",
     marginBottom: 10,
+  },
+  authForm: {
+    flex: 1,
+    paddingHorizontal: 30,
+    paddingVertical: 30,
+    justifyContent: "center",
   },
 });
 

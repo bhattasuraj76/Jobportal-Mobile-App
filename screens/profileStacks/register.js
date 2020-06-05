@@ -1,19 +1,25 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView,
+  Text,
 } from "react-native";
 import AppBtn from "../../shared/appBtn";
 import ErrorText from "../../shared/errorText";
 import ContainerFluid from "../../shared/containerFluid";
 import FormGroup from "../../shared/formGroup";
 import { ThemeContext } from "../../contexts/ThemeContext";
-import { AuthContext } from "../../contexts/AuthContext";
 import { Formik } from "formik";
 import * as yup from "yup";
 import Input from "../../shared/input";
+import ErrorMessage from "../../shared/errorMessage";
+import { apiPath } from "../../utils/constants/Consts";
+import Axios from "axios";
+import useErrorHandler from "../../utils/custom-hooks/ErrorHandler";
+import { serializeErrors } from "../../utils/Helpers";
+import { globalStyles } from "../../styles/globalStyles";
 
 //register validation schema
 const registerSchema = yup.object({
@@ -23,7 +29,10 @@ const registerSchema = yup.object({
     .string()
     .required("Email is required")
     .email("Please enter valid email"),
-  password: yup.string().required("Password is required"),
+  password: yup
+    .string()
+    .required("Password is required")
+    .min(6, "Password must be minimum of 6 charaters"),
   confirmPassword: yup
     .string()
     .required("Confimation Password is required")
@@ -32,35 +41,71 @@ const registerSchema = yup.object({
 
 function Register({ navigation }) {
   const { isThemeDark } = useContext(ThemeContext);
-  const { authUser, setAuthStatus } = useContext(AuthContext);
+  const { error, showError } = useErrorHandler(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  //handle user register form submit
   const handleRegister = (values, actions) => {
+    setIsSubmitting(true);
     const { firstName, lastName, email, password, confirmPassword } = values;
 
-    const resp = 1; //response form server
-    if (resp == 1) {
-      //reset form
-      actions.resetForm();
-      //alert user
-      alert("Registration successful");
-    } else {
-      alert("Registration Failed");
+    const userRegisterData = {
+      entity: "jobseeker",
+      name: "",
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      password,
+      password_confirmation: confirmPassword,
+    };
+   
+    _regitserUser(userRegisterData)
+      .then((res) => {
+        //show success message
+        if (res) alert(res);
+        //reset form
+        actions.resetForm();
+      })
+      .catch(err => console.log(err))
+      .then(() => {
+        setIsSubmitting(false);
+      });
+  };
+
+  //async register user
+  const _regitserUser = async (data) => {
+    let url = `${apiPath}/userRegister`;
+
+    try {
+      const result = await Axios.post(url, data).then((res) => res.data);
+      if (result.resp == 1) return result.message;
+    } catch (err) {
+      if (Axios.isCancel(err)) {
+        console.log("Request cancelled");
+      } else if (err.response) {
+        if (err.response.status == 422)
+          showError(serializeErrors(err.response.data));
+        else if (err.response.data.resp == 0)
+          showError(serializeErrors({ error: err.response.data.message }));
+        else showError(serializeErrors({ error: "Failed to register" }));
+      } else {
+        console.log(err);
+      }
     }
   };
 
   return (
     <ContainerFluid>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={globalStyles.flexGrow}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View
             style={{
-              flex: 1,
-              paddingHorizontal: 30,
-              paddingVertical: 30,
+              ...globalStyles.authForm,
               backgroundColor: isThemeDark ? "#000" : "#36485f",
-              justifyContent: "center",
             }}
           >
+            {error && <ErrorMessage>{error}</ErrorMessage>}
+
             <Formik
               initialValues={{
                 firstName: "",
@@ -81,7 +126,6 @@ function Register({ navigation }) {
                 handleChange,
                 handleBlur,
                 handleSubmit,
-                isSubmitting,
               }) => (
                 <>
                   <FormGroup>
@@ -103,8 +147,8 @@ function Register({ navigation }) {
                       onBlur={handleBlur("lastName")}
                       placeholder={"Last Name"}
                     />
-                    {touched.email && errors.email ? (
-                      <ErrorText>{errors.email}</ErrorText>
+                    {touched.lastName && errors.lastName ? (
+                      <ErrorText>{errors.lastName}</ErrorText>
                     ) : null}
                   </FormGroup>
 
@@ -147,11 +191,7 @@ function Register({ navigation }) {
                   </FormGroup>
 
                   <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
-                    <AppBtn
-                      title="Register"
-                      onPress={handleSubmit}
-                      disabled={isSubmitting}
-                    />
+                    <AppBtn title="Register" onPress={handleSubmit} disabled={isSubmitting}/>
                   </View>
                 </>
               )}
