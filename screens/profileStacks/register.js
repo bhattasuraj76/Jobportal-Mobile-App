@@ -83,9 +83,11 @@ function Register({ navigation }) {
       if (Axios.isCancel(err)) {
         console.log("Request cancelled");
       } else if (err.response) {
-         if (err.response.data.resp == 0)
-           showError(serializeErrors({ error: err.response.data.message }));
-         else showError(serializeErrors(err.response.data));
+        if (err.response.status == 422)
+          showError(serializeErrors(err.response.data));
+        else if (err.response.data.resp == 0)
+          showError(serializeErrors({ error: err.response.data.message }));
+        else showError(serializeErrors({ error: "Failed to register" }));
       } else {
         console.log(err);
       }

@@ -16,6 +16,26 @@ const authHandler = (initialState) => {
     }
   };
 
+   const updateAuthUserName = async (name) => {
+     try {
+       let newAuthUser = { ...authUser, name };
+       await AsyncStorage.setItem("authUser", JSON.stringify(newAuthUser));
+       setAuthUser(newAuthUser);
+     } catch (e) {
+       console.log(e);
+     }
+   };
+
+      const updateAuthUserProfile = async (profile) => {
+        try {
+          let newAuthUser = { ...authUser , profile};
+          await AsyncStorage.setItem("authUser", JSON.stringify(newAuthUser));
+          setAuthUser(newAuthUser);
+        } catch (e) {
+          console.log(e);
+        }
+      };
+
   const setUnauthStatus = async () => {
     try {
       await AsyncStorage.removeItem("authUser");
@@ -27,6 +47,8 @@ const authHandler = (initialState) => {
 
   return {
     authUser,
+    updateAuthUserName,
+    updateAuthUserProfile,
     setAuthStatus,
     setUnauthStatus,
   };

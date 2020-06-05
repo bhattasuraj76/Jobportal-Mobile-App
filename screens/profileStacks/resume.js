@@ -7,39 +7,93 @@ import Icon from "../../shared/icon";
 import AppText from "../../shared/appText";
 import ResumeCover from "../../assets/img/file-upload.jpg";
 import * as DocumentPicker from "expo-document-picker";
+import { apiPath } from "../../utils/constants/Consts";
+import Axios from "axios";
+import useErrorHandler from "../../utils/custom-hooks/ErrorHandler";
+import { globalStyles } from "../../styles/globalStyles";
+import ErrorMessage from "../../shared/errorMessage";
+import { serializeErrors } from "../../utils/Helpers";
 
 function Resume() {
   const [hasUserResume, setHasUserResume] = useState(false);
+  const {error, showError} = useErrorHandler(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const uploadCV = () => {
-    const pickDocument = new Promise(async (res, rej) => {
-      try {
-        let result = await DocumentPicker.getDocumentAsync({});
-        return res(result);
-      } catch (err) {
-        return rej(err);
-      }
-    });
-
-    pickDocument
-      .then((res) => {
-        setHasUserResume(!hasUserResume);
-        console.log(res);
-      })
-      .catch((err) => console.log(err));
-
-    // _pickDocument()
-    //   .then((response) => {
-    //      console.log(response);
-    //     if(response.type == "success"){
-    //         console.log("File uploaded", response);
-    //         setHasUserResume(!hasUserResume);
-    //     }
-    //   })
-    //   .catch((err) => console.log('aaa', err));
+  //async pcik document
+  const _pickDocument = async () => {
+    try {
+      let result = await DocumentPicker.getDocumentAsync({});
+      if(result.type == "success" ) return result;
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const _pickDocument = async () => {};
+  //handle cv submit
+  const handleCVSubmit =  () => {
+    setIsSubmitting(true);
+
+    _pickDocument()
+      .then((document) => {
+        console.log(document);
+        if(!document) return;
+        
+        //create object with uri, type, image name
+        var file = {
+          uri: document.uri,
+          type: "image/jpeg",
+          name: "photo.jpg",
+        };
+
+        file = JSON.stringify(file);
+
+        // //use formdata
+        var formData = new FormData();
+        formData.append("cv", file);
+        // console.log(formData);
+
+        _uplaodCV(formData)
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error.response);
+          });
+        
+      })
+      .catch((err) => console.log(err));
+  };
+
+  //async upload cv using axios
+  const _uplaodCV = async (formData) => {
+    try {
+      const options = {
+        method: "POST",
+        url: `${apiPath}/jobseeker/edit-profile`,
+        data: formData,
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "multipart/form-data",
+        },
+      };
+    
+      const response = await Axios(options).then((res) => res.data);
+      console.log(response);
+      // if (response.resp == 1) return resp.message;
+    } catch (err) {
+      if (Axios.isCancel(err)) {
+        console.log("Request cancelled");
+      } else if (err.response) {
+        if (err.response.status == 422)
+          showError(serializeErrors(err.response.data));
+        else if (err.response.data.resp == 0)
+          showError(serializeErrors({ error: err.response.data.message }));
+        else showError(serializeErrors({ error: "Failed to register" }));
+      } else {
+        console.log(err);
+      }
+    }
+  };
 
   return (
     <ContainerFluid>
@@ -49,8 +103,11 @@ function Resume() {
         imageStyle={{ opacity: 0.08, resizeMode: "cover" }}
       >
         <View
-          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          style={globalStyles.contentWrapperCenter}
         >
+
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+
           {/* header */}
           <View style={styles.title}>
             {hasUserResume ? (
@@ -97,7 +154,7 @@ function Resume() {
           {/* helper text */}
 
           {/* file upload btn */}
-          <TouchableOpacity onPress={() => uploadCV()}>
+          <TouchableOpacity onPress={() => handleCVSubmit()} disabled={isSubmitting}>
             <View style={styles.btn}>
               <Text style={styles.btnText}>Upload</Text>
             </View>

@@ -5,23 +5,35 @@ import useAuthHandler from "../utils/custom-hooks/AuthHandler";
 import { DEFAULT_AUTH_USER } from "../utils/constants/Consts";
 import { getStoredAuthUser } from "../utils/Helpers";
 
-export const AuthContext =
-  React.createContext (
-  {
-    authUser: DEFAULT_AUTH_USER,
-    setAuthStatus: () => {},
-    setUnauthStatus: () => {},
-  });
+export const AuthContext = React.createContext({
+  authUser: DEFAULT_AUTH_USER,
+  setAuthStatus: () => {},
+  setUnauthStatus: () => {},
+  updateAuthUserName: () => {},
+  updateAuthUserProfile: () => {},
+});
 
-const AuthContextProvider = ({
-  children
-}) => {
-  const { authUser, setAuthStatus, setUnauthStatus } = useAuthHandler(
+const AuthContextProvider = ({ children }) => {
+  const {
+    authUser,
+    setAuthStatus,
+    setUnauthStatus,
+    updateAuthUserName,
+    updateAuthUserProfile,
+  } = useAuthHandler(
     getStoredAuthUser() // fetch stored user object
   );
 
   return (
-    <AuthContext.Provider value={{ authUser, setAuthStatus, setUnauthStatus }}>
+    <AuthContext.Provider
+      value={{
+        authUser,
+        setAuthStatus,
+        setUnauthStatus,
+        updateAuthUserName,
+        updateAuthUserProfile,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

@@ -9,16 +9,14 @@ import {
   Button,
   ActivityIndicator,
 } from "react-native";
-import AppBtn from "../../shared/appBtn";
 import ErrorText from "../../shared/errorText";
 import ContainerFluid from "../../shared/containerFluid";
 import FormGroup from "../../shared/formGroup";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import { AuthContext } from "../../contexts/AuthContext";
-import { Formik, ErrorMessage } from "formik";
+import { Formik } from "formik";
 import * as yup from "yup";
 import InputLevel from "../../shared/inputLevel";
-import AppText from "../../shared/appText";
 import HeaderRightActionBtn from "../../shared/headerRightActionBtn";
 import Checkbox from "../../shared/checkbox";
 import BasicFormInput from "../../shared/basicFormInput";
@@ -29,6 +27,7 @@ import { apiPath } from "../../utils/constants/Consts";
 import useErrorHandler from "../../utils/custom-hooks/ErrorHandler";
 import { useFocusEffect } from "@react-navigation/native";
 import VerticalDivider from "../../shared/verticalDivider";
+import ErrorMessage from "../../shared/errorMessage";
 
 //register validation schema
 const basicInfoSchema = yup.object({
@@ -47,11 +46,13 @@ const gender = [
 
 function BasicInfo({ navigation }) {
   const { isThemeDark } = useContext(ThemeContext);
+  const { updateAuthUserName } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
-  //creates refrence to formik element
-  const formikElement = createRef(null);
   const { error, showError } = useErrorHandler(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  //creates refrence to formik element
+  const formikElement = createRef(null);
 
   const [user, setUser] = useState({
     firstName: "",
@@ -140,14 +141,7 @@ function BasicInfo({ navigation }) {
   //handle profile update
   const handleProfileUpdate = (values, actions) => {
     setIsSubmitting(true);
-    const {
-      firstName = "",
-      lastName = "",
-      address = "",
-      phone = "",
-      gender = "",
-      description = "",
-    } = values;
+    const { firstName, lastName, address, phone, gender, description } = values;
 
     const userData = {
       first_name: firstName,
@@ -161,12 +155,11 @@ function BasicInfo({ navigation }) {
     //perform api call to update password
     _saveBasicInfo(userData)
       .then((user) => {
-        if (user) {
-          setUser(userData);
+        if (!user) return;
+        updateAuthUserName(`${firstName} ${lastName}`).then(() => {
+          setUser(values);
           alert("Successfully updated");
-        }
-
-        console.log(user);
+        });
       })
       .catch((err) => console.log(err))
       .then(() => setIsSubmitting(false));
@@ -205,6 +198,9 @@ function BasicInfo({ navigation }) {
       <ScrollView contentContainerStyle={globalStyles.flexGrow}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.basicInfoWrapper}>
+
+            {error && <ErrorMessage>{error}</ErrorMessage>}
+
             <Formik
               enableReinitialize
               initialValues={{ ...user }}

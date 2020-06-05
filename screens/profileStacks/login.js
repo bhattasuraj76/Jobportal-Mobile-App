@@ -46,9 +46,13 @@ function Login({ navigation }) {
         console.log(user);
         //update authUser value provided user and user token
         if (user && user.token) {
+          const { email, name, profile, token } = user;
+
           setAuthStatus({
-            email: user.email,
-            token: user.token,
+            email,
+            name,
+            profile,
+            token,
           }).then(() => {
             //reset form
             actions.resetForm();
@@ -67,19 +71,19 @@ function Login({ navigation }) {
 
   //aync login user
   const _loginUser = async (data) => {
-    let url = `${apiPath}/login`;
-
     try {
+      let url = `${apiPath}/login`;
       const result = await Axios.post(url, data).then((res) => res.data);
       if (result.resp == 1) return result.user;
     } catch (err) {
       if (Axios.isCancel(err)) {
         console.log("Request cancelled");
       } else if (err.response) {
-        console.log(err.response.data);
-        if (err.response.data.resp == 0)
+        if (err.response.status == 422)
+          showError(serializeErrors(err.response.data));
+        else if (err.response.data.resp == 0)
           showError(serializeErrors({ error: err.response.data.message }));
-        else showError(serializeErrors(err.response.data));
+        else showError(serializeErrors({ error: "Failed to login" }));
       } else {
         console.log(err);
       }
@@ -96,7 +100,6 @@ function Login({ navigation }) {
               backgroundColor: isThemeDark ? "#000" : "#36485f",
             }}
           >
-
             {error && <ErrorMessage>{error}</ErrorMessage>}
 
             <Formik

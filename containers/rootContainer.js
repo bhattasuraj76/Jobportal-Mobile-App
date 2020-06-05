@@ -31,6 +31,8 @@ function RootContaienr() {
       email: "jobseeker@test.com",
       token: "djFJUmxJVVVGeTdaaXBaUzNpTWtWbUpPZUxXRm01Nk8zbnRESldoaw==",
       entity: "jobseeker",
+      profile: "",
+      name: "John Doe"
     });
   }, []);
 
