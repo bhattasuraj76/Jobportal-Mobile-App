@@ -36,6 +36,16 @@ const authHandler = (initialState) => {
         }
       };
 
+       const updateAuthUserCVStatus = async () => {
+         try {
+           let newAuthUser = { ...authUser, hasCV: true };
+           await AsyncStorage.setItem("authUser", JSON.stringify(newAuthUser));
+           setAuthUser(newAuthUser);
+         } catch (e) {
+           console.log(e);
+         }
+       };
+
   const setUnauthStatus = async () => {
     try {
       await AsyncStorage.removeItem("authUser");
@@ -49,6 +59,7 @@ const authHandler = (initialState) => {
     authUser,
     updateAuthUserName,
     updateAuthUserProfile,
+    updateAuthUserCVStatus,
     setAuthStatus,
     setUnauthStatus,
   };

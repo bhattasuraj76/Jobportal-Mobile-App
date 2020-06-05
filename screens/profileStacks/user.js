@@ -1,43 +1,54 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useFocusEffect } from "@react-navigation/native";
-import { View, Text, Image, StyleSheet, ImageBackground } from "react-native";
+import {
+  View,
+  Image,
+  StyleSheet,
+  ImageBackground,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { ThemeContext } from "../../contexts/ThemeContext";
 import AppText from "../../shared/appText";
 import Icon from "../../shared/icon";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { ListItem } from "react-native-elements";
 import { AuthContext } from "../../contexts/AuthContext";
-import DefaultDisplayPicture from "../../assets/img/sanj.jpg";
 import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import { Asset } from "expo-asset";
-import axios from "axios";
-
+import Axios from "axios";
+import { images } from "../../styles/globalStyles";
+import { apiPath } from "../../utils/constants/Consts";
+import { serializeErrors } from "../../utils/Helpers";
 
 function User({ navigation }) {
-  const imageURI = Asset.fromModule(require("../../assets/img/sanj.jpg")).uri;
-
   const { isThemeDark } = useContext(ThemeContext);
-  const { authUser, setUnauthStatus, updateAuthUserProfile } = useContext(AuthContext);
+  const { authUser, setUnauthStatus, updateAuthUserProfile } = useContext(
+    AuthContext
+  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [displayPicture, setDisplayPicture] = useState(imageURI);
+  //default display picture
+  const defaultDPUri = Asset.fromModule(images.defaultProfile).uri;
 
+  //ask for permission if ios
   useEffect(() => {
     getPermissionAsync();
   }, []);
+
 
   //ask for user permission for camera roll
   const getPermissionAsync = async () => {
     if (Constants.platform.ios) {
       const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
       if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
+        alert("Sorry, we need camera roll permissions!");
       }
     }
   };
 
-  //open image picker
+  //aync open image picker
   const _pickImage = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -47,76 +58,104 @@ function User({ navigation }) {
         quality: 1,
       });
       if (!result.cancelled) {
-        // setDisplayPicture(result.uri);
         return result;
       }
-
-      
     } catch (err) {
       console.log(err);
     }
   };
 
   //change display picture
-  const _changeDisplayPicture = () => {
-    _pickImage().then(Image=>{
-      var photo = {
-        uri: Image.uri,
-        type: 'image/png',
-        name: 'photo.jpg',
-    };
-    
-    //use formdata
-    var formData = new FormData(); 
-    //append created photo{} to formdata
-    formData.append('profile', photo);
-    //use axios to POST
-    axios({
-        method: 'POST',
-        url: ' http://jpapi.vertexwebsurf.com/api/jobseeker/edit-profile',
-        data: formData,
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'multipart/form-data;'    
-        }}) .then(function (response) { 
-          if (response.data.resp == 1){
-            
-            updateAuthUserProfile(response.data.user.profile).then(() => {
-              alert('Successfully updated profile');
-            })
-            console.log(response.data.user);
-          }else{
-            console.log(response.data);
-          }
-        })
-        .catch(function (error) {
-          if (error.response){
-            console.log(error.response.data);
-          }
-          else{
-            console.log(error);
-          }
-          
-       
-    });
-    
+  const handleDPChange = () => {
 
+    _pickImage()
+      .then((image) => {
+        setIsSubmitting(true);
 
-    }).catch(function (error) { console.log(error.response)});
-  }
+        let photo = {
+          uri: image.uri,
+          type: "image/png",
+          name: "xyz.png",
+        };
 
-    
+        //use formdata
+        let formData = new FormData();
+        formData.append("profile", photo);
 
-  //logout user
-    const logoutUser = () => {
-      //destroy user value
-      setUnauthStatus().then(() => {
-        //navigate to profile
-        navigation.navigate("ProfileTab", {
-          screen: "Profile",
-        });
+        _uploadDisplayPicture(formData)
+          .then((user) => {
+            if (!user) return;
+            updateAuthUserProfile(user.profile).then(() => {
+              alert("Successfully updated profile");
+            });
+          })
+          .catch((err) => console.log(err))
+          .then(() => setIsSubmitting(false));
+      })
+      .catch(function (error) {
+        console.log(error.response);
       });
+     
+  };
+
+  //async upload display picture
+  const _uploadDisplayPicture = async (formData) => {
+    let options = {
+      method: "POST",
+      url: `${apiPath}/jobseeker/edit-profile`,
+      data: formData,
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "multipart/form-data;",
+      },
     };
+
+    try {
+      let result = await Axios(options).then((res) => res.data);
+      if (result.resp == 1) return result.user;
+    } catch (err) {
+      if (Axios.isCancel(err)) {
+        console.log("Request cancelled");
+      } else if (err.response) {
+        console.log(err.response);
+
+        if (err.response.status == 422)
+          reportErrors(serializeErrors(err.response.data));
+        else if (err.response.data.resp == 0)
+          reportErrors(serializeErrors({ error: err.response.data.message }));
+        else
+          reportErrors(
+            serializeErrors({ error: "Failed to change profile picture" })
+          );
+      } else {
+        console.log(err);
+      }
+    }
+  };
+
+  //report errors to user
+  const reportErrors = (error) => {
+    if (!error) return;
+    Alert.alert(
+      "Error",
+      error,
+      [
+        { text: "OK", onPress: () => console.log("Okey") },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  //handle logout user
+  const logoutUser = () => {
+    //destroy user value
+    setUnauthStatus().then(() => {
+      //navigate to profile
+      navigation.navigate("ProfileTab", {
+        screen: "Profile",
+      });
+    });
+  };
 
   const list = [
     {
@@ -159,10 +198,9 @@ function User({ navigation }) {
     {
       title: "Logout",
       icon: "history",
-      onPress: () => console.log('logout'),
+      onPress: () => logoutUser(),
     },
   ];
-
 
   return (
     <ScrollView>
@@ -170,7 +208,7 @@ function User({ navigation }) {
       <View>
         <ImageBackground
           source={{
-            uri: authUser.profile ||  displayPicture,
+            uri: authUser.profile || defaultDPUri,
           }}
           style={styles.profileBg}
         >
@@ -183,24 +221,25 @@ function User({ navigation }) {
                   ...styles.profileEditBtnWrap,
                 }}
               >
-                <TouchableOpacity
-                  opacity={1}
-                  onPress={() => _changeDisplayPicture()}
-                >
+                <TouchableOpacity opacity={1} onPress={() => handleDPChange()}>
                   <View
                     style={{
                       ...styles.profileEditBtn,
                       backgroundColor: isThemeDark ? "#ccc" : "#eee",
                     }}
                   >
-                    <Icon name="edit" size={24} color="#000" />
+                    {isSubmitting ? (
+                      <ActivityIndicator size={24} color="#000" />
+                    ) : (
+                      <Icon name="edit" size={24} color="#000" />
+                    )}
                   </View>
                 </TouchableOpacity>
               </View>
 
               <Image
                 source={{
-                  uri: authUser.profile ||  displayPicture,
+                  uri: authUser.profile || defaultDPUri,
                 }}
                 style={styles.displayPicture}
               />
@@ -209,13 +248,17 @@ function User({ navigation }) {
 
             {/* user info start */}
             <View style={styles.userInfo}>
-              <AppText size={22} color="light" family="semi-bold-italic">
-                {authUser.name ? authUser.name : "John Doe"}
-              </AppText>
+              {authUser.name && (
+                <AppText size={22} color="light" family="semi-bold-italic">
+                  {authUser.name}
+                </AppText>
+              )}
 
-              <AppText size={16} color="light">
-                {authUser.email ? authUser.email : "xyz@example.com"}
-              </AppText>
+              {authUser.email && (
+                <AppText size={16} color="light">
+                  {authUser.email}
+                </AppText>
+              )}
             </View>
             {/* user info end */}
           </View>

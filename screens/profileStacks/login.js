@@ -46,13 +46,14 @@ function Login({ navigation }) {
         console.log(user);
         //update authUser value provided user and user token
         if (user && user.token) {
-          const { email, name, profile, token } = user;
+          const { email, name, profile, token, cv } = user;
 
           setAuthStatus({
             email,
             name,
             profile,
             token,
+            hasCV: cv ? true : false
           }).then(() => {
             //reset form
             actions.resetForm();

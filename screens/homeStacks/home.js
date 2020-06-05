@@ -105,7 +105,6 @@ function Home({ navigation, route }) {
 
       return () => {
         isActive = false;
-        console.log("ad", isSearching);
       };
     }, [route])
   );

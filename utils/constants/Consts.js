@@ -1,8 +1,10 @@
 export const DEFAULT_AUTH_USER = {
+  entity: "guest",
   email: "",
   token: "",
-  dispalyPicture: "",
-  name: ""
+  name: "",
+  profile: "",
+  hasCV: false,
 };
 
 export const DEFAULT_THEME = "default";

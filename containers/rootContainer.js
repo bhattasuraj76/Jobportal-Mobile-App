@@ -26,15 +26,16 @@ function RootContaienr() {
   //   return config;
   // });
 
-  useEffect(() => {
-    setAuthStatus({
-      email: "jobseeker@test.com",
-      token: "djFJUmxJVVVGeTdaaXBaUzNpTWtWbUpPZUxXRm01Nk8zbnRESldoaw==",
-      entity: "jobseeker",
-      profile: "",
-      name: "John Doe"
-    });
-  }, []);
+  // useEffect(() => {
+  //   setAuthStatus({
+  //     entity: "jobseeker",
+  //     email: "jobseeker@test.com",
+  //     token: "djFJUmxJVVVGeTdaaXBaUzNpTWtWbUpPZUxXRm01Nk8zbnRESldoaw==",
+  //     profile: "",
+  //     name: "John Doe",
+  //     hasCV: false,
+  //   });
+  // }, []);
 
   Axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
 

@@ -11,6 +11,7 @@ export const AuthContext = React.createContext({
   setUnauthStatus: () => {},
   updateAuthUserName: () => {},
   updateAuthUserProfile: () => {},
+  updateAuthUserCVStatus: () => {},
 });
 
 const AuthContextProvider = ({ children }) => {
@@ -20,6 +21,7 @@ const AuthContextProvider = ({ children }) => {
     setUnauthStatus,
     updateAuthUserName,
     updateAuthUserProfile,
+    updateAuthUserCVStatus,
   } = useAuthHandler(
     getStoredAuthUser() // fetch stored user object
   );
@@ -32,6 +34,7 @@ const AuthContextProvider = ({ children }) => {
         setUnauthStatus,
         updateAuthUserName,
         updateAuthUserProfile,
+        updateAuthUserCVStatus,
       }}
     >
       {children}
