@@ -15,6 +15,7 @@ import Axios from "axios";
 import { apiPath } from "../../utils/constants/Consts";
 import { Asset } from "expo-asset";
 import Loader from "../../shared/loader";
+import { AuthContext } from "../../contexts/AuthContext";
 
 function JobDetail({ navigation, route }) {
   //retun null if there no job slug
@@ -28,6 +29,8 @@ function JobDetail({ navigation, route }) {
   const [showJobInfo, setShowJobInfo] = useState(true);
   const [showJobDescription, setshowDesription] = useState(false);
   const [showAboutCompany, setShowAboutCompany] = useState(false);
+  const {authUser} = useContext(AuthContext);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   //default logo and cover uri
   const defaultCoverUri = Asset.fromModule(images.defaultCover).uri;
@@ -46,8 +49,25 @@ function JobDetail({ navigation, route }) {
   };
 
   //handle applyforjob btn press
-  const applyForJob = () => {
-    console.log("applied for job");
+  const applyForJob = async (job_id) => {
+    if(!job_id) return;
+
+    const isLoggedIn = authUser.token ? true: false;
+    if(!isLoggedIn){
+      alert("Please login to apply for job");
+      return;
+    } 
+
+    setIsSubmitting(true);
+    try{
+      let response = await Axios.post(`${apiPath}/apply-for-job`, {job_id}).then(res => res.data);
+      if (response.resp == 1) alert("Successfully applied for job.");
+      else alert(response.message);
+    }catch(err){
+      console.log(err);
+    }
+    setIsSubmitting(false);
+   
   };
 
   //fetch job detail on first render and job slug change only
@@ -245,7 +265,7 @@ function JobDetail({ navigation, route }) {
 
           {/* job apply btn */}
           <View style={{ marginTop: 30 }}>
-            <AppBtn title="Appy for Job" onPress={applyForJob} />
+            <AppBtn title="Appy for Job" onPress={() => applyForJob(job.id)} disabled={isSubmitting} />
           </View>
           {/* job apply btn */}
         </ScrollView>
