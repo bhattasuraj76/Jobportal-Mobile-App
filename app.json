@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "jobportal",
-    "slug": "jobportal",
+    "name": "Job Hunts",
+    "slug": "jobhunts",
     "platforms": [
       "ios",
       "android",
@@ -11,7 +11,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-xl.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -22,7 +22,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.maddyhunter76.jobhunts",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.maddyhunter76.jobhunts",
+      "versionCode": 1
     }
   }
 }
