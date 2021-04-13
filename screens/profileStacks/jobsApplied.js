@@ -44,7 +44,6 @@ function JobsApplied({ navigation, route }) {
     try {
       let url = `${apiPath}/jobseeker`;
       let response = await axios.get(url).then((res) => res.data);
-      console.log(response, "<<<<<");
       if (response.resp == 1) return response.result.jobs;
     } catch (err) {
       if (axios.isCancel(err)) {
@@ -64,7 +63,7 @@ function JobsApplied({ navigation, route }) {
       ) : (
         <>
         {jobs.length ? (
-//  job list start
+        //  job list start
         <FlatList
           data={jobs}
           keyExtractor={(item) => item.id.toString()}
