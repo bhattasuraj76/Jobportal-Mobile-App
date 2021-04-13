@@ -5,7 +5,7 @@ import JobBox from "../../shared/jobBox";
 import AppText from "../../shared/appText";
 import { useFocusEffect } from "@react-navigation/native";
 import JobAppliedBox from "../../shared/jobAppliedBox";
-import Axios from "axios";
+import axios from "axios";
 import { apiPath } from "../../utils/constants/Consts";
 import Loader from "../../shared/loader";
 
@@ -43,11 +43,11 @@ function JobsApplied({ navigation, route }) {
   const _fetchAppliedJobs = async () => {
     try {
       let url = `${apiPath}/jobseeker`;
-      let response = await Axios.get(url).then((res) => res.data);
-      console.log(response);
+      let response = await axios.get(url).then((res) => res.data);
+      console.log(response, "<<<<<");
       if (response.resp == 1) return response.result.jobs;
     } catch (err) {
-      if (Axios.isCancel(err)) {
+      if (axios.isCancel(err)) {
         console.log("Request Cancelled", err);
       } else if (err.response) {
         console.log(err.response.data);

@@ -18,7 +18,7 @@ import ErrorMessage from "../../shared/errorMessage";
 import useErrorHandler from "../../utils/custom-hooks/ErrorHandler";
 import { serializeErrors } from "../../utils/Helpers";
 import { apiPath } from "../../utils/constants/Consts";
-import Axios from "axios";
+import axios from "axios";
 import { globalStyles } from "../../styles/globalStyles";
 
 //login validation schema
@@ -43,7 +43,6 @@ function Login({ navigation }) {
 
     _loginUser({ email, password, entity: "jobseeker" })
       .then((user) => {
-        console.log(user);
         //update authUser value provided user and user token
         if (user && user.token) {
           const { email, name, profile, token, cv } = user;
@@ -74,10 +73,10 @@ function Login({ navigation }) {
   const _loginUser = async (data) => {
     try {
       let url = `${apiPath}/login`;
-      const result = await Axios.post(url, data).then((res) => res.data);
+      const result = await axios.post(url, data).then((res) => res.data);
       if (result.resp == 1) return result.user;
     } catch (err) {
-      if (Axios.isCancel(err)) {
+      if (axios.isCancel(err)) {
         console.log("Request cancelled");
       } else if (err.response) {
         if (err.response.status == 422)
@@ -151,7 +150,7 @@ function Login({ navigation }) {
                     <AppBtn
                       title="Login"
                       onPress={handleSubmit}
-                      disabled={false}
+                      disabled={isSubmitting ? true: false}
                     />
                   </View>
                 </>

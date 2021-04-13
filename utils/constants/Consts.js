@@ -70,5 +70,5 @@ export const DEFAULT_JOB_LEVELS = [
   },
 ];
 
-export const apiPath = "http://jpapi.vertexwebsurf.com/api";
-// export const apiPath = "http://jobportal.test/api";
+// export const apiPath = "http://jpapi.vertexwebsurf.com/api";
+export const apiPath = "https://b62c55c525ea.ngrok.io/college/api";

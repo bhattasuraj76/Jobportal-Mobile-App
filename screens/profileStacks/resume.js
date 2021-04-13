@@ -8,7 +8,7 @@ import AppText from "../../shared/appText";
 import ResumeCover from "../../assets/img/file-upload.jpg";
 import * as DocumentPicker from "expo-document-picker";
 import { apiPath } from "../../utils/constants/Consts";
-import Axios from "axios";
+import axios from "axios";
 import { globalStyles } from "../../styles/globalStyles";
 import { serializeErrors } from "../../utils/Helpers";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -75,10 +75,10 @@ function Resume() {
         },
       };
     
-      const response = await Axios(options).then((res) => res.data);
+      const response = await axios(options).then((res) => res.data);
       if (response.resp == 1) return response.user;
     } catch (err) {
-      if (Axios.isCancel(err)) {
+      if (axios.isCancel(err)) {
         console.log("Request cancelled");
       } else if (err.response) {
         if (err.response.status == 422)
@@ -101,7 +101,7 @@ function Resume() {
         data: {email: authUser.email},
       };
     
-      const response = await Axios(options).then((res) => res.data);
+      const response = await axios(options).then((res) => res.data);
       if (!response ||response.resp == 0) throw new Error('Error');
       alert('Download successfull');
     } catch (err) {

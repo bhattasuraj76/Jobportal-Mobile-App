@@ -8,7 +8,7 @@ import {
 import Navigation from "../navigation/navigator";
 import { ThemeContext } from "../contexts/ThemeContext";
 import { AuthContext } from "../contexts/AuthContext";
-import Axios from "axios";
+import axios from "axios";
 import GeneralStatusBar from "../shared/generalStatusBar";
 
 function RootContaienr() {
@@ -20,7 +20,7 @@ function RootContaienr() {
   const { authUser, setAuthStatus } = useContext(AuthContext);
   const AUTH_TOKEN = authUser.token;
 
-  // Axios.interceptors.request.use(function (config) {
+  // axios.interceptors.request.use(function (config) {
   //   config.headers.Authorization = AUTH_TOKEN ;
   //   console.log(config);
   //   return config;
@@ -37,7 +37,7 @@ function RootContaienr() {
   //   });
   // }, []);
 
-  Axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+  axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
 
   return (
     <AppearanceProvider>

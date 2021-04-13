@@ -11,7 +11,7 @@ import {
   DarkThemeColors,
 } from "../../utils/constants/Colors";
 import { ThemeContext } from "../../contexts/ThemeContext";
-import Axios from "axios";
+import axios from "axios";
 import { apiPath } from "../../utils/constants/Consts";
 import { Asset } from "expo-asset";
 import Loader from "../../shared/loader";
@@ -39,7 +39,7 @@ function JobDetail({ navigation, route }) {
   //fetch job detail
   const fetchJobDetail = async (slug) => {
     try {
-      let data = await Axios.get(`${apiPath}/job/${slug}`).then(
+      let data = await axios.get(`${apiPath}/job/${slug}`).then(
         (res) => res.data
       );
       if (data.resp == 1) return data.job;
@@ -60,7 +60,7 @@ function JobDetail({ navigation, route }) {
 
     setIsSubmitting(true);
     try{
-      let response = await Axios.post(`${apiPath}/apply-for-job`, {job_id}).then(res => res.data);
+      let response = await axios.post(`${apiPath}/apply-for-job`, {job_id}).then(res => res.data);
       if (response.resp == 1) alert("Successfully applied for job.");
       else alert(response.message);
     }catch(err){
@@ -90,13 +90,13 @@ function JobDetail({ navigation, route }) {
           <View style={{ marginBottom: 20 }}>
             <ImageBackground
               source={{
-                uri: job.employer.logo ? job.employer.logo : defaultCoverUri,
+                uri: job.employer?.logo ? job.employer.logo : defaultCoverUri,
               }}
               style={styles.companyCover}
             >
               <Image
                 source={{
-                  uri: job.employer.logo ? job.employer.logo : defaultLogoUri,
+                  uri: job.employer?.logo ? job.employer.logo : defaultLogoUri,
                 }}
                 style={styles.companyLogo}
               />
@@ -246,13 +246,13 @@ function JobDetail({ navigation, route }) {
                 {showAboutCompany && (
                   <AccordianContent>
                     <TitleText>
-                      Address : <InfoText>{job.employer.address}</InfoText>
+                      Address : <InfoText>{job?.employer.address}</InfoText>
                     </TitleText>
                     <TitleText>
-                      Email : <InfoText>{job.employer.email}</InfoText>
+                      Email : <InfoText>{job?.employer.email}</InfoText>
                     </TitleText>
                     <TitleText>
-                      Phone : <InfoText>{job.employer.phone}</InfoText>
+                      Phone : <InfoText>{job?.employer.phone}</InfoText>
                     </TitleText>
                   </AccordianContent>
                 )}

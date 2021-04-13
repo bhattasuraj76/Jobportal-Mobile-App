@@ -8,6 +8,7 @@ function Profile({ navigation }) {
   const { authUser, setUnauthStatus } = useContext(AuthContext);
 
   const isUserLoggedIn = authUser.token ?  true : false;
+  console.log("fsda", isUserLoggedIn, authUser);
 
   return (
     <View style={{ flex: 1 }}>

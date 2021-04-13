@@ -21,7 +21,7 @@ import HeaderRightActionBtn from "../../shared/headerRightActionBtn";
 import Checkbox from "../../shared/checkbox";
 import BasicFormInput from "../../shared/basicFormInput";
 import { globalStyles } from "../../styles/globalStyles";
-import Axios from "axios";
+import axios from "axios";
 import { serializeErrors } from "../../utils/Helpers";
 import { apiPath } from "../../utils/constants/Consts";
 import useErrorHandler from "../../utils/custom-hooks/ErrorHandler";
@@ -106,7 +106,7 @@ function BasicInfo({ navigation }) {
       const _fetchUserData = async () => {
         try {
           let url = `${apiPath}/jobseeker/edit-profile`;
-          let response = await Axios.get(url).then((res) => res.data);
+          let response = await axios.get(url).then((res) => res.data);
           if (response.resp == 1) return response.user;
         } catch (err) {
           console.log("Error", err);
@@ -169,11 +169,11 @@ function BasicInfo({ navigation }) {
   const _saveBasicInfo = async (data) => {
     try {
       let url = `${apiPath}/jobseeker/edit-profile`;
-      let response = await Axios.post(url, data).then((res) => res.data);
+      let response = await axios.post(url, data).then((res) => res.data);
       console.log(response);
       if (response.resp == 1) return response.user;
     } catch (err) {
-      if (Axios.isCancel(err)) {
+      if (axios.isCancel(err)) {
         console.log("Request Cancelled", err);
       } else if (err.response) {
         if (err.response.status == 422)

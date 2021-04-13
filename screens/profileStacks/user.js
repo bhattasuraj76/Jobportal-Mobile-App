@@ -17,7 +17,7 @@ import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import * as Permissions from "expo-permissions";
 import { Asset } from "expo-asset";
-import Axios from "axios";
+import axios from "axios";
 import { images } from "../../styles/globalStyles";
 import { apiPath } from "../../utils/constants/Consts";
 import { serializeErrors } from "../../utils/Helpers";
@@ -111,10 +111,10 @@ function User({ navigation }) {
     };
 
     try {
-      let result = await Axios(options).then((res) => res.data);
+      let result = await axios(options).then((res) => res.data);
       if (result.resp == 1) return result.user;
     } catch (err) {
-      if (Axios.isCancel(err)) {
+      if (axios.isCancel(err)) {
         console.log("Request cancelled");
       } else if (err.response) {
         console.log(err.response);
@@ -278,7 +278,7 @@ function User({ navigation }) {
               color: !isThemeDark ? "#333" : "#fff",
             }}
             bottomDivider
-            onPress={item.onPress}
+            onPress={() => item.onPress()}
             containerStyle={{
               backgroundColor: isThemeDark ? "#000" : "#fff",
               paddingBottom: 19,

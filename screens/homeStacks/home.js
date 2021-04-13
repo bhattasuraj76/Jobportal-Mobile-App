@@ -4,7 +4,7 @@ import ContainerFluid from "../../shared/containerFluid";
 import JobBox from "../../shared/jobBox";
 import AppText from "../../shared/appText";
 import { useFocusEffect, CommonActions } from "@react-navigation/native";
-import Axios from "axios";
+import axios from "axios";
 import { apiPath } from "../../utils/constants/Consts";
 import Loader from "../../shared/loader";
 
@@ -15,7 +15,7 @@ function Home({ navigation, route }) {
   //async fetch jobs
   const _fetchJobs = async () => {
     try {
-      let data = await Axios.get(`${apiPath}/mobile-app-home`).then(
+      let data = await axios.get(`${apiPath}/mobile-app-home`).then(
         (res) => res.data
       );
       if (data.resp == 1) return data.jobs;
@@ -28,7 +28,7 @@ function Home({ navigation, route }) {
   const _searchJobs = async (data) => {
     try {
       let url = `${apiPath}/mobile-search`;
-      let response = await Axios.post(url, data).then((res) => res.data);
+      let response = await axios.post(url, data).then((res) => res.data);
       if (response.resp == 1) return response.jobs;
     } catch (err) {
       console.error(err);

@@ -20,7 +20,7 @@ import Input from "../../shared/input";
 import { globalStyles } from "../../styles/globalStyles";
 import useErrorHandler from "../../utils/custom-hooks/ErrorHandler";
 import ErrorMessage from "../../shared/errorMessage";
-import Axios from "axios";
+import axios from "axios";
 import { apiPath } from "../../utils/constants/Consts";
 import { serializeErrors } from "../../utils/Helpers";
 
@@ -62,10 +62,10 @@ function ChangePassword({ navigation }) {
   const _changePassword = async (data) => {
     try {
       let url = `${apiPath}/change-password`;
-      let response = await Axios.post(url, data).then((res) => res.data);
+      let response = await axios.post(url, data).then((res) => res.data);
       if (response.resp == 1) return response.message;
     } catch (err) {
-      if (Axios.isCancel(err)) {
+      if (axios.isCancel(err)) {
         console.log("Request Cancelled", err);
       } else if (err.response) {
         if (err.response.status == 422)

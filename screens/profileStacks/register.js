@@ -16,7 +16,7 @@ import * as yup from "yup";
 import Input from "../../shared/input";
 import ErrorMessage from "../../shared/errorMessage";
 import { apiPath } from "../../utils/constants/Consts";
-import Axios from "axios";
+import axios from "axios";
 import useErrorHandler from "../../utils/custom-hooks/ErrorHandler";
 import { serializeErrors } from "../../utils/Helpers";
 import { globalStyles } from "../../styles/globalStyles";
@@ -77,10 +77,10 @@ function Register({ navigation }) {
     let url = `${apiPath}/userRegister`;
 
     try {
-      const result = await Axios.post(url, data).then((res) => res.data);
+      const result = await axios.post(url, data).then((res) => res.data);
       if (result.resp == 1) return result.message;
     } catch (err) {
-      if (Axios.isCancel(err)) {
+      if (axios.isCancel(err)) {
         console.log("Request cancelled");
       } else if (err.response) {
         if (err.response.status == 422)

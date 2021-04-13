@@ -12,23 +12,25 @@ function JobAppliedBox({ job, onPress }) {
   const Colors = isThemeDark ? DarkThemeColors : DefaultThemeColors;
 
   return (
-    <View style={{ ...styles.JobAppliedBox, backgroundColor: Colors.primaryBg }}>
+    <View
+      style={{ ...styles.JobAppliedBox, backgroundColor: Colors.primaryBg }}
+    >
       <Image source={images.defaultLogo} style={styles.logo} />
       <View style={styles.jobInfo}>
-        <TouchableOpacity onPress={() => onPress(job)}>
+        <TouchableOpacity onPress={() => onPress(job.slug)}>
           <AppText size={16} color="info" family="semi-bold">
             {job.title}
           </AppText>
         </TouchableOpacity>
         <AppText color="secondary" weight="600" size={14} family="semi-bold">
-          {job.company.name}
+          {job.employer?.name}
         </AppText>
 
         <View style={styles.jobInfoBody}>
           <View style={globalStyles.rowAlignCenter}>
             <Icon name="location-on" size={14} color="#666666" />
             <AppText color="secondary" size={12}>
-              <Text style="marginLeft: 5"> {job.company.address}</Text>
+              <Text style="marginLeft: 5"> {job.employer?.address}</Text>
             </AppText>
           </View>
           <View style={globalStyles.rowAlignCenter}>
@@ -63,8 +65,7 @@ const styles = StyleSheet.create({
   jobInfoBody: {
     marginLeft: 10,
     marginVertical: 5,
-  }
-
+  },
 });
 
 export default JobAppliedBox;
