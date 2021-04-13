@@ -9,7 +9,7 @@ Job portal mobile applicaiton built with [React Native](https://github.com/faceb
 You must have expo-cli installed. If not installed you can follow guides [here](https://docs.expo.io/workflow/expo-cli/) to install expo-cli.
 You also need to have andriod studio downloaded in your system.You can visit their site to download android studio clicking [here](https://developer.android.com/studio) .
 <ol>
-    <li>git clone https://github.com/maddyhunter76/Jobportal-Moblie-App.git</li>
+    <li>git clone https://github.com/bhattasuraj76/Jobportal-Moblie-App.git</li>
     <li>cd Jobportal-Mobile-App </li>
     <li>npm install </li>
     <li>expo start</li>
